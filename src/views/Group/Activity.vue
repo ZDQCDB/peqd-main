@@ -52,10 +52,11 @@
                   </el-tag>
                 </template>
               </el-table-column>
-              <el-table-column label="操作" width="200">
+              <el-table-column label="操作" width="320">
                 <template #default="{ row }">
                   <div class="activity-action-buttons">
                     <el-button size="mini" @click="viewActivity(row)">查看</el-button>
+                    <el-button size="mini" type="info" @click="viewAttendanceRecords(row)">查看签到记录</el-button>
                     <el-button 
                       v-if="(row.approvalStatus || row.approval_status) === 'PENDING'"
                       size="mini" 
@@ -273,6 +274,14 @@ export default {
       this.activityDetailVisible = true
     },
     
+    viewAttendanceRecords(activity) {
+      // 切换到签到记录标签页
+      this.activeTab = 'attendance'
+      // 设置活动ID并自动查询
+      this.attendanceFilters.activityId = activity.id
+      this.attendanceFilters.studentId = '' // 清空学号过滤
+      this.loadAttendanceRecords()
+    },
     
     approveActivity(activity) {
       this.viewActivity(activity)
@@ -436,13 +445,17 @@ export default {
 /* 活动操作按钮样式 */
 .activity-action-buttons {
   display: flex;
-  gap: 8px;
+  gap: 4px;
   align-items: center;
   justify-content: flex-start;
+  flex-wrap: nowrap;
 }
 
 .activity-action-buttons .el-button {
   margin: 0;
+  font-size: 12px;
+  padding: 4px 8px;
+  white-space: nowrap;
 }
 
 .el-pagination {
