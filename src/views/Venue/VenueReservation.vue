@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="venue-reservation">
     <h2>学生场馆预约</h2>
     <div class="under-construction">
@@ -16,7 +16,7 @@ export default {
 
 <style scoped>
 .venue-reservation h2 {
-  color: #303133;
+  color: #000000d9;
   margin-bottom: 24px;
 }
 </style> 

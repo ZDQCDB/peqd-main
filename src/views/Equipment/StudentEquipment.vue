@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="student-equipment">
     <h2>学生器材借用</h2>
     <div class="under-construction">
@@ -16,7 +16,7 @@ export default {
 
 <style scoped>
 .student-equipment h2 {
-  color: #303133;
+  color: #000000d9;
   margin-bottom: 24px;
 }
 </style> 

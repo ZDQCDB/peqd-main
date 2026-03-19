@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="venue-management">
     <div class="header">
       <h2>校方场馆管理</h2>
@@ -512,7 +512,7 @@ export default {
 }
 
 .header h2 {
-  color: #303133;
+  color: #000000d9;
   margin: 0;
   font-size: 28px;
 }
@@ -535,7 +535,7 @@ export default {
 }
 
 .btn-primary {
-  background: #409eff;
+  background: #1677ff;
   color: white;
 }
 
@@ -545,7 +545,7 @@ export default {
 
 .btn-secondary {
   background: #f4f4f5;
-  color: #606266;
+  color: #00000073;
 }
 
 .btn-secondary:hover {
@@ -577,13 +577,13 @@ export default {
 
 .btn-outline {
   background: transparent;
-  border: 1px solid #dcdfe6;
-  color: #606266;
+  border: 1px solid var(--border-color);
+  color: #00000073;
 }
 
 .btn-outline:hover {
-  border-color: #409eff;
-  color: #409eff;
+  border-color: #1677ff;
+  color: #1677ff;
 }
 
 /* 统计概览 */
@@ -599,7 +599,7 @@ export default {
   border-radius: 12px;
   padding: 24px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e4e7ed;
+  border: 1px solid var(--border-light);
   display: flex;
   align-items: center;
   gap: 16px;
@@ -619,13 +619,13 @@ export default {
 .stat-number {
   font-size: 28px;
   font-weight: 700;
-  color: #409eff;
+  color: #1677ff;
   line-height: 1;
 }
 
 .stat-label {
   font-size: 14px;
-  color: #606266;
+  color: #00000073;
   margin-top: 4px;
 }
 
@@ -636,7 +636,7 @@ export default {
   padding: 24px;
   margin-bottom: 32px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e4e7ed;
+  border: 1px solid var(--border-light);
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
@@ -645,7 +645,7 @@ export default {
 .filter-group label {
   display: block;
   margin-bottom: 8px;
-  color: #606266;
+  color: #00000073;
   font-weight: 500;
 }
 
@@ -653,7 +653,7 @@ export default {
 .filter-group select {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid #dcdfe6;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   font-size: 14px;
   transition: border-color 0.3s;
@@ -662,7 +662,7 @@ export default {
 .filter-group input:focus,
 .filter-group select:focus {
   outline: none;
-  border-color: #409eff;
+  border-color: #1677ff;
 }
 
 /* 场馆网格 */
@@ -677,12 +677,12 @@ export default {
   border-radius: 12px;
   padding: 24px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e4e7ed;
+  border: 1px solid var(--border-light);
   transition: all 0.3s;
 }
 
 .venue-card:hover {
-  transform: translateY(-2px);
+  
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
@@ -712,13 +712,13 @@ export default {
 .venue-name {
   font-size: 18px;
   font-weight: 600;
-  color: #303133;
+  color: #000000d9;
   margin: 0 0 4px 0;
 }
 
 .venue-id {
   font-size: 12px;
-  color: #909399;
+  color: #00000040;
 }
 
 .venue-status {
@@ -735,7 +735,7 @@ export default {
 
 .venue-status.occupied {
   background: #ecf5ff;
-  color: #409eff;
+  color: #1677ff;
 }
 
 .venue-status.maintenance {
@@ -758,7 +758,7 @@ export default {
   gap: 8px;
   margin-bottom: 8px;
   font-size: 14px;
-  color: #606266;
+  color: #00000073;
 }
 
 .icon {
@@ -774,12 +774,12 @@ export default {
   justify-content: space-between;
   margin-bottom: 8px;
   font-size: 14px;
-  color: #606266;
+  color: #00000073;
 }
 
 .utilization-bar {
   height: 6px;
-  background: #f5f7fa;
+  background: var(--bg-body);
   border-radius: 3px;
   overflow: hidden;
 }
@@ -797,7 +797,7 @@ export default {
 .venue-schedule h4 {
   margin: 0 0 12px 0;
   font-size: 14px;
-  color: #303133;
+  color: #000000d9;
 }
 
 .time-slots {
@@ -822,7 +822,7 @@ export default {
 
 .time-slot.occupied {
   background: #ecf5ff;
-  color: #409eff;
+  color: #1677ff;
 }
 
 .time-slot.reserved {
@@ -837,7 +837,7 @@ export default {
 
 .time-slot.closed {
   background: #f4f4f5;
-  color: #909399;
+  color: #00000040;
 }
 
 .slot-time {
@@ -882,12 +882,12 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 20px 24px;
-  border-bottom: 1px solid #e4e7ed;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .modal-header h3 {
   margin: 0;
-  color: #303133;
+  color: #000000d9;
   font-size: 18px;
 }
 
@@ -896,7 +896,7 @@ export default {
   border: none;
   font-size: 24px;
   cursor: pointer;
-  color: #909399;
+  color: #00000040;
   padding: 0;
   width: 30px;
   height: 30px;
@@ -906,7 +906,7 @@ export default {
 }
 
 .close-btn:hover {
-  color: #303133;
+  color: #000000d9;
 }
 
 .modal-body {
@@ -926,7 +926,7 @@ export default {
 .form-group label {
   display: block;
   margin-bottom: 8px;
-  color: #606266;
+  color: #00000073;
   font-weight: 500;
 }
 
@@ -935,7 +935,7 @@ export default {
 .form-group textarea {
   width: 100%;
   padding: 12px;
-  border: 1px solid #dcdfe6;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   font-size: 14px;
   transition: border-color 0.3s;
@@ -945,7 +945,7 @@ export default {
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #409eff;
+  border-color: #1677ff;
 }
 
 .form-actions {

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="teacher-teaching">
     <h2>教师教学管理</h2>
     
@@ -54,7 +54,7 @@ export default {
 
 <style scoped>
 .teacher-teaching h2 {
-  color: #303133;
+  color: #000000d9;
   margin-bottom: 24px;
 }
 
@@ -68,11 +68,12 @@ export default {
   background: white;
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-light);
 }
 
 .function-card h3 {
-  color: #409eff;
+  color: #1677ff;
   margin-bottom: 16px;
   font-size: 18px;
 }

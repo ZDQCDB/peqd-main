@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="admin-teaching">
     <div class="page-header">
       <div class="header-left">
@@ -17,21 +17,21 @@
     <!-- 统计卡片 -->
     <div class="stats-cards">
       <div class="stat-card">
-        <div class="stat-icon">📚</div>
+        <div class="stat-icon" style="background:#e6f4ff;color:#1677ff"><svg viewBox="0 0 24 24" fill="none" width="22" height="22" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H6.5A2.5 2.5 0 0 0 4 4.5v15Z"/><path d="M9 10h6M9 14h6M9 6h6"/></svg></div>
         <div class="stat-content">
           <h3>{{ statistics.totalCourses }}</h3>
           <p>总课程数</p>
         </div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon">✅</div>
+        <div class="stat-icon" style="background:#f6ffed;color:#52c41a"><svg viewBox="0 0 24 24" fill="none" width="22" height="22" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></div>
         <div class="stat-content">
           <h3>{{ statistics.todayAttendance }}</h3>
           <p>今日签到</p>
         </div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon">📊</div>
+        <div class="stat-icon" style="background:#f0f5ff;color:#2f54eb"><svg viewBox="0 0 24 24" fill="none" width="22" height="22" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/></svg></div>
         <div class="stat-content">
           <h3>{{ statistics.attendanceRate }}%</h3>
           <p>签到率</p>
@@ -410,7 +410,7 @@ export default {
 <style scoped>
 .admin-teaching {
   padding: 20px;
-  background-color: #f5f7fa;
+  background: var(--bg-body);
   min-height: 100vh;
 }
 
@@ -422,7 +422,8 @@ export default {
   background: white;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-light);
 }
 
 .header-left {
@@ -433,7 +434,7 @@ export default {
 
 .header-left h1 {
   margin: 0;
-  color: #303133;
+  color: #000000d9;
   font-size: 24px;
 }
 
@@ -449,7 +450,8 @@ export default {
   background: white;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-light);
   display: flex;
   align-items: center;
   gap: 15px;
@@ -469,13 +471,13 @@ export default {
 .stat-content h3 {
   margin: 0 0 5px 0;
   font-size: 24px;
-  color: #409eff;
+  color: #1677ff;
   font-weight: bold;
 }
 
 .stat-content p {
   margin: 0;
-  color: #909399;
+  color: #00000040;
   font-size: 14px;
 }
 
@@ -484,7 +486,8 @@ export default {
   background: white;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-light);
   margin-bottom: 30px;
   display: flex;
   gap: 20px;
@@ -501,7 +504,7 @@ export default {
 .search-box input {
   width: 100%;
   padding: 10px 40px 10px 15px;
-  border: 1px solid #dcdfe6;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   font-size: 14px;
 }
@@ -511,7 +514,7 @@ export default {
   right: 15px;
   top: 50%;
   transform: translateY(-50%);
-  color: #909399;
+  color: #00000040;
 }
 
 .filter-group {
@@ -522,7 +525,7 @@ export default {
 .filter-group select,
 .filter-group input {
   padding: 8px 12px;
-  border: 1px solid #dcdfe6;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   font-size: 14px;
 }
@@ -531,7 +534,8 @@ export default {
 .course-list {
   background: white;
   border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-light);
   overflow: hidden;
 }
 
@@ -579,7 +583,7 @@ export default {
 }
 
 .course-card {
-  border: 1px solid #e4e7ed;
+  border: 1px solid var(--border-light);
   border-radius: 8px;
   padding: 20px;
   transition: all 0.3s;
@@ -587,7 +591,7 @@ export default {
 }
 
 .course-card:hover {
-  transform: translateY(-2px);
+  
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
@@ -612,13 +616,13 @@ export default {
 
 .course-info h3 {
   margin: 0 0 5px 0;
-  color: #303133;
+  color: #000000d9;
   font-size: 16px;
 }
 
 .course-code {
   margin: 0;
-  color: #909399;
+  color: #00000040;
   font-size: 12px;
 }
 
@@ -656,12 +660,12 @@ export default {
 }
 
 .detail-row .label {
-  color: #909399;
+  color: #00000040;
   font-weight: 500;
 }
 
 .detail-row .value {
-  color: #303133;
+  color: #000000d9;
 }
 
 .course-actions {
@@ -679,11 +683,12 @@ export default {
   padding: 20px;
   background: white;
   border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-light);
 }
 
 .page-info {
-  color: #606266;
+  color: #00000073;
   font-size: 14px;
 }
 
@@ -714,12 +719,12 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid #e4e7ed;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .modal-header h3 {
   margin: 0;
-  color: #303133;
+  color: #000000d9;
 }
 
 .close-btn {
@@ -727,7 +732,7 @@ export default {
   border: none;
   font-size: 24px;
   cursor: pointer;
-  color: #909399;
+  color: #00000040;
   padding: 0;
   width: 30px;
   height: 30px;
@@ -743,7 +748,7 @@ export default {
 .photo-info {
   margin-bottom: 20px;
   padding: 15px;
-  background-color: #f5f7fa;
+  background: var(--bg-body);
   border-radius: 4px;
 }
 
@@ -765,7 +770,7 @@ export default {
 
 .no-photo {
   padding: 60px;
-  color: #909399;
+  color: #00000040;
 }
 
 /* 按钮样式 */
@@ -783,7 +788,7 @@ export default {
 }
 
 .btn-primary {
-  background-color: #409eff;
+  background-color: #1677ff;
   color: white;
 }
 
@@ -792,7 +797,7 @@ export default {
 }
 
 .btn-secondary {
-  background-color: #909399;
+  background-color: #00000040;
   color: white;
 }
 
@@ -801,7 +806,7 @@ export default {
 }
 
 .btn-info {
-  background-color: #909399;
+  background-color: #00000040;
   color: white;
 }
 

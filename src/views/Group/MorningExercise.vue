@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="morning-exercise">
     <el-card class="box-card">
       <template #header>
@@ -306,7 +306,7 @@ export default {
 .page-title {
   font-size: 18px;
   font-weight: bold;
-  color: #303133;
+  color: #000000d9;
 }
 
 .tab-content {
@@ -316,7 +316,7 @@ export default {
 .action-bar {
   margin-bottom: 20px;
   padding: 15px;
-  background: #f5f7fa;
+  background: var(--bg-body);
   border-radius: 6px;
 }
 

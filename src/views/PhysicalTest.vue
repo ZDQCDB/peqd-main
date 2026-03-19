@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="module-page" @click="redirectToTice" style="cursor: pointer;">
     <div class="module-header">
       <button class="btn btn-primary" @click.stop="$router.push('/dashboard')">← 返回桌面</button>
@@ -9,7 +9,7 @@
       <div class="under-construction">
         <h2>功能建设中</h2>
         <p>体质测试管理和结果查询功能正在开发中，敬请期待...</p>
-        <p style="color: #409EFF; margin-top: 20px;">点击页面将自动跳转到体测平台</p>
+        <p style="color: #1677ff; margin-top: 20px;">点击页面将自动跳转到体测平台</p>
       </div>
     </div>
   </div>
@@ -33,7 +33,7 @@ export default {
 <style scoped>
 .module-page {
   min-height: 100vh;
-  background-color: #f5f7fa;
+  background: var(--bg-body);
 }
 
 .module-header {
@@ -46,7 +46,7 @@ export default {
 }
 
 .module-header h1 {
-  color: #303133;
+  color: #000000d9;
   font-size: 24px;
   margin: 0;
 }

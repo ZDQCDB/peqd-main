@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="module-page">
     <div class="module-header">
       <button class="btn btn-primary" @click="$router.push('/dashboard')">← 返回桌面</button>
@@ -14,7 +14,7 @@
         </div>
         
         <div class="nav-card" @click="$router.push('/venue/reservation')">
-          <div class="nav-icon">📅</div>
+          
           <h3>学生场馆预约</h3>
           <p>场馆预约和查看</p>
         </div>
@@ -34,7 +34,7 @@ export default {
 <style scoped>
 .module-page {
   min-height: 100vh;
-  background-color: #f5f7fa;
+  background: var(--bg-body);
 }
 
 .module-header {
@@ -47,7 +47,7 @@ export default {
 }
 
 .module-header h1 {
-  color: #303133;
+  color: #000000d9;
   font-size: 24px;
   margin: 0;
 }
@@ -66,11 +66,12 @@ export default {
   text-align: center;
   cursor: pointer;
   transition: all 0.3s;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-light);
 }
 
 .nav-card:hover {
-  transform: translateY(-2px);
+  
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
@@ -80,12 +81,12 @@ export default {
 }
 
 .nav-card h3 {
-  color: #303133;
+  color: #000000d9;
   margin-bottom: 12px;
 }
 
 .nav-card p {
-  color: #909399;
+  color: #00000040;
   font-size: 14px;
   line-height: 1.5;
 }

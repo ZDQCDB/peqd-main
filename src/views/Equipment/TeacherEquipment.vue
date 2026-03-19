@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="teacher-equipment">
     <div class="header-section">
       <h2>器材库存管理</h2>
@@ -490,7 +490,7 @@ export default {
 }
 
 .header-section h2 {
-  color: #303133;
+  color: #000000d9;
   margin: 0;
 }
 
@@ -519,13 +519,13 @@ export default {
 
 .search-item label {
   font-weight: 500;
-  color: #606266;
+  color: #00000073;
 }
 
 .search-item input,
 .search-item select {
   padding: 8px 12px;
-  border: 1px solid #dcdfe6;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   min-width: 200px;
 }
@@ -534,7 +534,8 @@ export default {
   background: white;
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-light);
   margin-bottom: 24px;
 }
 
@@ -547,11 +548,11 @@ export default {
 
 .list-header h3 {
   margin: 0;
-  color: #303133;
+  color: #000000d9;
 }
 
 .total-count {
-  color: #909399;
+  color: #00000040;
   font-size: 14px;
 }
 
@@ -570,11 +571,11 @@ export default {
 .equipment-table th {
   background-color: #fafafa;
   font-weight: 600;
-  color: #606266;
+  color: #00000073;
 }
 
 .equipment-name strong {
-  color: #303133;
+  color: #000000d9;
 }
 
 .specification {
@@ -584,7 +585,7 @@ export default {
   white-space: nowrap;
 }
 
-.quantity-total { color: #303133; font-weight: 600; }
+.quantity-total { color: #000000d9; font-weight: 600; }
 .quantity-available { color: #67c23a; font-weight: 600; }
 .quantity-borrowed { color: #e6a23c; font-weight: 600; }
 .quantity-damaged { color: #f56c6c; font-weight: 600; }
@@ -603,14 +604,15 @@ export default {
 .empty-state {
   text-align: center;
   padding: 40px;
-  color: #909399;
+  color: #00000040;
 }
 
 .applications-section {
   background: white;
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-light);
 }
 
 .section-header {
@@ -622,7 +624,7 @@ export default {
 
 .section-header h3 {
   margin: 0;
-  color: #303133;
+  color: #000000d9;
 }
 
 .pending-count {
@@ -651,7 +653,7 @@ export default {
 }
 
 .application-card:hover {
-  border-color: #409eff;
+  border-color: #1677ff;
   box-shadow: 0 2px 8px rgba(64, 158, 255, 0.1);
 }
 
@@ -664,7 +666,7 @@ export default {
 }
 
 .applicant strong {
-  color: #303133;
+  color: #000000d9;
   margin-right: 8px;
 }
 
@@ -679,7 +681,7 @@ export default {
 .equipment-info,
 .time-info,
 .purpose {
-  color: #606266;
+  color: #00000073;
   font-size: 14px;
   margin-bottom: 4px;
 }
@@ -731,7 +733,7 @@ export default {
 
 .modal-header h3 {
   margin: 0;
-  color: #303133;
+  color: #000000d9;
 }
 
 .close-btn {
@@ -739,11 +741,11 @@ export default {
   border: none;
   font-size: 24px;
   cursor: pointer;
-  color: #909399;
+  color: #00000040;
 }
 
 .close-btn:hover {
-  color: #303133;
+  color: #000000d9;
 }
 
 .modal-body {
@@ -764,7 +766,7 @@ export default {
   display: block;
   margin-bottom: 8px;
   font-weight: 500;
-  color: #606266;
+  color: #00000073;
 }
 
 .form-group input,
@@ -772,7 +774,7 @@ export default {
 .form-group textarea {
   width: 100%;
   padding: 12px;
-  border: 1px solid #dcdfe6;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   font-size: 14px;
   transition: border-color 0.3s;
@@ -782,7 +784,7 @@ export default {
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #409eff;
+  border-color: #1677ff;
 }
 
 .modal-actions {
@@ -795,8 +797,8 @@ export default {
 }
 
 .btn-secondary {
-  background-color: #f5f7fa;
-  color: #606266;
+  background: var(--bg-body);
+  color: #00000073;
 }
 
 .btn-secondary:hover {
@@ -804,7 +806,7 @@ export default {
 }
 
 .stock-info {
-  background: #f5f7fa;
+  background: var(--bg-body);
   border-radius: 6px;
   padding: 16px;
   margin-bottom: 20px;
@@ -821,11 +823,11 @@ export default {
 }
 
 .stock-item label {
-  color: #606266;
+  color: #00000073;
 }
 
 .stock-item span {
   font-weight: 600;
-  color: #303133;
+  color: #000000d9;
 }
 </style> 

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="equipment-sharing">
     <div class="header">
       <h1>运动装备共享</h1>
@@ -360,7 +360,7 @@ export default {
 
 .form-group textarea {
   resize: vertical;
-  min-height: 80px;
+  min-height: var(--header-height);
 }
 
 .image-upload {

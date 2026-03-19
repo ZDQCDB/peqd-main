@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="statistics-dashboard">
     <!-- 顶部标题栏 -->
     <div class="dashboard-header">
@@ -10,9 +10,13 @@
     </div>
 
     <!-- 权限提示 -->
-    <div v-if="!hasPermission" class="permission-denied">
+        <div v-if="!hasPermission" class="permission-denied">
       <div class="permission-message">
-        <i class="warning-icon">⚠</i>
+        <svg class="warning-icon" viewBox="0 0 24 24" fill="none" width="48" height="48" style="display:block;margin:0 auto 16px;">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="#faad14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="12" y1="9" x2="12" y2="13" stroke="#faad14" stroke-width="2" stroke-linecap="round"/>
+          <line x1="12" y1="17" x2="12.01" y2="17" stroke="#faad14" stroke-width="2" stroke-linecap="round"/>
+        </svg>
         <h2>访问受限</h2>
         <p>只有校级管理员和院级管理员才能访问统计功能</p>
       </div>
@@ -28,7 +32,7 @@
           <div v-if="isSchoolAdmin" class="targets-compact">
             <div class="compact-card">
               <div class="card-header collapsible" @click="toggleTargetsPanel">
-                <h3><i class="icon">🎯</i> PE积分指标</h3>
+                <h3>PE积分指标</h3>
                 <i class="toggle-icon" :class="{ 'rotated': !targetsCollapsed }">▼</i>
               </div>
               <div v-show="!targetsCollapsed" class="card-content">
@@ -68,7 +72,7 @@
           <div class="overview-compact">
             <div class="compact-card">
               <div class="card-header">
-                <h3><i class="icon">📊</i> 数据概览</h3>
+                <h3>数据概览</h3>
               </div>
               <div class="card-content">
                 <div class="overview-stats">
@@ -93,7 +97,7 @@
           <div class="quick-actions">
             <div class="compact-card">
               <div class="card-header">
-                <h3><i class="icon">⚡</i> 快速操作</h3>
+                <h3>快速操作</h3>
               </div>
               <div class="card-content">
                 <button @click="refreshAllData" class="action-btn" :disabled="anyLoading">
@@ -159,7 +163,7 @@
 
       <!-- 错误提示 -->
       <div v-if="error" class="error-toast" :class="{ show: !!error }">
-        <i class="error-icon">❌</i>
+        <span style="color:#ff4d4f;font-size:16px">✕</span>
         <span>{{ error }}</span>
         <button @click="error = ''" class="close-btn">×</button>
       </div>
@@ -463,9 +467,9 @@ export default {
 <style scoped>
 .statistics-dashboard {
   min-height: 100vh;
-  background: linear-gradient(135deg, #0c1022 0%, #1a1f3a 50%, #2d3561 100%);
-  color: #ffffff;
-  font-family: 'Microsoft YaHei', sans-serif;
+  background: var(--bg-body);
+  color: var(--text-primary);
+  font-family: var(--font-family);
 }
 
 /* 顶部标题栏 */
@@ -473,38 +477,38 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 40px;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0 24px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--border-light);
+  height: var(--header-height);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .dashboard-title {
-  font-size: 28px;
-  font-weight: bold;
+  font-size: 18px;
+  font-weight: 600;
   margin: 0;
-  background: linear-gradient(45deg, #64b5f6, #42a5f5, #2196f3);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #000000d9;
 }
 
 .header-info {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 5px;
+  align-items: center;
+  gap: 16px;
 }
 
 .current-time {
-  font-size: 18px;
-  font-weight: bold;
-  color: #64b5f6;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1677ff;
 }
 
 .user-info {
-  font-size: 14px;
-  color: #b0bec5;
+  font-size: 13px;
+  color: #00000073;
 }
 
 /* 权限提示 */
@@ -517,42 +521,46 @@ export default {
 
 .permission-message {
   text-align: center;
-  padding: 40px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 48px 40px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-card);
+  max-width: 400px;
 }
 
 .warning-icon {
-  font-size: 48px;
+  font-size: 40px;
   display: block;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
+  color: #faad14;
 }
 
 .permission-message h2 {
-  font-size: 24px;
-  margin: 0 0 15px 0;
-  color: #ff9800;
+  font-size: 20px;
+  margin: 0 0 10px 0;
+  color: #000000d9;
+  font-weight: 500;
 }
 
 .permission-message p {
-  font-size: 16px;
-  color: #b0bec5;
+  font-size: 14px;
+  color: #00000073;
   margin: 0;
 }
 
 /* 主要内容区域 */
 .dashboard-content {
-  padding: 15px 20px;
-  height: calc(100vh - 100px);
+  padding: 20px 24px;
+  height: calc(100vh - var(--header-height));
   overflow: hidden;
 }
 
 /* 紧凑型网格布局 */
 .compact-grid {
   display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: 20px;
+  grid-template-columns: 280px 1fr;
+  gap: 16px;
   height: 100%;
 }
 
@@ -560,23 +568,23 @@ export default {
 .left-panel {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 12px;
   overflow-y: auto;
 }
 
-/* 紧凑卡片样式 */
+/* 卡片样式 */
 .compact-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-card);
   overflow: hidden;
 }
 
 .card-header {
-  padding: 15px 20px;
-  background: rgba(255, 255, 255, 0.03);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px 16px;
+  background: #fafafa;
+  border-bottom: 1px solid var(--border-light);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -584,26 +592,28 @@ export default {
 
 .card-header.collapsible {
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background 0.15s;
+  user-select: none;
 }
 
 .card-header.collapsible:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: #f0f0f0;
 }
 
 .card-header h3 {
   margin: 0;
-  font-size: 16px;
-  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  color: #000000d9;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .toggle-icon {
-  transition: transform 0.3s;
-  font-size: 12px;
-  color: #b0bec5;
+  transition: transform 0.2s;
+  font-size: 11px;
+  color: #00000073;
 }
 
 .toggle-icon.rotated {
@@ -611,140 +621,112 @@ export default {
 }
 
 .card-content {
-  padding: 15px 20px;
+  padding: 14px 16px;
 }
 
-/* 指标设置紧凑布局 */
+/* 指标设置 */
 .targets-mini-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 12px;
-  margin-bottom: 15px;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
 .target-mini-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 8px;
+  padding: 6px 10px;
+  background: #fafafa;
+  border-radius: 4px;
+  border: 1px solid var(--border-light);
 }
 
-.target-mini-label {
-  font-size: 14px;
-  color: #b0bec5;
-}
+.target-mini-label { font-size: 13px; color: #00000073; }
 
 .target-mini-value {
-  font-size: 16px;
-  font-weight: bold;
-  color: #4caf50;
+  font-size: 14px;
+  font-weight: 600;
+  color: #52c41a;
 }
 
 .target-mini-input {
-  width: 80px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 72px;
+  background: white;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
-  padding: 4px 8px;
-  color: #ffffff;
-  font-size: 14px;
+  padding: 3px 8px;
+  color: #000000d9;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
 }
 
 .target-mini-input:focus {
-  outline: none;
-  border-color: #2196f3;
+  border-color: #1677ff;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.2);
 }
 
-.targets-actions {
-  display: flex;
-  gap: 8px;
-}
+.targets-actions { display: flex; gap: 8px; }
 
 .btn-mini {
-  padding: 6px 12px;
+  padding: 4px 10px;
   font-size: 12px;
-  border: none;
-  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
   cursor: pointer;
-  transition: all 0.3s;
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: background 0.15s, border-color 0.15s;
+  background: white;
+  color: #000000d9;
+  font-family: inherit;
 }
 
-.btn-mini:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-.btn-mini.primary {
-  background: #2196f3;
-  border-color: #2196f3;
-}
-
-.btn-mini.primary:hover:not(:disabled) {
-  background: #1976d2;
-}
-
-.btn-mini:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
+.btn-mini:hover:not(:disabled) { border-color: #1677ff; color: #1677ff; }
+.btn-mini.primary { background: #1677ff; border-color: #1677ff; color: white; }
+.btn-mini.primary:hover:not(:disabled) { background: #4096ff; border-color: #4096ff; }
+.btn-mini:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* 概览统计 */
-.overview-stats {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-}
+.overview-stats { display: grid; grid-template-columns: 1fr; gap: 8px; }
 
 .stat-mini {
   text-align: center;
-  padding: 12px;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 8px;
+  padding: 10px;
+  background: #fafafa;
+  border-radius: 6px;
+  border: 1px solid var(--border-light);
 }
 
 .stat-mini-value {
   font-size: 18px;
-  font-weight: bold;
-  color: #ffffff;
-  margin-bottom: 4px;
+  font-weight: 700;
+  color: #1677ff;
+  margin-bottom: 3px;
 }
 
-.stat-mini-label {
-  font-size: 12px;
-  color: #b0bec5;
-}
+.stat-mini-label { font-size: 12px; color: #00000073; }
 
 /* 快速操作 */
 .action-btn {
   width: 100%;
-  padding: 12px;
-  margin-bottom: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  color: #ffffff;
+  padding: 8px 12px;
+  margin-bottom: 6px;
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: #000000d9;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: border-color 0.15s, color 0.15s;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font-size: 14px;
+  font-size: 13px;
+  font-family: inherit;
 }
 
-.action-btn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.1);
-  transform: translateY(-1px);
-}
-
-.action-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
+.action-btn:hover:not(:disabled) { border-color: #1677ff; color: #1677ff; }
+.action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* 右侧主要内容区域 */
 .main-content-area {
@@ -754,151 +736,89 @@ export default {
   overflow: hidden;
 }
 
-/* 标签页导航 */
+/* 标签页 */
 .tab-navigation {
   display: flex;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
+  background: #ffffff;
+  border-radius: 6px;
+  border: 1px solid var(--border-light);
   padding: 4px;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
+  gap: 2px;
 }
 
 .tab-item {
   flex: 1;
-  padding: 12px 20px;
+  padding: 7px 12px;
   text-align: center;
   cursor: pointer;
-  border-radius: 8px;
-  transition: all 0.3s;
-  color: #b0bec5;
+  border-radius: 4px;
+  transition: background 0.15s, color 0.15s;
+  color: #00000073;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
+  font-size: 13px;
+  user-select: none;
+}
+
+.tab-item:hover { background: #f5f5f5; color: #000000d9; }
+.tab-item.active { background: #1677ff; color: #ffffff; }
+
+/* 标签页内容 */
+.tab-content { flex: 1; overflow: hidden; }
+.tab-panel { height: 100%; overflow-y: auto; }
+
+/* 错误提示 */
+.error-toast {
+  position: fixed;
+  top: calc(var(--header-height) + 16px);
+  right: 20px;
+  background: #fff2f0;
+  border: 1px solid #ffccc7;
+  color: #ff4d4f;
+  padding: 10px 14px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
   gap: 8px;
+  transform: translateX(120%);
+  transition: transform 0.2s ease;
+  z-index: 1000;
+  max-width: 400px;
+  box-shadow: var(--shadow-md);
   font-size: 14px;
 }
 
-.tab-item:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: #ffffff;
-}
-
-.tab-item.active {
-  background: #2196f3;
-  color: #ffffff;
-}
-
-/* 标签页内容 */
-.tab-content {
-  flex: 1;
-  overflow: hidden;
-}
-
-.tab-panel {
-  height: 100%;
-  overflow-y: auto;
-}
-
-/* 错误提示 toast */
-.error-toast {
-  position: fixed;
-  top: 80px;
-  right: 20px;
-  background: rgba(244, 67, 54, 0.9);
-  backdrop-filter: blur(10px);
-  color: white;
-  padding: 12px 16px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  transform: translateX(100%);
-  transition: transform 0.3s ease;
-  z-index: 1000;
-  max-width: 400px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.error-toast.show {
-  transform: translateX(0);
-}
-
-.error-toast .error-icon {
-  font-size: 16px;
-  flex-shrink: 0;
-}
+.error-toast.show { transform: translateX(0); }
+.error-toast .error-icon { font-size: 14px; flex-shrink: 0; }
 
 .error-toast .close-btn {
   background: none;
   border: none;
-  color: white;
-  font-size: 18px;
+  color: #ff4d4f;
+  font-size: 16px;
   cursor: pointer;
   padding: 0;
   margin-left: auto;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  line-height: 1;
 }
 
-/* 响应式设计 */
+/* 响应式 */
 @media (max-width: 1200px) {
-  .compact-grid {
-    grid-template-columns: 250px 1fr;
-  }
+  .compact-grid { grid-template-columns: 240px 1fr; }
 }
 
 @media (max-width: 768px) {
-  .dashboard-header {
-    flex-direction: column;
-    gap: 15px;
-    text-align: center;
-    padding: 15px 20px;
-  }
-
-  .dashboard-title {
-    font-size: 24px;
-  }
-
-  .header-info {
-    align-items: center;
-  }
-
-  .dashboard-content {
-    padding: 10px 15px;
-    height: calc(100vh - 120px);
-  }
-
-  .compact-grid {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-    gap: 15px;
-  }
-
-  .left-panel {
-    order: 2;
-    flex-direction: row;
-    overflow-x: auto;
-    overflow-y: visible;
-    gap: 10px;
-  }
-
-  .left-panel > div {
-    min-width: 200px;
-    flex-shrink: 0;
-  }
-
-  .main-content-area {
-    order: 1;
-  }
-
-  .error-toast {
-    top: 100px;
-    right: 10px;
-    left: 10px;
-    max-width: none;
-  }
+  .dashboard-header { padding: 0 16px; }
+  .header-info { gap: 8px; }
+  .user-info { display: none; }
+  .dashboard-content { padding: 12px 16px; height: calc(100vh - var(--header-height)); }
+  .compact-grid { grid-template-columns: 1fr; grid-template-rows: auto 1fr; gap: 12px; }
+  .left-panel { order: 2; flex-direction: row; overflow-x: auto; overflow-y: visible; }
+  .left-panel > div { min-width: 200px; flex-shrink: 0; }
+  .main-content-area { order: 1; }
+  .error-toast { right: 10px; left: 10px; max-width: none; }
 }
 </style>

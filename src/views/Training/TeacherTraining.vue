@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="teacher-training">
     <div class="header">
       <h2>教师训练管理</h2>
@@ -101,11 +101,11 @@
           
           <div class="task-meta">
             <div class="meta-item">
-              <i class="icon">📅</i>
+              
               <span>{{ formatDate(task.startDate) }} - {{ formatDate(task.endDate) }}</span>
             </div>
             <div class="meta-item">
-              <i class="icon">🎯</i>
+              
               <span>{{ getDifficultyLabel(task.difficulty) }}</span>
             </div>
             <div class="meta-item">
@@ -155,13 +155,13 @@
         <div class="stat-card">
           <div class="stat-number">{{ getCompletedTasksCount() }}</div>
           <div class="stat-label">已完成任务</div>
-          <div class="stat-icon">✅</div>
+          <div class="stat-icon" style="background:#f6ffed;color:#52c41a"><svg viewBox="0 0 24 24" fill="none" width="20" height="20" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></div>
         </div>
         
         <div class="stat-card">
           <div class="stat-number">{{ getAverageCompletion() }}%</div>
           <div class="stat-label">平均完成率</div>
-          <div class="stat-icon">📊</div>
+          <div class="stat-icon" style="background:#f0f5ff;color:#2f54eb"><svg viewBox="0 0 24 24" fill="none" width="20" height="20" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 4-6"/></svg></div>
         </div>
       </div>
     </div>
@@ -392,7 +392,7 @@ export default {
 }
 
 .header h2 {
-  color: #303133;
+  color: #000000d9;
   margin: 0;
   font-size: 28px;
 }
@@ -410,7 +410,7 @@ export default {
 }
 
 .btn-primary {
-  background: #409eff;
+  background: #1677ff;
   color: white;
 }
 
@@ -420,7 +420,7 @@ export default {
 
 .btn-secondary {
   background: #f4f4f5;
-  color: #606266;
+  color: #00000073;
 }
 
 .btn-secondary:hover {
@@ -443,13 +443,13 @@ export default {
 
 .btn-outline {
   background: transparent;
-  border: 1px solid #dcdfe6;
-  color: #606266;
+  border: 1px solid var(--border-color);
+  color: #00000073;
 }
 
 .btn-outline:hover {
-  border-color: #409eff;
-  color: #409eff;
+  border-color: #1677ff;
+  color: #1677ff;
 }
 
 /* 创建表单样式 */
@@ -459,12 +459,12 @@ export default {
   padding: 32px;
   margin-bottom: 32px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e4e7ed;
+  border: 1px solid var(--border-light);
 }
 
 .create-form-card h3 {
   margin: 0 0 24px 0;
-  color: #303133;
+  color: #000000d9;
   font-size: 20px;
 }
 
@@ -481,7 +481,7 @@ export default {
 .form-group label {
   display: block;
   margin-bottom: 8px;
-  color: #606266;
+  color: #00000073;
   font-weight: 500;
 }
 
@@ -490,7 +490,7 @@ export default {
 .form-group textarea {
   width: 100%;
   padding: 12px;
-  border: 1px solid #dcdfe6;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   font-size: 14px;
   transition: border-color 0.3s;
@@ -500,7 +500,7 @@ export default {
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #409eff;
+  border-color: #1677ff;
 }
 
 .class-selector {
@@ -521,7 +521,7 @@ export default {
 }
 
 .checkbox-label:hover {
-  background-color: #f5f7fa;
+  background: var(--bg-body);
 }
 
 .form-actions {
@@ -545,7 +545,7 @@ export default {
 
 .section-header h3 {
   margin: 0;
-  color: #303133;
+  color: #000000d9;
   font-size: 20px;
 }
 
@@ -557,23 +557,23 @@ export default {
 .tab {
   padding: 8px 16px;
   background: transparent;
-  border: 1px solid #dcdfe6;
+  border: 1px solid var(--border-color);
   border-radius: 20px;
   cursor: pointer;
   transition: all 0.3s;
   font-size: 14px;
-  color: #606266;
+  color: #00000073;
 }
 
 .tab.active {
-  background: #409eff;
+  background: #1677ff;
   color: white;
-  border-color: #409eff;
+  border-color: #1677ff;
 }
 
 .tab:hover:not(.active) {
-  border-color: #409eff;
-  color: #409eff;
+  border-color: #1677ff;
+  color: #1677ff;
 }
 
 .tasks-grid {
@@ -587,12 +587,12 @@ export default {
   border-radius: 12px;
   padding: 24px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e4e7ed;
+  border: 1px solid var(--border-light);
   transition: all 0.3s;
 }
 
 .task-card:hover {
-  transform: translateY(-2px);
+  
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
@@ -618,7 +618,7 @@ export default {
 .task-title {
   font-size: 18px;
   font-weight: 600;
-  color: #303133;
+  color: #000000d9;
   flex: 1;
 }
 
@@ -641,12 +641,12 @@ export default {
 
 .task-type.flexibility {
   background: #f4f4f5;
-  color: #909399;
+  color: #00000040;
 }
 
 .task-type.skill {
   background: #ecf5ff;
-  color: #409eff;
+  color: #1677ff;
 }
 
 .task-meta {
@@ -659,7 +659,7 @@ export default {
   gap: 8px;
   margin-bottom: 8px;
   font-size: 14px;
-  color: #606266;
+  color: #00000073;
 }
 
 .icon {
@@ -667,7 +667,7 @@ export default {
 }
 
 .task-description {
-  color: #909399;
+  color: #00000040;
   font-size: 14px;
   line-height: 1.6;
   margin-bottom: 20px;
@@ -682,12 +682,12 @@ export default {
   justify-content: space-between;
   margin-bottom: 8px;
   font-size: 14px;
-  color: #606266;
+  color: #00000073;
 }
 
 .progress-bar {
   height: 8px;
-  background: #f5f7fa;
+  background: var(--bg-body);
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 4px;
@@ -714,7 +714,7 @@ export default {
 /* 统计概览样式 */
 .stats-section h3 {
   margin: 0 0 24px 0;
-  color: #303133;
+  color: #000000d9;
   font-size: 20px;
 }
 
@@ -730,21 +730,21 @@ export default {
   padding: 24px;
   text-align: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e4e7ed;
+  border: 1px solid var(--border-light);
   position: relative;
   overflow: hidden;
 }
 
 .stat-number {
-  font-size: 32px;
+  font-size: 18px;
   font-weight: 700;
-  color: #409eff;
+  color: #1677ff;
   margin-bottom: 8px;
 }
 
 .stat-label {
   font-size: 14px;
-  color: #606266;
+  color: #00000073;
   margin-bottom: 16px;
 }
 

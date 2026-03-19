@@ -1,10 +1,10 @@
-<template>
+﻿<template>
   <div class="student-teaching">
     <h2>学生学习中心</h2>
     
     <div class="function-grid">
       <div class="function-card">
-        <h3>✅ 签到签退</h3>
+        <h3>签到签退</h3>
         <div class="under-construction">
           <h2>功能建设中</h2>
           <p>学生签到签退功能正在开发中，敬请期待...</p>
@@ -12,7 +12,7 @@
       </div>
       
       <div class="function-card">
-        <h3>📚 学习内容</h3>
+        <h3>学习内容</h3>
         <div class="under-construction">
           <h2>功能建设中</h2>
           <p>学习内容查看功能正在开发中，敬请期待...</p>
@@ -46,7 +46,7 @@ export default {
 
 <style scoped>
 .student-teaching h2 {
-  color: #303133;
+  color: #000000d9;
   margin-bottom: 24px;
 }
 
@@ -60,7 +60,8 @@ export default {
   background: white;
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-light);
 }
 
 .function-card h3 {

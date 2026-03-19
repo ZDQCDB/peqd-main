@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="pe-management">
     <!-- 顶部导航栏 -->
     <header class="page-header">
@@ -389,14 +389,13 @@ export default {
 /* 主容器 */
 .pe-management {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #fafafa; border: 1px solid var(--border-light);
 }
 
 /* 顶部导航栏 */
 .page-header {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  background: #ffffff;
+  border-bottom: 1px solid var(--border-light);
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -404,13 +403,13 @@ export default {
 }
 
 .header-container {
-  max-width: 1600px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 var(--spacing-xl);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 80px;
+  height: var(--header-height);
 }
 
 .header-left {
@@ -430,16 +429,15 @@ export default {
   color: var(--text-primary);
   text-decoration: none;
   cursor: pointer;
-  transition: all var(--transition-normal);
+  transition: border-color 0.15s, color 0.15s;
   font-size: 14px;
-  font-weight: var(--font-weight-medium);
 }
 
 .back-btn:hover {
   background: var(--bg-surface);
   border-color: var(--primary-color);
   color: var(--primary-color);
-  transform: translateX(-2px);
+  
 }
 
 .back-btn svg {
@@ -453,14 +451,11 @@ export default {
 }
 
 .page-title {
-  font-size: 28px;
-  font-weight: var(--font-weight-bold);
-  color: var(--text-primary);
+  font-size: 18px;
+  font-weight: 600;
+  color: #000000d9;
   margin: 0;
-  background: var(--primary-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--text-primary);
 }
 
 .page-subtitle {
@@ -478,7 +473,7 @@ export default {
 }
 
 .content-container {
-  max-width: 1600px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 var(--spacing-xl);
 }
@@ -489,7 +484,7 @@ export default {
   border-radius: var(--radius-lg);
   padding: var(--spacing-xl);
   box-shadow: var(--shadow-md);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-light);
 }
 
 /* 筛选区域 */
@@ -599,7 +594,7 @@ export default {
 }
 
 .search-btn:hover {
-  transform: translateY(-2px);
+  
   box-shadow: var(--shadow-md);
 }
 
@@ -691,7 +686,7 @@ export default {
 
 .user-avatar {
   width: 80px;
-  height: 80px;
+  height: var(--header-height);
   border-radius: 50%;
   overflow: hidden;
   background: var(--bg-surface);
@@ -752,7 +747,7 @@ export default {
   background: var(--bg-secondary);
   border-radius: var(--radius-lg);
   padding: var(--spacing-xl);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-light);
 }
 
 .section-title {
@@ -807,12 +802,12 @@ export default {
 }
 
 .score-item:hover {
-  transform: translateY(-2px);
+  
   box-shadow: var(--shadow-md);
 }
 
 .score-value {
-  font-size: 32px;
+  font-size: 18px;
   font-weight: var(--font-weight-bold);
   color: var(--primary-color);
   line-height: 1;

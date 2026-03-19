@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="sunshine-run-dashboard">
     <!-- 顶部标题栏 -->
     <div class="dashboard-header">
@@ -12,120 +12,99 @@
       </div>
     </div>
 
-    <!-- 加载状态 -->
     <div v-if="loading" class="loading-container">
-      <el-icon class="is-loading" :size="40"><Loading /></el-icon>
+      <el-icon class="is-loading" :size="32"><Loading /></el-icon>
       <p>数据加载中...</p>
     </div>
 
-    <!-- 主内容区 -->
     <div v-else class="dashboard-content">
       <!-- 顶部数据卡片 -->
       <div class="stats-cards">
-        <div class="stat-card" v-for="(stat, index) in topStats" :key="index">
-          <div class="stat-icon" :style="{ background: stat.color }">
-            <component :is="stat.icon" />
-          </div>
-          <div class="stat-info">
+        <div class="stat-card" v-for="(stat, index) in topStats" :key="index" :style="{ borderLeft: '3px solid ' + stat.accent }">
+          <div class="stat-left">
             <div class="stat-label">{{ stat.label }}</div>
-            <div class="stat-value">{{ stat.value }}</div>
-            <div class="stat-unit">{{ stat.unit }}</div>
+            <div class="stat-value">{{ stat.value }}<span class="stat-unit">{{ stat.unit }}</span></div>
           </div>
+          <div class="stat-trend" :style="{ color: stat.accent }">{{ stat.icon }}</div>
         </div>
       </div>
 
-      <!-- 图表区域 -->
-      <div class="charts-grid">
-        <!-- 左侧：排名列表 -->
+      <!-- 中部：排名 + 两个图表 -->
+      <div class="charts-row">
+        <!-- 左侧排名 -->
         <div class="chart-card ranking-card">
           <div class="card-header">
             <h3>{{ viewMode === 'school' ? '院系排名' : '班级排名' }}</h3>
-            <span class="subtitle">按人均跑步距离排序</span>
+            <span class="subtitle">人均距离</span>
           </div>
           <div class="ranking-list">
-            <div 
-              v-for="(item, index) in rankings" 
+            <div
+              v-for="(item, index) in rankings"
               :key="index"
               class="ranking-item"
               :class="{ 'top-three': index < 3 }"
               @click="selectRanking(item)"
             >
-              <div class="rank-badge" :class="getRankClass(index)">
-                {{ index + 1 }}
-              </div>
+              <div class="rank-badge" :class="getRankClass(index)">{{ index + 1 }}</div>
               <div class="rank-info">
                 <div class="rank-name">{{ item.groupName }}</div>
-                <div class="rank-meta">
-                  <span>{{ item.avgDistancePerStudent }}米</span>
-                  <span class="separator">·</span>
-                  <span>{{ item.aggregate.avgRunsPerStudent }}次</span>
+                <div class="rank-bar-wrap">
+                  <div class="rank-bar" :style="{ width: getProgressWidth(item.avgDistancePerStudent), background: getRankColor(index) }"></div>
                 </div>
               </div>
-              <div class="rank-progress">
-                <div class="progress-bar" :style="{ width: getProgressWidth(item.avgDistancePerStudent) }"></div>
-              </div>
+              <div class="rank-dist">{{ item.avgDistancePerStudent }}<em>m</em></div>
             </div>
           </div>
         </div>
 
-        <!-- 右上：柱状图 -->
-        <div class="chart-card">
-          <div class="card-header">
-            <h3>跑步距离对比</h3>
+        <!-- 右侧图表区域 -->
+        <div class="charts-right">
+          <!-- 柱状图 -->
+          <div class="chart-card">
+            <div class="card-header">
+              <h3>跑步距离对比</h3>
+              <span class="subtitle">人均(米)</span>
+            </div>
+            <div ref="barChart" style="width:100%;height:220px;"></div>
           </div>
-          <div ref="barChart" class="chart-container"></div>
-        </div>
 
-        <!-- 右下：雷达图 -->
-        <div class="chart-card">
-          <div class="card-header">
-            <h3>综合数据分析</h3>
+          <!-- 雷达图 -->
+          <div class="chart-card">
+            <div class="card-header">
+              <h3>综合数据分析</h3>
+              <span class="subtitle">前5名多维度</span>
+            </div>
+            <div ref="radarChart" style="width:100%;height:220px;"></div>
           </div>
-          <div ref="radarChart" class="chart-container"></div>
         </div>
       </div>
 
-      <!-- 底部详细数据表格 -->
+      <!-- 底部表格 -->
       <div class="detail-section">
         <div class="section-header">
           <h3>详细数据</h3>
-          <el-input 
-            v-model="searchText" 
-            placeholder="搜索..." 
-            size="small"
-            style="width: 200px"
-            clearable
-          />
+          <el-input v-model="searchText" placeholder="搜索..." size="small" style="width:180px" clearable />
         </div>
-        <el-table 
-          :data="filteredTableData" 
-          stripe 
-          style="width: 100%"
-          :row-class-name="tableRowClassName"
-        >
-          <el-table-column type="index" label="排名" width="60" align="center" />
-          <el-table-column 
-            :label="viewMode === 'school' ? '院系名称' : '班级名称'" 
-            prop="groupName"
-            min-width="150"
-          />
-          <el-table-column label="学生人数" prop="studentCount" width="100" align="center" />
-          <el-table-column label="总次数" prop="aggregate.totalRuns" width="100" align="center" />
-          <el-table-column label="总距离(米)" prop="aggregate.totalDistance" width="120" align="center" />
-          <el-table-column label="总时长(秒)" prop="aggregate.totalDuration" width="120" align="center" />
-          <el-table-column label="人均次数" prop="aggregate.avgRunsPerStudent" width="100" align="center">
+        <el-table :data="filteredTableData" stripe size="small" :row-class-name="tableRowClassName">
+          <el-table-column type="index" label="#" width="45" align="center" />
+          <el-table-column :label="viewMode === 'school' ? '院系' : '班级'" prop="groupName" min-width="120" />
+          <el-table-column label="人数" prop="studentCount" width="70" align="center" />
+          <el-table-column label="总次数" prop="aggregate.totalRuns" width="80" align="center" />
+          <el-table-column label="总距离(m)" prop="aggregate.totalDistance" width="100" align="center" />
+          <el-table-column label="总时长(s)" prop="aggregate.totalDuration" width="100" align="center" />
+          <el-table-column label="人均次数" prop="aggregate.avgRunsPerStudent" width="90" align="center">
             <template #default="{ row }">
-              <el-tag size="small">{{ row.aggregate.avgRunsPerStudent }}</el-tag>
+              <el-tag size="small" type="info">{{ row.aggregate.avgRunsPerStudent }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="人均距离(米)" prop="aggregate.avgDistancePerStudent" width="120" align="center">
+          <el-table-column label="人均距离(m)" prop="aggregate.avgDistancePerStudent" width="110" align="center">
             <template #default="{ row }">
-              <el-tag type="success" size="small">{{ row.aggregate.avgDistancePerStudent }}</el-tag>
+              <el-tag size="small" type="success">{{ row.aggregate.avgDistancePerStudent }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="人均时长(秒)" prop="aggregate.avgDurationPerStudent" width="120" align="center">
+          <el-table-column label="人均时长(s)" prop="aggregate.avgDurationPerStudent" width="110" align="center">
             <template #default="{ row }">
-              <el-tag type="info" size="small">{{ row.aggregate.avgDurationPerStudent }}</el-tag>
+              <el-tag size="small">{{ row.aggregate.avgDurationPerStudent }}</el-tag>
             </template>
           </el-table-column>
         </el-table>
@@ -136,107 +115,61 @@
 
 <script>
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
-import { Refresh, Loading, User, Timer, TrendCharts } from '@element-plus/icons-vue'
+import { Refresh, Loading } from '@element-plus/icons-vue'
 import * as echarts from 'echarts'
 import axios from 'axios'
 
 export default {
   name: 'SunshineRun',
-  components: {
-    Refresh,
-    Loading,
-    User,
-    Timer,
-    TrendCharts
-  },
+  components: { Loading },
   setup() {
     const loading = ref(false)
     const viewMode = ref('school')
     const statsData = ref(null)
     const searchText = ref('')
-    
+
     const barChart = ref(null)
     const radarChart = ref(null)
-    
+
     let barChartInstance = null
     let radarChartInstance = null
     let resizeTimer = null
 
-    // API基础URL
-    const API_BASE_URL = 'http://38.207.179.218:8888'
+    const API_BASE_URL = (process.env.VUE_APP_API_URL || 'http://192.168.1.103:8081').replace(/\/$/, '')
 
-    // 顶部统计卡片数据
     const topStats = computed(() => {
       if (!statsData.value) return []
-      
       const { overall, totalStudents } = statsData.value
-      
       return [
-        {
-          label: '总学生数',
-          value: totalStudents || 0,
-          unit: '人',
-          icon: User,
-          color: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-        },
-        {
-          label: '总跑步次数',
-          value: overall?.totalRuns || 0,
-          unit: '次',
-          icon: TrendCharts,
-          color: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
-        },
-        {
-          label: '人均跑步距离',
-          value: overall?.avgDistancePerStudent || 0,
-          unit: '米',
-          icon: TrendCharts,
-          color: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
-        },
-        {
-          label: '人均跑步时长',
-          value: overall?.avgDurationPerStudent || 0,
-          unit: '秒',
-          icon: Timer,
-          color: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
-        }
+        { label: '总学生数', value: totalStudents || 0, unit: '人', icon: '🎓', accent: '#667eea' },
+        { label: '总跑步次数', value: overall?.totalRuns || 0, unit: '次', icon: '🏃', accent: '#f5576c' },
+        { label: '人均跑步距离', value: overall?.avgDistancePerStudent || 0, unit: '米', icon: '📏', accent: '#4facfe' },
+        { label: '人均跑步时长', value: overall?.avgDurationPerStudent || 0, unit: '秒', icon: '⏱', accent: '#43e97b' }
       ]
     })
 
-    // 排名数据
-    const rankings = computed(() => {
-      return statsData.value?.groupRankings || []
-    })
+    const rankings = computed(() => statsData.value?.groupRankings || [])
 
-    // 表格数据
     const filteredTableData = computed(() => {
       const data = statsData.value?.groupStats || []
       if (!searchText.value) return data
-      
-      return data.filter(item => 
-        item.groupName.toLowerCase().includes(searchText.value.toLowerCase())
-      )
+      return data.filter(item => item.groupName.toLowerCase().includes(searchText.value.toLowerCase()))
     })
 
-    // 获取数据
     const fetchData = async () => {
       loading.value = true
       try {
         const token = localStorage.getItem('userToken')
-        const endpoint = viewMode.value === 'school' 
+        const endpoint = viewMode.value === 'school'
           ? '/pe/admin/statistics/sunshine-run/school'
           : '/pe/admin/statistics/sunshine-run/college'
-        
         const response = await axios.get(`${API_BASE_URL}${endpoint}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
+          headers: { 'Authorization': `Bearer ${token}` }
         })
-        
         if (response.data.code === 200) {
           statsData.value = response.data.data
           await nextTick()
-          initCharts()
+          setTimeout(() => { initCharts() }, 50)
         }
       } catch (error) {
         console.error('获取数据失败:', error)
@@ -245,138 +178,103 @@ export default {
       }
     }
 
-    // 初始化图表
     const initCharts = () => {
       initBarChart()
       initRadarChart()
     }
 
-    // 初始化柱状图
     const initBarChart = () => {
       if (!barChart.value || !statsData.value) return
-      
-      if (barChartInstance) {
-        barChartInstance.dispose()
-      }
-      
+      if (barChartInstance) barChartInstance.dispose()
+
       barChartInstance = echarts.init(barChart.value)
-      
-      const top10 = statsData.value.groupRankings.slice(0, 10)
-      
-      const option = {
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'shadow'
-          }
-        },
-        grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
-          top: '10%',
-          containLabel: true
-        },
+      const top8 = (statsData.value.groupRankings || []).slice(0, 8)
+
+      barChartInstance.setOption({
+        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+        grid: { left: 12, right: 48, top: 8, bottom: 4, containLabel: true },
         xAxis: {
           type: 'value',
-          axisLabel: {
-            formatter: '{value}米'
-          }
+          axisLabel: { fontSize: 10, formatter: v => v + 'm' },
+          splitLine: { lineStyle: { color: '#f0f0f0' } }
         },
         yAxis: {
           type: 'category',
-          data: top10.map(item => item.groupName).reverse(),
-          axisLabel: {
-            interval: 0,
-            fontSize: 11
-          }
+          data: top8.map(i => i.groupName).reverse(),
+          axisLabel: { fontSize: 11, interval: 0 }
         },
-        series: [
-          {
-            name: '人均距离',
-            type: 'bar',
-            data: top10.map(item => item.avgDistancePerStudent).reverse(),
-            itemStyle: {
-              color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
-                { offset: 0, color: '#4facfe' },
-                { offset: 1, color: '#00f2fe' }
-              ]),
-              borderRadius: [0, 4, 4, 0]
-            },
-            label: {
-              show: true,
-              position: 'right',
-              formatter: '{c}米'
-            }
-          }
-        ]
-      }
-      
-      barChartInstance.setOption(option)
+        series: [{
+          name: '人均距离',
+          type: 'bar',
+          barMaxWidth: 18,
+          data: top8.map(i => i.avgDistancePerStudent).reverse(),
+          itemStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+              { offset: 0, color: '#4facfe' },
+              { offset: 1, color: '#00f2fe' }
+            ]),
+            borderRadius: [0, 3, 3, 0]
+          },
+          label: { show: true, position: 'right', fontSize: 10, formatter: '{c}m' }
+        }]
+      })
     }
 
-    // 初始化雷达图
     const initRadarChart = () => {
       if (!radarChart.value || !statsData.value) return
-      
-      if (radarChartInstance) {
-        radarChartInstance.dispose()
-      }
-      
+      if (radarChartInstance) radarChartInstance.dispose()
+
       radarChartInstance = echarts.init(radarChart.value)
-      
-      const top5 = statsData.value.groupRankings.slice(0, 5)
-      
-      // 找出最大值用于标准化
-      const maxDistance = Math.max(...top5.map(item => item.aggregate.avgDistancePerStudent))
-      const maxRuns = Math.max(...top5.map(item => item.aggregate.avgRunsPerStudent))
-      const maxDuration = Math.max(...top5.map(item => item.aggregate.avgDurationPerStudent))
-      
-      const option = {
-        tooltip: {
-          trigger: 'item'
-        },
+      const top5 = (statsData.value.groupRankings || []).slice(0, 5)
+      if (!top5.length) return
+
+      const maxDist = Math.max(...top5.map(i => i.aggregate.avgDistancePerStudent)) || 1
+      const maxRuns = Math.max(...top5.map(i => i.aggregate.avgRunsPerStudent)) || 1
+      const maxDur = Math.max(...top5.map(i => i.aggregate.avgDurationPerStudent)) || 1
+
+      const colors = ['#667eea', '#f5576c', '#4facfe', '#43e97b', '#feca57']
+
+      radarChartInstance.setOption({
+        tooltip: { trigger: 'item' },
         legend: {
-          data: top5.map(item => item.groupName),
+          data: top5.map(i => i.groupName),
           bottom: 0,
-          textStyle: {
-            fontSize: 10
-          }
+          textStyle: { fontSize: 10 },
+          itemWidth: 10,
+          itemHeight: 10
         },
         radar: {
           indicator: [
-            { name: '人均距离', max: maxDistance * 1.2 },
+            { name: '人均距离', max: maxDist * 1.2 },
             { name: '人均次数', max: maxRuns * 1.2 },
-            { name: '人均时长', max: maxDuration * 1.2 }
+            { name: '人均时长', max: maxDur * 1.2 }
           ],
-          radius: '60%',
-          splitNumber: 4
+          center: ['50%', '45%'],
+          radius: '52%',
+          splitNumber: 3,
+          axisName: { fontSize: 11 },
+          splitLine: { lineStyle: { color: '#e8eaed' } },
+          splitArea: { areaStyle: { color: ['#fafafa', '#f0f2f5'] } }
         },
-        series: [
-          {
-            type: 'radar',
-            data: top5.map((item, index) => ({
-              value: [
-                item.aggregate.avgDistancePerStudent,
-                item.aggregate.avgRunsPerStudent,
-                item.aggregate.avgDurationPerStudent
-              ],
-              name: item.groupName,
-              itemStyle: {
-                color: ['#667eea', '#f5576c', '#4facfe', '#43e97b', '#feca57'][index]
-              },
-              areaStyle: {
-                opacity: 0.3
-              }
-            }))
-          }
-        ]
-      }
-      
-      radarChartInstance.setOption(option)
+        series: [{
+          type: 'radar',
+          data: top5.map((item, idx) => ({
+            value: [
+              item.aggregate.avgDistancePerStudent,
+              item.aggregate.avgRunsPerStudent,
+              item.aggregate.avgDurationPerStudent
+            ],
+            name: item.groupName,
+            itemStyle: { color: colors[idx] },
+            lineStyle: { color: colors[idx], width: 1.5 },
+            areaStyle: { color: colors[idx], opacity: 0.15 },
+            symbol: 'circle',
+            symbolSize: 4
+          }))
+        }]
+      })
     }
 
-    // 获取排名样式
     const getRankClass = (index) => {
       if (index === 0) return 'rank-first'
       if (index === 1) return 'rank-second'
@@ -384,35 +282,26 @@ export default {
       return ''
     }
 
-    // 获取进度条宽度
+    const getRankColor = (index) => {
+      const colors = ['#ffd700', '#c0c0c0', '#cd7f32']
+      return colors[index] || '#667eea'
+    }
+
     const getProgressWidth = (distance) => {
-      if (!statsData.value?.groupRankings.length) return '0%'
-      const maxDistance = statsData.value.groupRankings[0].avgDistancePerStudent
-      return `${(distance / maxDistance) * 100}%`
+      const list = statsData.value?.groupRankings
+      if (!list?.length) return '0%'
+      const max = list[0].avgDistancePerStudent
+      if (!max) return '0%'
+      return `${Math.min((distance / max) * 100, 100)}%`
     }
 
-    // 选择排名项
-    const selectRanking = (item) => {
-      console.log('选中:', item)
-    }
+    const selectRanking = () => {}
 
-    // 表格行样式
-    const tableRowClassName = ({ rowIndex }) => {
-      if (rowIndex < 3) return 'top-row'
-      return ''
-    }
+    const tableRowClassName = ({ rowIndex }) => rowIndex < 3 ? 'top-row' : ''
 
-    // 切换视图模式
-    const handleViewModeChange = () => {
-      fetchData()
-    }
+    const handleViewModeChange = () => fetchData()
+    const refreshData = () => fetchData()
 
-    // 刷新数据
-    const refreshData = () => {
-      fetchData()
-    }
-
-    // 窗口大小改变处理
     const handleResize = () => {
       if (resizeTimer) clearTimeout(resizeTimer)
       resizeTimer = setTimeout(() => {
@@ -428,30 +317,16 @@ export default {
 
     onUnmounted(() => {
       window.removeEventListener('resize', handleResize)
-      if (barChartInstance) barChartInstance.dispose()
-      if (radarChartInstance) radarChartInstance.dispose()
+      barChartInstance?.dispose()
+      radarChartInstance?.dispose()
     })
 
     return {
-      loading,
-      viewMode,
-      topStats,
-      rankings,
-      filteredTableData,
-      searchText,
-      barChart,
-      radarChart,
-      handleViewModeChange,
-      refreshData,
-      getRankClass,
-      getProgressWidth,
-      selectRanking,
-      tableRowClassName,
-      Refresh,
-      Loading,
-      User,
-      Timer,
-      TrendCharts
+      loading, viewMode, topStats, rankings, filteredTableData, searchText,
+      barChart, radarChart,
+      handleViewModeChange, refreshData,
+      getRankClass, getRankColor, getProgressWidth, selectRanking, tableRowClassName,
+      Refresh, Loading
     }
   }
 }
@@ -459,331 +334,253 @@ export default {
 
 <style scoped>
 .sunshine-run-dashboard {
+  background: var(--bg-body);
+  padding: 14px;
   min-height: 100vh;
-  background: #f5f7fa;
-  padding: 20px;
 }
 
+/* 头部 */
 .dashboard-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
   background: white;
-  padding: 16px 24px;
+  padding: 12px 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin-bottom: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
-
 .dashboard-header h1 {
-  font-size: 24px;
+  font-size: 18px;
   font-weight: 600;
   color: #2c3e50;
   margin: 0;
 }
-
 .header-actions {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
 }
 
+/* 加载 */
 .loading-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 400px;
-  color: #909399;
-}
-
-.loading-container p {
-  margin-top: 16px;
+  height: 300px;
+  color: #00000040;
+  gap: 12px;
   font-size: 14px;
 }
 
 .dashboard-content {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
 }
 
-/* 顶部数据卡片 */
+/* 统计卡片 */
 .stats-cards {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  gap: 10px;
 }
 
 .stat-card {
   background: white;
   border-radius: 8px;
-  padding: 20px;
+  padding: 14px 16px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  transition: box-shadow 0.2s;
 }
-
 .stat-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 3px 12px rgba(0,0,0,0.1);
 }
-
-.stat-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 24px;
-}
-
-.stat-info {
-  flex: 1;
-}
-
 .stat-label {
-  font-size: 13px;
-  color: #909399;
-  margin-bottom: 4px;
+  font-size: 12px;
+  color: #00000040;
+  margin-bottom: 6px;
 }
-
 .stat-value {
-  font-size: 28px;
-  font-weight: 600;
+  font-size: 24px;
+  font-weight: 700;
   color: #2c3e50;
   line-height: 1;
 }
-
 .stat-unit {
   font-size: 12px;
-  color: #909399;
-  margin-top: 4px;
+  font-weight: 400;
+  color: #00000040;
+  margin-left: 3px;
+}
+.stat-trend {
+  font-size: 28px;
+  opacity: 0.7;
 }
 
-/* 图表网格 */
-.charts-grid {
+/* 中部区域 */
+.charts-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 16px;
-  height: 600px;
+  grid-template-columns: 320px 1fr;
+  gap: 12px;
+  align-items: start;
 }
 
-.ranking-card {
-  grid-row: span 2;
+.charts-right {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .chart-card {
   background: white;
   border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  display: flex;
-  flex-direction: column;
+  padding: 14px 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
-
 .card-header h3 {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: #2c3e50;
   margin: 0;
 }
-
 .subtitle {
-  font-size: 12px;
-  color: #909399;
+  font-size: 11px;
+  color: #c0c4cc;
 }
 
 /* 排名列表 */
+.ranking-card {
+  max-height: 480px;
+}
 .ranking-list {
-  flex: 1;
   overflow-y: auto;
+  max-height: 420px;
+}
+.ranking-list::-webkit-scrollbar {
+  width: 4px;
+}
+.ranking-list::-webkit-scrollbar-thumb {
+  background: #e4e7ed;
+  border-radius: 2px;
 }
 
 .ranking-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px;
+  gap: 10px;
+  padding: 8px 6px;
   border-radius: 6px;
-  margin-bottom: 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  position: relative;
-  overflow: hidden;
+  transition: background 0.15s;
 }
-
 .ranking-item:hover {
-  background: #f5f7fa;
-  transform: translateX(4px);
+  background: var(--bg-body);
 }
-
 .ranking-item.top-three {
-  background: linear-gradient(90deg, rgba(102, 126, 234, 0.05) 0%, transparent 100%);
+  background: linear-gradient(90deg, rgba(102,126,234,0.04) 0%, transparent 100%);
 }
 
 .rank-badge {
-  width: 32px;
-  height: 32px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
-  font-size: 14px;
-  background: #e4e7ed;
-  color: #606266;
+  font-weight: 700;
+  font-size: 12px;
+  background: #f0f2f5;
+  color: #00000040;
   flex-shrink: 0;
 }
-
-.rank-badge.rank-first {
-  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-  color: white;
-  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
-}
-
-.rank-badge.rank-second {
-  background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%);
-  color: white;
-  box-shadow: 0 2px 8px rgba(192, 192, 192, 0.4);
-}
-
-.rank-badge.rank-third {
-  background: linear-gradient(135deg, #cd7f32 0%, #e8a87c 100%);
-  color: white;
-  box-shadow: 0 2px 8px rgba(205, 127, 50, 0.4);
-}
+.rank-badge.rank-first  { background: #ffd700; color: #fff; }
+.rank-badge.rank-second { background: #b0b0b0; color: #fff; }
+.rank-badge.rank-third  { background: #cd7f32; color: #fff; }
 
 .rank-info {
   flex: 1;
   min-width: 0;
 }
-
 .rank-name {
-  font-size: 14px;
-  font-weight: 500;
-  color: #2c3e50;
+  font-size: 13px;
+  color: #000000d9;
   margin-bottom: 4px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
-.rank-meta {
-  font-size: 12px;
-  color: #909399;
-}
-
-.separator {
-  margin: 0 4px;
-}
-
-.rank-progress {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
+.rank-bar-wrap {
+  height: 4px;
   background: #f0f2f5;
+  border-radius: 2px;
+  overflow: hidden;
 }
-
-.progress-bar {
+.rank-bar {
   height: 100%;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-  transition: width 0.3s ease;
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+.rank-dist {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2c3e50;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.rank-dist em {
+  font-style: normal;
+  font-size: 10px;
+  color: #00000040;
+  margin-left: 1px;
 }
 
-/* 图表容器 */
-.chart-container {
-  flex: 1;
-  min-height: 0;
-}
-
-/* 详细数据部分 */
+/* 表格 */
 .detail-section {
   background: white;
   border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  padding: 14px 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
-
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
-
 .section-header h3 {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: #2c3e50;
   margin: 0;
 }
 
-/* 表格样式 */
-:deep(.el-table) {
-  font-size: 13px;
+:deep(.el-table) { font-size: 12px; }
+:deep(.el-table th.el-table__cell) {
+  background: #f8f9fa;
+  color: #00000073;
+  font-weight: 600;
+  padding: 6px 0;
 }
-
-:deep(.el-table .top-row) {
-  background: #f0f9ff !important;
+:deep(.el-table td.el-table__cell) { padding: 5px 0; }
+:deep(.el-table .top-row td.el-table__cell) {
+  background: #f0f9ff;
   font-weight: 500;
 }
 
-:deep(.el-table th) {
-  background: #f5f7fa;
-  color: #606266;
-  font-weight: 600;
+@media (max-width: 1100px) {
+  .charts-row { grid-template-columns: 1fr; }
+  .stats-cards { grid-template-columns: repeat(2, 1fr); }
 }
-
-/* 响应式 */
-@media (max-width: 1400px) {
-  .stats-cards {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .charts-grid {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
-    height: auto;
-  }
-  
-  .ranking-card {
-    grid-row: span 1;
-    height: 400px;
-  }
-  
-  .chart-card {
-    height: 350px;
-  }
-}
-
-@media (max-width: 768px) {
-  .dashboard-header {
-    flex-direction: column;
-    gap: 12px;
-    align-items: flex-start;
-  }
-  
-  .stats-cards {
-    grid-template-columns: 1fr;
-  }
-  
-  .stat-card {
-    padding: 16px;
-  }
-}
-</style> 
+</style>

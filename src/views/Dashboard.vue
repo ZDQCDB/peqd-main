@@ -6,43 +6,40 @@
         <div class="header-left">
           <div class="logo-section">
             <div class="logo-icon">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="28">
+                <path d="M20 4L6 11v9l14 8 14-8v-9L20 4z" stroke="white" stroke-width="1.8" stroke-linejoin="round" fill="none"/>
+                <path d="M6 20l14 8 14-8" stroke="white" stroke-width="1.8" stroke-linejoin="round" fill="none"/>
+                <path d="M6 25l14 8 14-8" stroke="white" stroke-width="1.8" stroke-linejoin="round" fill="none"/>
               </svg>
             </div>
             <div class="logo-text">
               <h1 class="system-title">校园体育管理系统</h1>
-              <span class="system-subtitle">Campus Sports Management</span>
             </div>
           </div>
         </div>
         
         <div class="header-right">
           <div class="user-section">
-            <div class="welcome-text">
-              <span class="greeting">欢迎回来</span>
-              <span class="username">{{ username }}</span>
-            </div>
+            <span class="user-name-text">{{ username }}</span>
             <div class="user-avatar">
               <span>{{ username.charAt(0) }}</span>
             </div>
             <div class="user-menu">
               <button class="menu-item" @click="navigateTo('/profile')">
-                <span class="menu-icon">👤</span>
+                <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.8"/></svg>
                 个人中心
               </button>
               <button 
                 v-if="canAccessAdminManagement"
-                class="menu-item admin-item" 
+                class="menu-item" 
                 @click="navigateTo('/admin')"
               >
-                <span class="menu-icon">⚙️</span>
+                <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
                 管理员管理
               </button>
-              <button class="menu-item logout-item" @click="logout">
-                <span class="menu-icon">🚪</span>
+              <div class="menu-divider"></div>
+              <button class="menu-item menu-item-danger" @click="logout">
+                <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 退出登录
               </button>
             </div>
@@ -56,33 +53,25 @@
       <div class="content-container">
         <!-- 欢迎横幅 -->
         <section class="hero-section">
-          <div class="hero-content">
+          <div class="hero-inner">
             <div class="hero-text">
-              <h2 class="hero-title">欢迎使用体育管理系统</h2>
-              <p class="hero-subtitle">专业的校园体育教学与管理平台，助力提升体育教育质量</p>
-              <div class="hero-stats">
-                <div class="stat-item">
-                  <span class="stat-number">9</span>
-                  <span class="stat-label">功能模块</span>
-                </div>
-                <div class="stat-divider"></div>
-                <div class="stat-item">
-                  <span class="stat-number">365</span>
-                  <span class="stat-label">天全年服务</span>
-                </div>
-                <div class="stat-divider"></div>
-                <div class="stat-item">
-                  <span class="stat-number">100%</span>
-                  <span class="stat-label">数据安全</span>
-                </div>
-              </div>
+              <h2 class="hero-title">欢迎使用，{{ username }}</h2>
+              <p class="hero-subtitle">校园体育教学与管理平台，请从下方功能模块开始使用</p>
             </div>
-            <div class="hero-visual">
-              <div class="floating-elements">
-                <div class="float-element element-1">📚</div>
-                <div class="float-element element-2">💪</div>
-                <div class="float-element element-3">🏃‍♂️</div>
-                <div class="float-element element-4">🏆</div>
+            <div class="hero-stats">
+              <div class="stat-item">
+                <span class="stat-number">9</span>
+                <span class="stat-label">功能模块</span>
+              </div>
+              <div class="stat-divider"></div>
+              <div class="stat-item">
+                <span class="stat-number">365</span>
+                <span class="stat-label">天全年服务</span>
+              </div>
+              <div class="stat-divider"></div>
+              <div class="stat-item">
+                <span class="stat-number">100%</span>
+                <span class="stat-label">数据安全</span>
               </div>
             </div>
           </div>
@@ -92,207 +81,212 @@
         <section class="modules-section">
           <div class="section-header">
             <h3 class="section-title">功能模块</h3>
-            <p class="section-subtitle">选择下面的模块开始使用系统</p>
+            <span class="section-subtitle">选择下方模块开始使用</span>
           </div>
           
           <div class="modules-grid">
-            <div class="module-card animate-slide-up" @click="navigateTo('/teaching')" style="animation-delay: 0.1s">
+            <div class="module-card" @click="navigateTo('/teaching')">
               <div class="module-header">
                 <div class="module-icon teaching">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H6.5A2.5 2.5 0 0 0 4 4.5v15Z" stroke="currentColor" stroke-width="2"/>
-                    <path d="M9 10h6M9 14h6M9 6h6" stroke="currentColor" stroke-width="2"/>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H6.5A2.5 2.5 0 0 0 4 4.5v15Z"/>
+                    <path d="M9 10h6M9 14h6M9 6h6"/>
                   </svg>
                 </div>
-                <span class="module-badge">教学</span>
+                <h4 class="module-title">教学管理</h4>
               </div>
               <div class="module-content">
-                <h4 class="module-title">教学管理</h4>
                 <p class="module-description">教学周历、教案管理、签到记录、视频学习等完整教学流程</p>
               </div>
               <div class="module-footer">
-                <span class="module-action">进入模块 →</span>
+                <span class="module-action">进入模块
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </span>
               </div>
             </div>
 
-            <div class="module-card animate-slide-up" @click="navigateTo('/group')" style="animation-delay: 0.2s">
+            <div class="module-card" @click="navigateTo('/group')">
               <div class="module-header">
                 <div class="module-icon group">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/>
-                    <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2"/>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
                   </svg>
                 </div>
-                <span class="module-badge">群体</span>
+                <h4 class="module-title">群体活动</h4>
               </div>
               <div class="module-content">
-                <h4 class="module-title">群体活动</h4>
                 <p class="module-description">PE校园、早操管理、课外活动、阳光跑等群体活动组织</p>
               </div>
               <div class="module-footer">
-                <span class="module-action">进入模块 →</span>
+                <span class="module-action">进入模块
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </span>
               </div>
             </div>
 
-            <div class="module-card animate-slide-up" @click="navigateTo('/training')" style="animation-delay: 0.3s">
+            <div class="module-card" @click="navigateTo('/training')">
               <div class="module-header">
                 <div class="module-icon training">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M7.5 12.5l5 5L22 8" stroke="currentColor" stroke-width="2"/>
-                    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" stroke="currentColor" stroke-width="2"/>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M7.5 12.5l5 5L22 8"/>
+                    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
                   </svg>
                 </div>
-                <span class="module-badge">训练</span>
+                <h4 class="module-title">训练管理</h4>
               </div>
               <div class="module-content">
-                <h4 class="module-title">训练管理</h4>
                 <p class="module-description">训练计划制定、完成情况统计、PE分数管理等</p>
               </div>
               <div class="module-footer">
-                <span class="module-action">进入模块 →</span>
+                <span class="module-action">进入模块
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </span>
               </div>
             </div>
 
-            <div class="module-card animate-slide-up" @click="redirectToTice" style="animation-delay: 0.4s">
+            <div class="module-card" @click="redirectToTice">
               <div class="module-header">
                 <div class="module-icon test">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M3 3v18h18" stroke="currentColor" stroke-width="2"/>
-                    <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3" stroke="currentColor" stroke-width="2"/>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M3 3v18h18"/>
+                    <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/>
                   </svg>
                 </div>
-                <span class="module-badge">体测</span>
+                <h4 class="module-title">体质测试</h4>
               </div>
               <div class="module-content">
-                <h4 class="module-title">体质测试</h4>
                 <p class="module-description">体质测试管理、成绩录入、结果分析查询</p>
               </div>
               <div class="module-footer">
-                <span class="module-action">进入模块 →</span>
+                <span class="module-action">进入模块
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </span>
               </div>
             </div>
 
-            <div class="module-card animate-slide-up" @click="navigateTo('/equipment')" style="animation-delay: 0.5s">
+            <div class="module-card" @click="navigateTo('/equipment')">
               <div class="module-header">
                 <div class="module-icon equipment">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
-                    <path d="M9 3v18M15 3v18M3 9h18M3 15h18" stroke="currentColor" stroke-width="2"/>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <path d="M9 3v18M15 3v18M3 9h18M3 15h18"/>
                   </svg>
                 </div>
-                <span class="module-badge">器材</span>
+                <h4 class="module-title">器材管理</h4>
               </div>
               <div class="module-content">
-                <h4 class="module-title">器材管理</h4>
                 <p class="module-description">体育器材库存管理、借用申请、归还记录</p>
               </div>
               <div class="module-footer">
-                <span class="module-action">进入模块 →</span>
+                <span class="module-action">进入模块
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </span>
               </div>
             </div>
 
-            <div class="module-card animate-slide-up" @click="navigateTo('/venue')" style="animation-delay: 0.6s">
+            <div class="module-card" @click="navigateTo('/venue')">
               <div class="module-header">
                 <div class="module-icon venue">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" stroke="currentColor" stroke-width="2"/>
-                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                    <polyline points="9 22 9 12 15 12 15 22"/>
                   </svg>
                 </div>
-                <span class="module-badge">场馆</span>
+                <h4 class="module-title">场馆管理</h4>
               </div>
               <div class="module-content">
-                <h4 class="module-title">场馆管理</h4>
                 <p class="module-description">场馆预约、使用安排、设施维护管理</p>
               </div>
               <div class="module-footer">
-                <span class="module-action">进入模块 →</span>
+                <span class="module-action">进入模块
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </span>
               </div>
             </div>
 
-            <div class="module-card animate-slide-up" @click="navigateTo('/listening')" style="animation-delay: 0.7s">
+            <div class="module-card" @click="navigateTo('/listening')">
               <div class="module-header">
                 <div class="module-icon listening">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" stroke="currentColor" stroke-width="2"/>
-                    <path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8" stroke="currentColor" stroke-width="2"/>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
                   </svg>
                 </div>
-                <span class="module-badge">听课</span>
+                <h4 class="module-title">听课管理</h4>
               </div>
               <div class="module-content">
-                <h4 class="module-title">听课管理</h4>
                 <p class="module-description">听课记录、教学评价、课堂质量监控</p>
               </div>
               <div class="module-footer">
-                <span class="module-action">进入模块 →</span>
+                <span class="module-action">进入模块
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </span>
               </div>
             </div>
 
-            <div class="module-card animate-slide-up" @click="goToYouzanHealth" style="animation-delay: 0.8s">
+            <div class="module-card" @click="goToYouzanHealth">
               <div class="module-header">
                 <div class="module-icon health">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="currentColor" stroke-width="2"/>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
                   </svg>
                 </div>
-                <span class="module-badge">健康</span>
+                <h4 class="module-title">健康讲堂</h4>
               </div>
               <div class="module-content">
-                <h4 class="module-title">健康讲堂</h4>
                 <p class="module-description">健康知识普及、讲座安排、保健指导</p>
               </div>
               <div class="module-footer">
-                <span class="module-action">进入模块 →</span>
+                <span class="module-action">进入模块
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </span>
               </div>
             </div>
 
-            <div class="module-card animate-slide-up" @click="navigateTo('/sports-equipment')" style="animation-delay: 0.9s">
+            <div class="module-card" @click="navigateTo('/sports-equipment')">
               <div class="module-header">
                 <div class="module-icon sports">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="8" cy="21" r="1" stroke="currentColor" stroke-width="2"/>
-                    <circle cx="19" cy="21" r="1" stroke="currentColor" stroke-width="2"/>
-                    <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" stroke="currentColor" stroke-width="2"/>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <circle cx="8" cy="21" r="1"/>
+                    <circle cx="19" cy="21" r="1"/>
+                    <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
                   </svg>
                 </div>
-                <span class="module-badge">装备</span>
+                <h4 class="module-title">运动装备</h4>
               </div>
               <div class="module-content">
-                <h4 class="module-title">运动装备</h4>
                 <p class="module-description">装备共享平台、商城购买、用品管理</p>
               </div>
               <div class="module-footer">
-                <span class="module-action">进入模块 →</span>
+                <span class="module-action">进入模块
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </span>
               </div>
             </div>
 
             <!-- 统计模块 (仅管理员可见) -->
-            <div 
-              v-if="canAccessStatistics"
-              class="module-card animate-slide-up" 
-              @click="navigateTo('/statistics')" 
-              style="animation-delay: 1.0s"
-            >
+            <div v-if="canAccessStatistics" class="module-card" @click="navigateTo('/statistics')">
               <div class="module-header">
                 <div class="module-icon statistics">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M3 3v18h18" stroke="currentColor" stroke-width="2"/>
-                    <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3" stroke="currentColor" stroke-width="2"/>
-                    <circle cx="18" cy="8" r="2" stroke="currentColor" stroke-width="2"/>
-                    <circle cx="11" cy="13" r="2" stroke="currentColor" stroke-width="2"/>
-                    <circle cx="7" cy="17" r="2" stroke="currentColor" stroke-width="2"/>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M3 3v18h18"/>
+                    <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/>
+                    <circle cx="18" cy="8" r="2"/>
+                    <circle cx="11" cy="13" r="2"/>
+                    <circle cx="7" cy="17" r="2"/>
                   </svg>
                 </div>
-                <span class="module-badge">统计</span>
+                <h4 class="module-title">PE积分统计</h4>
               </div>
               <div class="module-content">
-                <h4 class="module-title">PE积分统计</h4>
                 <p class="module-description">PE积分指标设置、达标率统计、排名分析</p>
               </div>
               <div class="module-footer">
-                <span class="module-action">进入模块 →</span>
+                <span class="module-action">进入模块
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </span>
               </div>
             </div>
           </div>
@@ -300,9 +294,12 @@
       </div>
     </main>
 
-    <!-- 调试面板 (可选显示) -->
+    <!-- 调试面板 -->
     <div v-if="showDebugPanel" class="debug-panel">
-      <h4>权限调试信息</h4>
+      <div class="debug-panel-header">
+        <h4>权限调试信息</h4>
+        <button @click="showDebugPanel = false" class="debug-close">×</button>
+      </div>
       <div class="debug-info">
         <p><strong>当前用户角色：</strong> {{ currentUserRole || '未设置' }}</p>
         <p><strong>权限管理器已初始化：</strong> {{ permissionManagerInitialized ? '是' : '否' }}</p>
@@ -311,12 +308,10 @@
         <p><strong>本地存储的userType：</strong> {{ localUserType || '未设置' }}</p>
       </div>
       <button @click="refreshPermissionStatus" class="btn btn-primary btn-small">刷新权限状态</button>
-      <button @click="showDebugPanel = false" class="btn btn-secondary btn-small">关闭调试</button>
     </div>
     
-    <!-- 调试面板切换按钮 -->
-    <button v-if="!showDebugPanel" @click="showDebugPanel = true" class="debug-toggle">
-      🐛
+    <button v-if="!showDebugPanel" @click="showDebugPanel = true" class="debug-toggle" title="调试信息">
+      <svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" fill="currentColor"/></svg>
     </button>
   </div>
 </template>
@@ -409,17 +404,15 @@ export default {
 </script>
 
 <style scoped>
-/* 主容器 */
 .dashboard {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: var(--bg-body);
 }
 
 /* 顶部导航栏 */
 .dashboard-header {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  background: #ffffff;
+  border-bottom: 1px solid var(--border-light);
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -427,13 +420,13 @@ export default {
 }
 
 .header-container {
-  max-width: 1600px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 var(--spacing-xl);
+  padding: 0 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 80px;
+  height: var(--header-height);
 }
 
 .header-left {
@@ -444,24 +437,18 @@ export default {
 .logo-section {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
+  gap: 12px;
 }
 
 .logo-icon {
-  width: 50px;
-  height: 50px;
-  background: var(--primary-gradient);
-  border-radius: var(--radius-md);
+  width: 36px;
+  height: 36px;
+  background: #1677ff;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--shadow-md);
-}
-
-.logo-icon svg {
-  width: 28px;
-  height: 28px;
-  color: white;
+  flex-shrink: 0;
 }
 
 .logo-text {
@@ -470,22 +457,11 @@ export default {
 }
 
 .system-title {
-  font-size: 24px;
-  font-weight: var(--font-weight-bold);
-  color: var(--text-primary);
+  font-size: 17px;
+  font-weight: 600;
+  color: #000000d9;
   margin: 0;
-  background: var(--primary-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.system-subtitle {
-  font-size: 12px;
-  color: var(--text-secondary);
-  font-weight: var(--font-weight-medium);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .header-right {
@@ -496,61 +472,43 @@ export default {
 .user-section {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
+  gap: 10px;
   position: relative;
+  cursor: pointer;
 }
 
-.welcome-text {
-  display: flex;
-  flex-direction: column;
-  text-align: right;
-}
-
-.greeting {
-  font-size: 12px;
-  color: var(--text-secondary);
-  font-weight: var(--font-weight-medium);
-}
-
-.username {
-  font-size: 16px;
-  color: var(--text-primary);
-  font-weight: var(--font-weight-semibold);
+.user-name-text {
+  font-size: 14px;
+  color: #000000d9;
 }
 
 .user-avatar {
-  width: 45px;
-  height: 45px;
-  background: var(--primary-gradient);
+  width: 32px;
+  height: 32px;
+  background: #1677ff;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-weight: var(--font-weight-bold);
-  font-size: 18px;
-  box-shadow: var(--shadow-md);
-  cursor: pointer;
-  transition: all var(--transition-normal);
-}
-
-.user-avatar:hover {
-  transform: scale(1.05);
+  font-weight: 600;
+  font-size: 13px;
+  flex-shrink: 0;
 }
 
 .user-menu {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 8px);
   right: 0;
-  background: var(--bg-secondary);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
-  padding: var(--spacing-sm);
-  min-width: 180px;
+  background: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.06);
+  padding: 4px;
+  min-width: 160px;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-10px);
-  transition: all var(--transition-normal);
+  transform: translateY(-4px);
+  transition: opacity 0.15s, transform 0.15s, visibility 0.15s;
 }
 
 .user-section:hover .user-menu {
@@ -562,564 +520,323 @@ export default {
 .menu-item {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: 8px;
   width: 100%;
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: 7px 12px;
   border: none;
   background: transparent;
-  border-radius: var(--radius-sm);
+  border-radius: 4px;
   font-size: 14px;
-  color: var(--text-primary);
+  color: #000000d9;
   cursor: pointer;
-  transition: all var(--transition-normal);
+  transition: background 0.15s;
   text-align: left;
+  font-family: inherit;
 }
 
 .menu-item:hover {
-  background: var(--bg-surface);
-  color: var(--primary-color);
+  background: #f5f5f5;
+  color: #1677ff;
 }
 
-.menu-icon {
-  font-size: 16px;
+.menu-item-danger:hover {
+  background: #fff2f0;
+  color: #ff4d4f;
 }
 
-.admin-item:hover {
-  background: rgba(255, 107, 53, 0.1);
-  color: var(--accent-color);
-}
-
-.logout-item:hover {
-  background: rgba(211, 47, 47, 0.1);
-  color: var(--danger-color);
+.menu-divider {
+  height: 1px;
+  background: #f0f0f0;
+  margin: 4px 8px;
 }
 
 /* 主内容区域 */
 .main-content {
-  padding: var(--spacing-xl) 0;
+  padding: 24px 0;
 }
 
 .content-container {
-  max-width: 1600px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 var(--spacing-xl);
+  padding: 0 24px;
 }
 
-/* 英雄区域 */
+/* 欢迎横幅 */
 .hero-section {
-  margin-bottom: var(--spacing-2xl);
-  background: var(--bg-secondary);
-  border-radius: var(--radius-xl);
-  padding: var(--spacing-2xl);
-  box-shadow: var(--shadow-lg);
-  position: relative;
-  overflow: hidden;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-card);
 }
 
-.hero-section::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--primary-gradient);
-  opacity: 0.05;
-  border-radius: var(--radius-xl);
-}
-
-.hero-content {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: var(--spacing-2xl);
+.hero-inner {
+  display: flex;
   align-items: center;
-  position: relative;
-  z-index: 2;
-}
-
-.hero-text {
-  max-width: 600px;
+  justify-content: space-between;
+  gap: 24px;
 }
 
 .hero-title {
-  font-size: 42px;
-  font-weight: var(--font-weight-bold);
-  color: var(--text-primary);
-  margin-bottom: var(--spacing-md);
-  line-height: 1.2;
-  background: var(--primary-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-size: 20px;
+  font-weight: 600;
+  color: #000000d9;
+  margin-bottom: 4px;
 }
 
 .hero-subtitle {
-  font-size: 18px;
-  color: var(--text-secondary);
-  line-height: 1.6;
-  margin-bottom: var(--spacing-xl);
+  font-size: 14px;
+  color: #00000073;
 }
 
 .hero-stats {
   display: flex;
   align-items: center;
-  gap: var(--spacing-lg);
+  gap: 24px;
+  flex-shrink: 0;
 }
 
 .stat-item {
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-width: 60px;
 }
 
 .stat-number {
-  font-size: 28px;
-  font-weight: var(--font-weight-bold);
-  color: var(--primary-color);
+  font-size: 22px;
+  font-weight: 700;
+  color: #1677ff;
   line-height: 1;
 }
 
 .stat-label {
   font-size: 12px;
-  color: var(--text-secondary);
-  font-weight: var(--font-weight-medium);
-  margin-top: var(--spacing-xs);
+  color: #00000073;
+  margin-top: 4px;
 }
 
 .stat-divider {
   width: 1px;
-  height: 40px;
-  background: var(--divider);
-}
-
-.hero-visual {
-  position: relative;
-  width: 200px;
-  height: 200px;
-}
-
-.floating-elements {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-.float-element {
-  position: absolute;
-  width: 60px;
-  height: 60px;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  box-shadow: var(--shadow-md);
-  animation: heroFloat 6s ease-in-out infinite;
-}
-
-.element-1 {
-  top: 20%;
-  left: 20%;
-  animation-delay: 0s;
-}
-
-.element-2 {
-  top: 10%;
-  right: 10%;
-  animation-delay: 1.5s;
-}
-
-.element-3 {
-  bottom: 30%;
-  left: 10%;
-  animation-delay: 3s;
-}
-
-.element-4 {
-  bottom: 10%;
-  right: 20%;
-  animation-delay: 4.5s;
-}
-
-@keyframes heroFloat {
-  0%, 100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-15px) rotate(180deg);
-  }
+  height: 36px;
+  background: var(--border-light);
 }
 
 /* 模块区域 */
 .modules-section {
-  margin-bottom: var(--spacing-2xl);
+  margin-bottom: 24px;
 }
 
 .section-header {
-  text-align: center;
-  margin-bottom: var(--spacing-2xl);
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .section-title {
-  font-size: 36px;
-  font-weight: var(--font-weight-bold);
-  color: var(--text-primary);
-  margin-bottom: var(--spacing-sm);
+  font-size: 16px;
+  font-weight: 600;
+  color: #000000d9;
 }
 
 .section-subtitle {
-  font-size: 16px;
-  color: var(--text-secondary);
-  line-height: 1.6;
+  font-size: 13px;
+  color: #00000073;
 }
 
 .modules-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-  gap: var(--spacing-xl);
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
 }
 
 .module-card {
-  background: var(--bg-secondary);
-  border-radius: var(--radius-lg);
+  background: #ffffff;
+  border-radius: 8px;
   padding: 0;
   cursor: pointer;
-  transition: all var(--transition-normal);
-  box-shadow: var(--shadow-md);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: box-shadow 0.2s, border-color 0.2s;
+  border: 1px solid var(--border-light);
   overflow: hidden;
-  position: relative;
-}
-
-.module-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: var(--primary-gradient);
-  transform: scaleX(0);
-  transition: transform var(--transition-normal);
 }
 
 .module-card:hover {
-  transform: translateY(-8px);
-  box-shadow: var(--shadow-xl);
-}
-
-.module-card:hover::before {
-  transform: scaleX(1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border-color: #91caff;
 }
 
 .module-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-xl) var(--spacing-xl) var(--spacing-lg);
+  gap: 14px;
+  padding: 20px 20px 16px;
 }
 
 .module-icon {
-  width: 60px;
-  height: 60px;
-  border-radius: var(--radius-md);
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.module-icon::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  opacity: 0.1;
-  border-radius: var(--radius-md);
+  flex-shrink: 0;
 }
 
 .module-icon svg {
-  width: 28px;
-  height: 28px;
-  color: white;
-  z-index: 2;
+  width: 22px;
+  height: 22px;
 }
 
-.module-icon.teaching {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
+.module-icon.teaching  { background: #e6f4ff; color: #1677ff; }
+.module-icon.group     { background: #fff0f6; color: #c41d7f; }
+.module-icon.training  { background: #e6fffb; color: #08979c; }
+.module-icon.test      { background: #f6ffed; color: #389e0d; }
+.module-icon.equipment { background: #fff7e6; color: #d46b08; }
+.module-icon.venue     { background: #f0f5ff; color: #2f54eb; }
+.module-icon.listening { background: #fff1f0; color: #cf1322; }
+.module-icon.health    { background: #f9f0ff; color: #722ed1; }
+.module-icon.sports    { background: #fffbe6; color: #d4b106; }
+.module-icon.statistics{ background: #e6f4ff; color: #0958d9; }
 
-.module-icon.group {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-}
-
-.module-icon.training {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-}
-
-.module-icon.test {
-  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-}
-
-.module-icon.equipment {
-  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-}
-
-.module-icon.venue {
-  background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-}
-
-.module-icon.listening {
-  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
-}
-
-.module-icon.health {
-  background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
-}
-
-.module-icon.sports {
-  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-}
-
-.module-icon.statistics {
-  background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
-}
-
-.module-badge {
-  background: var(--primary-color);
-  color: white;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--radius-sm);
-  font-size: 12px;
-  font-weight: var(--font-weight-semibold);
+.module-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: #000000d9;
 }
 
 .module-content {
-  padding: 0 var(--spacing-xl) var(--spacing-lg);
-}
-
-.module-title {
-  font-size: 20px;
-  font-weight: var(--font-weight-semibold);
-  color: var(--text-primary);
-  margin-bottom: var(--spacing-sm);
+  padding: 0 20px 16px;
 }
 
 .module-description {
-  font-size: 14px;
-  color: var(--text-secondary);
-  line-height: 1.5;
+  font-size: 13px;
+  color: #00000073;
+  line-height: 1.6;
 }
 
 .module-footer {
-  padding: var(--spacing-lg) var(--spacing-xl);
-  border-top: 1px solid var(--divider);
-  text-align: right;
+  padding: 12px 20px;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 .module-action {
-  font-size: 14px;
-  color: var(--primary-color);
-  font-weight: var(--font-weight-medium);
-  transition: all var(--transition-normal);
+  font-size: 13px;
+  color: #1677ff;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .module-card:hover .module-action {
-  color: var(--accent-color);
+  color: #4096ff;
 }
 
 /* 调试面板 */
 .debug-panel {
   position: fixed;
-  bottom: var(--spacing-lg);
-  right: var(--spacing-lg);
-  background: var(--bg-secondary);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-lg);
-  box-shadow: var(--shadow-xl);
-  border: 1px solid var(--divider);
-  max-width: 400px;
+  bottom: 24px;
+  right: 24px;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  border: 1px solid var(--border-light);
+  max-width: 360px;
   z-index: 1001;
 }
 
+.debug-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
 .debug-panel h4 {
-  margin: 0 0 var(--spacing-md) 0;
-  color: var(--text-primary);
-  font-size: 16px;
+  margin: 0;
+  color: #000000d9;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.debug-close {
+  border: none;
+  background: none;
+  color: #00000073;
+  font-size: 18px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
 }
 
 .debug-info {
-  margin-bottom: var(--spacing-md);
+  margin-bottom: 12px;
 }
 
 .debug-info p {
-  margin: var(--spacing-xs) 0;
+  margin: 4px 0;
   font-size: 12px;
-  color: var(--text-secondary);
+  color: #00000073;
 }
 
 .debug-toggle {
   position: fixed;
-  bottom: var(--spacing-lg);
-  right: var(--spacing-lg);
-  width: 50px;
-  height: 50px;
+  bottom: 24px;
+  right: 24px;
+  width: 40px;
+  height: 40px;
   border: none;
   border-radius: 50%;
-  background: var(--primary-gradient);
+  background: #1677ff;
   color: white;
-  font-size: 20px;
   cursor: pointer;
-  box-shadow: var(--shadow-lg);
-  transition: all var(--transition-normal);
+  box-shadow: 0 4px 12px rgba(22, 119, 255, 0.4);
+  transition: background 0.15s;
   z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .debug-toggle:hover {
-  transform: scale(1.1);
+  background: #4096ff;
 }
 
-/* 响应式设计 */
+/* 响应式 */
 @media (max-width: 1024px) {
-  .header-container {
-    padding: 0 var(--spacing-lg);
+  .hero-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
   }
-  
-  .content-container {
-    padding: 0 var(--spacing-lg);
-  }
-  
-  .hero-content {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-  
-  .hero-title {
-    font-size: 32px;
-  }
-  
-  .modules-grid {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: var(--spacing-lg);
-  }
-  
-  .hero-visual {
-    margin: 0 auto;
+  .hero-stats {
+    align-self: stretch;
+    justify-content: space-between;
   }
 }
 
 @media (max-width: 768px) {
-  .header-container {
-    height: 70px;
-    padding: 0 var(--spacing-md);
-  }
-  
-  .content-container {
-    padding: 0 var(--spacing-md);
-  }
-  
-  .logo-section {
-    gap: var(--spacing-sm);
-  }
-  
-  .logo-icon {
-    width: 40px;
-    height: 40px;
-  }
-  
-  .logo-icon svg {
-    width: 20px;
-    height: 20px;
-  }
-  
-  .system-title {
-    font-size: 18px;
-  }
-  
-  .system-subtitle {
-    font-size: 10px;
-  }
-  
-  .welcome-text {
-    display: none;
-  }
-  
-  .user-avatar {
-    width: 35px;
-    height: 35px;
-    font-size: 14px;
-  }
-  
-  .hero-section {
-    padding: var(--spacing-lg);
-  }
-  
-  .hero-title {
-    font-size: 24px;
-  }
-  
-  .hero-subtitle {
-    font-size: 16px;
-  }
-  
-  .hero-stats {
-    flex-direction: column;
-    gap: var(--spacing-md);
-  }
-  
-  .stat-divider {
-    width: 40px;
-    height: 1px;
-  }
-  
-  .section-title {
-    font-size: 28px;
-  }
-  
-  .modules-grid {
-    grid-template-columns: 1fr;
-  }
-  
+  .content-container { padding: 0 16px; }
+  .main-content { padding: 16px 0; }
+  .system-title { font-size: 15px; }
+  .user-name-text { display: none; }
+  .modules-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
   .user-menu {
     position: fixed;
-    top: 70px;
-    right: var(--spacing-md);
-    left: auto;
-    min-width: auto;
-    width: 200px;
+    top: calc(var(--header-height) + 4px);
+    right: 16px;
   }
 }
 
 @media (max-width: 480px) {
-  .main-content {
-    padding: var(--spacing-lg) 0;
-  }
-  
-  .hero-visual {
-    width: 150px;
-    height: 150px;
-  }
-  
-  .float-element {
-    width: 40px;
-    height: 40px;
-    font-size: 16px;
-  }
-  
-  .debug-panel {
-    bottom: var(--spacing-md);
-    right: var(--spacing-md);
-    left: var(--spacing-md);
-    max-width: none;
-  }
-  
-  .debug-toggle {
-    bottom: var(--spacing-md);
-    right: var(--spacing-md);
-  }
+  .modules-grid { grid-template-columns: 1fr; }
+  .hero-stats { gap: 16px; }
+  .debug-panel { bottom: 16px; right: 16px; left: 16px; max-width: none; }
+  .debug-toggle { bottom: 16px; right: 16px; }
 }
 </style> 

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="course-detail">
     <div class="page-header">
       <div class="header-left">
@@ -20,7 +20,7 @@
     </div>
 
     <div v-else-if="!course" class="error-state">
-      <div class="error-icon">❌</div>
+      
       <p>课程不存在或已被删除</p>
     </div>
 
@@ -497,7 +497,7 @@ export default {
 <style scoped>
 .course-detail {
   padding: 20px;
-  background-color: #f5f7fa;
+  background: var(--bg-body);
   min-height: 100vh;
 }
 
@@ -509,7 +509,8 @@ export default {
   background: white;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-light);
 }
 
 .header-left {
@@ -520,7 +521,7 @@ export default {
 
 .header-left h1 {
   margin: 0;
-  color: #303133;
+  color: #000000d9;
   font-size: 24px;
 }
 
@@ -532,7 +533,8 @@ export default {
   padding: 60px;
   background: white;
   border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-light);
 }
 
 .spinner {
@@ -577,7 +579,8 @@ export default {
 .history-card {
   background: white;
   border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-light);
   overflow: hidden;
 }
 
@@ -586,13 +589,13 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid #e4e7ed;
+  border-bottom: 1px solid var(--border-light);
   background-color: #fafafa;
 }
 
 .card-header h2 {
   margin: 0;
-  color: #303133;
+  color: #000000d9;
   font-size: 18px;
 }
 
@@ -611,13 +614,13 @@ export default {
 
 .info-item .label {
   font-weight: 500;
-  color: #606266;
+  color: #00000073;
   width: 100px;
   flex-shrink: 0;
 }
 
 .info-item .value {
-  color: #303133;
+  color: #000000d9;
   flex: 1;
 }
 
@@ -690,13 +693,13 @@ export default {
 
 .attendance-item .label {
   font-weight: 500;
-  color: #606266;
+  color: #00000073;
   width: 80px;
   flex-shrink: 0;
 }
 
 .attendance-item .value {
-  color: #303133;
+  color: #000000d9;
   flex: 1;
 }
 
@@ -783,17 +786,17 @@ export default {
 .history-table td {
   padding: 12px;
   text-align: left;
-  border-bottom: 1px solid #e4e7ed;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .history-table th {
   background-color: #fafafa;
   font-weight: 500;
-  color: #606266;
+  color: #00000073;
 }
 
 .history-table td {
-  color: #303133;
+  color: #000000d9;
 }
 
 /* 照片查看器 */
@@ -824,12 +827,12 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 15px 20px;
-  border-bottom: 1px solid #e4e7ed;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .viewer-header h3 {
   margin: 0;
-  color: #303133;
+  color: #000000d9;
 }
 
 .close-btn {
@@ -837,7 +840,7 @@ export default {
   border: none;
   font-size: 24px;
   cursor: pointer;
-  color: #909399;
+  color: #00000040;
   padding: 0;
   width: 30px;
   height: 30px;
@@ -905,14 +908,14 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 15px 20px;
-  border-top: 1px solid #e4e7ed;
+  border-top: 1px solid var(--border-light);
   background-color: #fafafa;
 }
 
 .photo-details p {
   margin: 2px 0;
   font-size: 14px;
-  color: #606266;
+  color: #00000073;
 }
 
 /* 按钮样式 */
@@ -930,7 +933,7 @@ export default {
 }
 
 .btn-primary {
-  background-color: #409eff;
+  background-color: #1677ff;
   color: white;
 }
 
@@ -939,7 +942,7 @@ export default {
 }
 
 .btn-secondary {
-  background-color: #909399;
+  background-color: #00000040;
   color: white;
 }
 
@@ -948,7 +951,7 @@ export default {
 }
 
 .btn-info {
-  background-color: #909399;
+  background-color: #00000040;
   color: white;
 }
 
@@ -958,7 +961,7 @@ export default {
 
 .btn-link {
   background: none;
-  color: #409eff;
+  color: #1677ff;
   padding: 4px 8px;
 }
 

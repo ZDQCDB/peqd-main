@@ -251,59 +251,68 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px;
+  background: #f0f2f5;
+  padding: 24px 16px;
 }
 
 .register-card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   padding: 40px;
   width: 100%;
-  max-width: 450px;
+  max-width: 460px;
 }
 
 .register-header {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 28px;
 }
 
 .register-header h1 {
-  color: #333;
-  font-size: 28px;
-  margin-bottom: 10px;
+  color: #000000d9;
+  font-size: 22px;
+  margin-bottom: 6px;
   font-weight: 600;
 }
 
 .register-header p {
-  color: #666;
-  font-size: 16px;
+  color: #00000073;
+  font-size: 14px;
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .form-label {
   display: block;
-  margin-bottom: 8px;
-  color: #333;
-  font-weight: 500;
+  margin-bottom: 6px;
+  color: #000000d9;
+  font-weight: 400;
+  font-size: 14px;
 }
 
 .form-input {
   width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 16px;
-  transition: border-color 0.3s;
+  padding: 8px 12px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  font-size: 14px;
+  height: 40px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  outline: none;
+  font-family: inherit;
+}
+
+.form-input:hover {
+  border-color: #4096ff;
 }
 
 .form-input:focus {
-  outline: none;
-  border-color: #667eea;
+  border-color: #1677ff;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.2);
 }
 
 .verification-container {
@@ -317,21 +326,22 @@ export default {
 }
 
 .verification-btn {
-  padding: 12px 16px;
-  border: 1px solid #667eea;
-  background: white;
-  color: #667eea;
-  border-radius: 6px;
+  padding: 0 14px;
+  border: 1px solid #1677ff;
+  background: #ffffff;
+  color: #1677ff;
+  border-radius: 4px;
   font-size: 14px;
+  height: 40px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.15s;
   white-space: nowrap;
-  min-width: 100px;
+  min-width: 104px;
+  font-family: inherit;
 }
 
 .verification-btn:hover:not(:disabled) {
-  background: #667eea;
-  color: white;
+  background: #e6f4ff;
 }
 
 .verification-btn:disabled {
@@ -341,39 +351,48 @@ export default {
 
 .register-btn {
   width: 100%;
-  padding: 14px;
-  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  padding: 0 20px;
+  height: 40px;
+  background: #1677ff;
   color: white;
   border: none;
-  border-radius: 6px;
-  font-size: 16px;
+  border-radius: 4px;
+  font-size: 15px;
   font-weight: 500;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: background 0.15s;
+  letter-spacing: 1px;
+  font-family: inherit;
+  margin-top: 4px;
 }
 
 .register-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
+  background: #4096ff;
 }
 
 .register-btn:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
 .register-footer {
   text-align: center;
   margin-top: 20px;
-  color: #666;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+  color: #00000073;
+  font-size: 14px;
 }
 
 .login-link {
-  color: #667eea;
+  color: #1677ff;
   text-decoration: none;
   font-weight: 500;
+  margin-left: 4px;
 }
 
 .login-link:hover {
+  color: #4096ff;
   text-decoration: underline;
 }
 </style> 

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="listening-management">
     <!-- 顶部导航栏 -->
     <header class="page-header">
@@ -1221,14 +1221,13 @@ export default {
 /* 主容器 */
 .listening-management {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #fafafa; border: 1px solid var(--border-light);
 }
 
 /* 顶部导航栏 */
 .page-header {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  background: #ffffff;
+  border-bottom: 1px solid var(--border-light);
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -1236,13 +1235,13 @@ export default {
 }
 
 .header-container {
-  max-width: 1600px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 var(--spacing-xl);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 80px;
+  height: var(--header-height);
 }
 
 .header-left {
@@ -1262,16 +1261,15 @@ export default {
   color: var(--text-primary);
   text-decoration: none;
   cursor: pointer;
-  transition: all var(--transition-normal);
+  transition: border-color 0.15s, color 0.15s;
   font-size: 14px;
-  font-weight: var(--font-weight-medium);
 }
 
 .back-btn:hover {
   background: var(--bg-surface);
   border-color: var(--primary-color);
   color: var(--primary-color);
-  transform: translateX(-2px);
+  
 }
 
 .back-btn svg {
@@ -1285,14 +1283,11 @@ export default {
 }
 
 .page-title {
-  font-size: 28px;
-  font-weight: var(--font-weight-bold);
-  color: var(--text-primary);
+  font-size: 18px;
+  font-weight: 600;
+  color: #000000d9;
   margin: 0;
-  background: var(--primary-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--text-primary);
 }
 
 .page-subtitle {
@@ -1313,8 +1308,7 @@ export default {
   border-radius: var(--radius-sm);
   font-size: 12px;
   font-weight: var(--font-weight-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  
 }
 
 .role-badge.premium {
@@ -1356,7 +1350,7 @@ export default {
 }
 
 .action-btn.primary:hover {
-  transform: translateY(-2px);
+  
   box-shadow: var(--shadow-md);
 }
 
@@ -1399,7 +1393,7 @@ export default {
 }
 
 .content-container {
-  max-width: 1600px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 var(--spacing-xl);
 }
@@ -1423,7 +1417,7 @@ export default {
   align-items: center;
   gap: var(--spacing-lg);
   transition: all var(--transition-normal);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-light);
   box-shadow: var(--shadow-md);
   position: relative;
   overflow: hidden;
@@ -1440,7 +1434,7 @@ export default {
 }
 
 .stat-card:hover {
-  transform: translateY(-4px);
+  
   box-shadow: var(--shadow-lg);
 }
 
@@ -1508,7 +1502,7 @@ export default {
 }
 
 .stat-number {
-  font-size: 32px;
+  font-size: 18px;
   font-weight: var(--font-weight-bold);
   color: var(--text-primary);
   margin: 0;
@@ -1578,13 +1572,14 @@ export default {
   background: white;
   padding: 24px;
   border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-light);
   margin-bottom: 24px;
 }
 
 .statistics-panel h3 {
   margin: 0 0 20px 0;
-  color: #303133;
+  color: #000000d9;
 }
 
 .stats-grid {
@@ -1594,7 +1589,7 @@ export default {
 }
 
 .stat-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #fafafa; border: 1px solid var(--border-light);
   color: white;
   padding: 20px;
   border-radius: 8px;
@@ -1627,14 +1622,15 @@ export default {
   background: white;
   padding: 8px;
   border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-light);
 }
 
 .tab-btn {
   padding: 12px 20px;
   border: none;
   background: transparent;
-  color: #606266;
+  color: #00000073;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s;
@@ -1643,12 +1639,12 @@ export default {
 }
 
 .tab-btn:hover {
-  background: #f5f7fa;
-  color: #409eff;
+  background: var(--bg-body);
+  color: #1677ff;
 }
 
 .tab-btn.active {
-  background: #409eff;
+  background: #1677ff;
   color: white;
 }
 
@@ -1656,7 +1652,8 @@ export default {
 .tab-content {
   background: white;
   border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-light);
   overflow: hidden;
 }
 
@@ -1665,12 +1662,12 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 20px 24px;
-  border-bottom: 1px solid #e4e7ed;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .content-header h3 {
   margin: 0;
-  color: #303133;
+  color: #000000d9;
 }
 
 .permission-notice {
@@ -1695,7 +1692,7 @@ export default {
 .filters input,
 .filters select {
   padding: 8px 12px;
-  border: 1px solid #dcdfe6;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   font-size: 14px;
 }
@@ -1714,13 +1711,13 @@ export default {
 .observations-table td {
   padding: 16px;
   text-align: left;
-  border-bottom: 1px solid #e4e7ed;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .observations-table th {
-  background: #f5f7fa;
+  background: var(--bg-body);
   font-weight: 600;
-  color: #303133;
+  color: #000000d9;
 }
 
 .observations-table tr:hover {
@@ -1728,13 +1725,13 @@ export default {
 }
 
 .course-info strong {
-  color: #303133;
+  color: #000000d9;
   font-size: 14px;
 }
 
 .course-meta {
   font-size: 12px;
-  color: #909399;
+  color: #00000040;
   margin-top: 4px;
 }
 
@@ -1744,7 +1741,7 @@ export default {
 
 .observer-type {
   font-size: 12px;
-  color: #909399;
+  color: #00000040;
 }
 
 .file-status {
@@ -1766,7 +1763,7 @@ export default {
 }
 
 .video-uploaded {
-  background: #409eff;
+  background: #1677ff;
   color: white;
 }
 
@@ -1790,7 +1787,7 @@ export default {
 }
 
 .template-card {
-  border: 1px solid #e4e7ed;
+  border: 1px solid var(--border-light);
   border-radius: 8px;
   padding: 16px;
   display: flex;
@@ -1805,7 +1802,7 @@ export default {
 
 .file-icon {
   font-size: 32px;
-  color: #409eff;
+  color: #1677ff;
 }
 
 .file-info {
@@ -1814,14 +1811,14 @@ export default {
 
 .file-info h4 {
   margin: 0 0 8px 0;
-  color: #303133;
+  color: #000000d9;
   font-size: 14px;
 }
 
 .file-info p {
   margin: 0;
   font-size: 12px;
-  color: #909399;
+  color: #00000040;
 }
 
 .default-badge {
@@ -1846,7 +1843,7 @@ export default {
   left: 0;
   right: 0;
   background: white;
-  border: 1px solid #dcdfe6;
+  border: 1px solid var(--border-color);
   border-top: none;
   border-radius: 0 0 4px 4px;
   max-height: 200px;
@@ -1861,7 +1858,7 @@ export default {
 }
 
 .course-item:hover {
-  background: #f5f7fa;
+  background: var(--bg-body);
 }
 
 .course-item:last-child {
@@ -1878,12 +1875,12 @@ export default {
 
 .selected-course h4 {
   margin: 0 0 8px 0;
-  color: #409eff;
+  color: #1677ff;
 }
 
 .selected-course p {
   margin: 4px 0;
-  color: #303133;
+  color: #000000d9;
 }
 
 /* 文件上传 */
@@ -1901,13 +1898,13 @@ export default {
 .file-upload h4,
 .video-upload h4 {
   margin: 0 0 12px 0;
-  color: #303133;
+  color: #000000d9;
 }
 
 .help-text {
   margin: 8px 0 0 0;
   font-size: 12px;
-  color: #909399;
+  color: #00000040;
 }
 
 .upload-area {
@@ -1920,7 +1917,7 @@ export default {
 }
 
 .upload-area:hover {
-  border-color: #409eff;
+  border-color: #1677ff;
   background: #f0f9ff;
 }
 
@@ -1931,12 +1928,12 @@ export default {
 
 .upload-area p {
   margin: 8px 0;
-  color: #606266;
+  color: #00000073;
 }
 
 .upload-hint {
   font-size: 12px;
-  color: #909399;
+  color: #00000040;
 }
 
 .upload-progress {
@@ -1946,14 +1943,14 @@ export default {
 .progress-bar {
   width: 100%;
   height: 8px;
-  background: #f5f7fa;
+  background: var(--bg-body);
   border-radius: 4px;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: #409eff;
+  background: #1677ff;
   transition: width 0.3s;
 }
 
@@ -1977,7 +1974,7 @@ export default {
 }
 
 .btn-primary {
-  background-color: #409eff;
+  background-color: #1677ff;
   color: white;
 }
 
@@ -2067,12 +2064,12 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid #e4e7ed;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .modal-header h3 {
   margin: 0;
-  color: #303133;
+  color: #000000d9;
 }
 
 .close-btn {
@@ -2080,11 +2077,11 @@ export default {
   border: none;
   font-size: 24px;
   cursor: pointer;
-  color: #909399;
+  color: #00000040;
 }
 
 .close-btn:hover {
-  color: #606266;
+  color: #00000073;
 }
 
 .modal-body {
@@ -2096,7 +2093,7 @@ export default {
   gap: 12px;
   justify-content: flex-end;
   padding: 20px;
-  border-top: 1px solid #e4e7ed;
+  border-top: 1px solid var(--border-light);
 }
 
 /* 表单样式 */
@@ -2109,7 +2106,7 @@ export default {
 
 .form-group label {
   font-size: 14px;
-  color: #606266;
+  color: #00000073;
   font-weight: 500;
 }
 
@@ -2117,7 +2114,7 @@ export default {
 .form-group select,
 .form-group textarea {
   padding: 8px 12px;
-  border: 1px solid #dcdfe6;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   font-size: 14px;
 }
@@ -2133,8 +2130,8 @@ export default {
 
 .detail-section h4 {
   margin: 0 0 16px 0;
-  color: #303133;
-  border-bottom: 2px solid #409eff;
+  color: #000000d9;
+  border-bottom: 2px solid #1677ff;
   padding-bottom: 8px;
 }
 
@@ -2154,7 +2151,7 @@ export default {
 
 .detail-item label {
   font-weight: 500;
-  color: #606266;
+  color: #00000073;
 }
 
 .file-item {
@@ -2162,12 +2159,12 @@ export default {
   align-items: center;
   gap: 12px;
   padding: 12px;
-  background: #f5f7fa;
+  background: var(--bg-body);
   border-radius: 4px;
 }
 
 .file-item i {
-  color: #409eff;
+  color: #1677ff;
   font-size: 20px;
 }
 
@@ -2181,11 +2178,11 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 16px 24px;
-  border-top: 1px solid #e4e7ed;
+  border-top: 1px solid var(--border-light);
 }
 
 .page-info {
-  color: #606266;
+  color: #00000073;
   font-size: 14px;
 }
 
@@ -2193,13 +2190,13 @@ export default {
 .loading {
   text-align: center;
   padding: 40px;
-  color: #909399;
+  color: #00000040;
 }
 
 .no-data {
   text-align: center;
   padding: 40px;
-  color: #909399;
+  color: #00000040;
 }
 
 /* 响应式设计 */
