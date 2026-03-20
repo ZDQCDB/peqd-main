@@ -19,7 +19,7 @@
         <div class="header-actions">
           <div class="activity-stats">
             <div class="stat-item">
-              <span class="stat-number">6</span>
+              <span class="stat-number">7</span>
               <span class="stat-label">功能模块</span>
             </div>
             <div class="stat-divider"></div>
@@ -192,6 +192,33 @@
                 <div class="card-features">
                   <span class="feature-tag">活动发布</span>
                   <span class="feature-tag">报名管理</span>
+                </div>
+              </div>
+              <div class="card-footer">
+                <span class="action-text">进入模块</span>
+                <div class="action-arrow">→</div>
+              </div>
+            </div>
+
+            <div class="activity-card animate-slide-up" @click="$router.push('/group/race-results')" style="animation-delay: 0.7s">
+              <div class="card-header">
+                <div class="activity-icon race-results">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M15 7a4 4 0 0 1-8 0 4 4 0 0 1 8 0Z" stroke="currentColor" stroke-width="2"/>
+                    <path d="M17.8 14a5 5 0 0 0-11.6 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div class="card-status">
+                  <span class="status-badge active">运行中</span>
+                </div>
+              </div>
+              <div class="card-content">
+                <h3 class="card-title">比赛成绩</h3>
+                <p class="card-description">运动员比赛成绩查询、完赛统计分析、成绩数据管理</p>
+                <div class="card-features">
+                  <span class="feature-tag">成绩查询</span>
+                  <span class="feature-tag">数据统计</span>
                 </div>
               </div>
               <div class="card-footer">
@@ -416,6 +443,7 @@ export default {
 .activity-icon.sunshine        { background: #f6ffed; color: #389e0d; }
 .activity-icon.management      { background: #fff0f6; color: #c41d7f; }
 .activity-icon.activity        { background: #f0f5ff; color: #2f54eb; }
+.activity-icon.race-results    { background: #fff2e8; color: #d4380d; }
 
 .activity-icon svg { width: 22px; height: 22px; }
 

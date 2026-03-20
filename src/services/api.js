@@ -3,6 +3,44 @@ import axios from 'axios'
 // API基础配置
 const BASE_URL = process.env.VUE_APP_API_BASE_URL || 'http://192.168.1.104:9999'
 
+// 比赛成绩服务地址
+const RACE_BASE_URL = 'http://38.207.179.218:8888'
+
+// 创建比赛成绩专用 axios 实例
+const raceApiClient = axios.create({
+  baseURL: RACE_BASE_URL,
+  timeout: 10000,
+  headers: { 'Content-Type': 'application/json' }
+})
+
+raceApiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('userToken')
+    if (token) config.headers.Authorization = `Bearer ${token}`
+    return config
+  },
+  (error) => Promise.reject(error)
+)
+
+raceApiClient.interceptors.response.use(
+  (response) => response.data,
+  (error) => {
+    if (error.response) {
+      const { status, data } = error.response
+      if (status === 401) {
+        localStorage.removeItem('userToken')
+        localStorage.removeItem('userInfo')
+        if (window.location.pathname !== '/login') window.location.href = '/login'
+      }
+      throw new Error((data && data.message) || `请求失败(${status})`)
+    } else if (error.request) {
+      throw new Error('网络连接失败，请检查网络设置')
+    } else {
+      throw new Error(error.message || '请求失败')
+    }
+  }
+)
+
 // 创建axios实例
 const apiClient = axios.create({
   baseURL: BASE_URL,
@@ -396,6 +434,24 @@ export const api = {
     getActivityStatistics: (params) => apiClient.get('/pe/statistics/activities', { params }),
     getUserStatistics: (params) => apiClient.get('/pe/statistics/users', { params }),
     getMorningExerciseStatistics: (params) => apiClient.get('/pe/statistics/morning-exercises', { params })
+  },
+
+  // 比赛成绩管理API
+  raceResults: {
+    // 分页查询成绩列表
+    getList: (params) => raceApiClient.get('/race/results', { params }),
+
+    // 成绩统计数据
+    getStatistics: (params) => raceApiClient.get('/race/results/statistics', { params }),
+
+    // 查询单条成绩详情
+    getDetail: (id) => raceApiClient.get(`/race/results/${id}`),
+
+    // 删除单条成绩
+    deleteOne: (id) => raceApiClient.delete(`/race/results/${id}`),
+
+    // 批量删除成绩
+    deleteBatch: (ids) => raceApiClient.delete('/race/results/batch', { data: { ids } })
   },
 
   // PE积分统计管理API

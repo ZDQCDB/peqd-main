@@ -20,6 +20,7 @@ import ExtracurricularActivity from '@/views/Group/ExtracurricularActivity.vue'
 import Activity from '@/views/Group/Activity.vue'
 import SunshineRun from '@/views/Group/SunshineRun.vue'
 import PEManagement from '@/views/Group/PEManagement.vue'
+import RaceResults from '@/views/Group/RaceResults.vue'
 
 // 训练模块
 import Training from '@/views/Training/Training.vue'
@@ -152,6 +153,12 @@ const routes = [
     path: '/group/management',
     name: 'PEManagement',
     component: PEManagement,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/group/race-results',
+    name: 'RaceResults',
+    component: RaceResults,
     meta: { requiresAuth: true }
   },
   {
