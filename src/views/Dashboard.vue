@@ -206,7 +206,7 @@
               </div>
             </div>
 
-            <div class="module-card" @click="navigateTo('/listening')">
+            <div v-if="canAccessListening" class="module-card" @click="navigateTo('/listening')">
               <div class="module-header">
                 <div class="module-icon listening">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -318,7 +318,7 @@
 
 <script>
 // 导入权限管理相关函数
-import { isSuperAdmin, isSchoolAdmin, isDepartmentAdmin, getCurrentRole } from '@/utils/permissionManager'
+import { isSuperAdmin, isSchoolAdmin, isDepartmentAdmin, isTeacher, getCurrentRole } from '@/utils/permissionManager'
 import permissionManager from '@/utils/permissionManager'
 import authService from '@/services/authService'
 
@@ -342,6 +342,9 @@ export default {
     // 检查是否可以访问统计功能 (校级管理员和院级管理员)
     canAccessStatistics() {
       return isSchoolAdmin() || isDepartmentAdmin()
+    },
+    canAccessListening() {
+      return isTeacher() || isSchoolAdmin() || isDepartmentAdmin() || isSuperAdmin()
     }
   },
   async mounted() {

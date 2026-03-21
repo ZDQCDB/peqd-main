@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="listening-management">
     <!-- 顶部导航栏 -->
     <header class="page-header">
@@ -516,7 +516,7 @@
           <div class="video-player">
             <video 
               controls 
-              :src="`http://192.168.1.103:9999${currentVideoUrl.replace(/^\/api/, '')}`" 
+              :src="getVideoUrl(currentVideoUrl)" 
               style="width: 100%; max-height: 500px;"
             >
               您的浏览器不支持视频播放
@@ -811,7 +811,10 @@ export default {
       try {
         const response = await api.listening.createObservation(observationForm)
         
-        window.location.reload()
+        showObservationModal.value = false
+        resetObservationForm()
+        await loadObservations()
+        await loadStatistics()
       } catch (error) {
         console.error('保存听课记录失败:', error)
         alert('创建失败，请重试')
@@ -892,7 +895,9 @@ export default {
         
         const response = await api.listening.uploadEvaluationFile(currentObservation.value.id, formData)
 
-        window.location.reload()
+        showFileUploadModal.value = false
+        currentObservation.value = null
+        await loadObservations()
       } catch (error) {
         console.error('评价文件上传失败:', error)
         alert('上传失败，请重试')
@@ -1136,6 +1141,14 @@ export default {
       return 'fas fa-file'
     }
 
+    const getVideoUrl = (url) => {
+      if (!url) return ''
+      // 使用当前API的baseURL构建视频地址
+      const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://192.168.1.104:9999'
+      const cleanUrl = url.replace(/^\/api/, '')
+      return `${baseUrl}${cleanUrl}`
+    }
+
     // 初始化
     onMounted(async () => {
       await getUserInfo()
@@ -1211,7 +1224,8 @@ export default {
       formatDateTime,
       formatDate,
       formatFileSize,
-      getFileIcon
+      getFileIcon,
+      getVideoUrl
     }
   }
 }

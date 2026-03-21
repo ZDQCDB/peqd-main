@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="pe-management">
     <!-- 顶部导航栏 -->
     <header class="page-header">
@@ -36,47 +36,24 @@
             <div class="filter-form">
               <div class="filter-row">
                 <div class="filter-group">
-                  <label class="filter-label">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
-                      <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    搜索关键词
-                  </label>
-                  <input 
-                    type="text" 
-                    v-model="userFilters.search" 
+                  <label class="filter-label">搜索关键词</label>
+                  <el-input
+                    v-model="userFilters.search"
                     placeholder="姓名或学号"
-                    class="filter-input search-input"
+                    clearable
+                    @keyup.enter="loadUsers"
+                    @clear="loadUsers"
                   />
                 </div>
                 
                 <div class="filter-group">
-                  <label class="filter-label">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/>
-                      <circle cx="8.5" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
-                      <path d="M20 8v6M23 11h-6" stroke="currentColor" stroke-width="2"/>
-                    </svg>
-                    用户角色
-                  </label>
-                  <select v-model="userFilters.role" class="filter-select">
-                    <option value="">全部角色</option>
-                    <option value="STUDENT">学生</option>
-                    <option value="CHECKER">签到员</option>
-                    <option value="SUB_CHECKER">二级管理员</option>
-                    <option value="ADMIN">管理员</option>
-                  </select>
-                </div>
-                
-                <div class="filter-group">
-                  <button class="search-btn" @click="loadUsers">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
-                      <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    查询
-                  </button>
+                  <label class="filter-label">用户角色</label>
+                  <el-select v-model="userFilters.role" @change="loadUsers" style="width:100%">
+                    <el-option label="学生" value="STUDENT" />
+                    <el-option label="签到员" value="CHECKER" />
+                    <el-option label="二级管理员" value="SUB_CHECKER" />
+                    <el-option label="管理员" value="ADMIN" />
+                  </el-select>
                 </div>
               </div>
             </div>
@@ -146,7 +123,7 @@
     <el-dialog 
       title="用户详情" 
       v-model="userDetailVisible" 
-      width="60%"
+      width="700px"
       :before-close="closeUserDetail"
       class="user-detail-dialog"
     >
@@ -167,8 +144,8 @@
             <p class="user-id">学号：{{ currentUser.studentId }}</p>
             <div class="user-status">
               <el-tag :type="getRoleType(currentUser.role)" size="small">
-              {{ getRoleText(currentUser.role) }}
-            </el-tag>
+                {{ getRoleText(currentUser.role) }}
+              </el-tag>
               <el-tag :type="currentUser.isLoggedIn ? 'success' : 'info'" size="small">
                 {{ currentUser.isLoggedIn ? '在线' : '离线' }}
               </el-tag>
@@ -178,6 +155,7 @@
 
         <!-- 详细信息 -->
         <div class="detail-sections">
+          <!-- 基本信息 -->
           <div class="detail-section">
             <h4 class="section-title">基本信息</h4>
             <div class="info-grid">
@@ -190,6 +168,10 @@
                 <span>{{ currentUser.college || '未设置' }}</span>
               </div>
               <div class="info-item">
+                <label>班级</label>
+                <span>{{ currentUser.className || '未设置' }}</span>
+              </div>
+              <div class="info-item">
                 <label>手机号</label>
                 <span>{{ currentUser.phoneNumber || '未设置' }}</span>
               </div>
@@ -197,11 +179,16 @@
                 <label>注册时间</label>
                 <span>{{ formatDateTime(currentUser.createdAt) }}</span>
               </div>
+              <div class="info-item">
+                <label>最后更新</label>
+                <span>{{ formatDateTime(currentUser.updatedAt) }}</span>
+              </div>
             </div>
           </div>
 
+          <!-- 积分信息 -->
           <div class="detail-section">
-            <h4 class="section-title">积分信息</h4>
+            <h4 class="section-title">积分 & 学时</h4>
             <div class="score-grid">
               <div class="score-item">
                 <div class="score-value">{{ currentUser.points || 0 }}</div>
@@ -220,22 +207,27 @@
                 <div class="score-label">学时</div>
               </div>
               <div class="score-item">
-                <div class="score-value">{{ currentUser.integrityScore || 0 }}</div>
+                <div class="score-value">{{ currentUser.integrityScore ?? 100 }}</div>
                 <div class="score-label">诚信度</div>
               </div>
             </div>
           </div>
 
+          <!-- 阳光跑数据 -->
           <div class="detail-section">
-            <h4 class="section-title">活动记录</h4>
-            <div class="info-grid">
-              <div class="info-item">
-                <label>最后更新</label>
-                <span>{{ formatDateTime(currentUser.updatedAt) }}</span>
+            <h4 class="section-title">阳光跑数据</h4>
+            <div class="score-grid">
+              <div class="score-item">
+                <div class="score-value">{{ currentUser.sunshineTotalRuns || 0 }}</div>
+                <div class="score-label">总跑步次数</div>
               </div>
-              <div class="info-item">
-                <label>积分更新时间</label>
-                <span>{{ formatDateTime(currentUser.pointsLastUpdated) }}</span>
+              <div class="score-item">
+                <div class="score-value">{{ formatDistance(currentUser.sunshineTotalDistance) }}</div>
+                <div class="score-label">总距离(km)</div>
+              </div>
+              <div class="score-item">
+                <div class="score-value">{{ formatDuration(currentUser.sunshineTotalDuration) }}</div>
+                <div class="score-label">总时长</div>
               </div>
             </div>
           </div>
@@ -245,11 +237,29 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="closeUserDetail">关闭</el-button>
-          <el-button type="primary" @click="editUser">编辑用户</el-button>
+          <el-button 
+            v-if="currentUser && currentUser.isLoggedIn"
+            type="warning" 
+            @click="handleForceLogout(currentUser)">
+            强制登出
+          </el-button>
+          <el-button type="primary" @click="showEditPhone = true">修改手机号</el-button>
         </div>
       </template>
     </el-dialog>
 
+    <!-- 修改手机号对话框 -->
+    <el-dialog title="修改手机号" v-model="showEditPhone" width="400px" append-to-body>
+      <el-form :model="editPhoneForm" label-width="80px">
+        <el-form-item label="新手机号">
+          <el-input v-model="editPhoneForm.phoneNumber" placeholder="请输入新手机号" maxlength="11" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="showEditPhone = false">取消</el-button>
+        <el-button type="primary" :loading="editPhoneLoading" @click="submitEditPhone">确认修改</el-button>
+      </template>
+    </el-dialog>
 
   </div>
 </template>
@@ -261,12 +271,11 @@ export default {
   name: 'PEManagement',
   data() {
     return {
-      // 用户管理相关
       users: [],
       usersLoading: false,
       userFilters: {
         search: '',
-        role: ''
+        role: 'STUDENT'
       },
       userPagination: {
         currentPage: 1,
@@ -274,7 +283,11 @@ export default {
         total: 0
       },
       userDetailVisible: false,
-      currentUser: null
+      currentUser: null,
+      // 修改手机号
+      showEditPhone: false,
+      editPhoneLoading: false,
+      editPhoneForm: { phoneNumber: '' }
     }
   },
   mounted() {
@@ -309,25 +322,66 @@ export default {
     resetUserFilters() {
       this.userFilters = {
         search: '',
-        role: ''
+        role: 'STUDENT'
       }
       this.userPagination.currentPage = 1
       this.loadUsers()
     },
     
     viewUserDetail(user) {
-      this.currentUser = user
+      this.currentUser = { ...user }
+      this.editPhoneForm.phoneNumber = user.phoneNumber || ''
       this.userDetailVisible = true
     },
 
     closeUserDetail() {
       this.userDetailVisible = false
+      this.showEditPhone = false
       this.currentUser = null
     },
 
-    editUser() {
-      // 编辑用户功能 - 可以后续实现
-      this.$message.info('编辑功能开发中...')
+    async handleForceLogout(user) {
+      try {
+        await this.$confirm(`确定要强制登出 ${user.name} 吗？`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        const res = await api.peManagement.forceLogout(user.id)
+        if (res.code === 200) {
+          this.$message.success('已强制登出')
+          this.currentUser.isLoggedIn = false
+          this.loadUsers()
+        } else {
+          this.$message.error(res.message || '操作失败')
+        }
+      } catch (e) {
+        if (e !== 'cancel') this.$message.error('操作失败：' + (e.message || e))
+      }
+    },
+
+    async submitEditPhone() {
+      const phone = this.editPhoneForm.phoneNumber
+      if (!/^1[3-9]\d{9}$/.test(phone)) {
+        this.$message.warning('请输入正确的手机号格式')
+        return
+      }
+      this.editPhoneLoading = true
+      try {
+        const res = await api.peManagement.updateUserPhone(this.currentUser.id, phone)
+        if (res.code === 200) {
+          this.$message.success('手机号修改成功')
+          this.currentUser.phoneNumber = phone
+          this.showEditPhone = false
+          this.loadUsers()
+        } else {
+          this.$message.error(res.message || '修改失败')
+        }
+      } catch (e) {
+        this.$message.error('修改失败：' + (e.message || e))
+      } finally {
+        this.editPhoneLoading = false
+      }
     },
     
     async setUserAsChecker(user) {
@@ -360,6 +414,19 @@ export default {
     formatDateTime(dateTime) {
       if (!dateTime) return '-'
       return new Date(dateTime).toLocaleString('zh-CN')
+    },
+
+    formatDistance(val) {
+      if (!val) return '0'
+      return (val / 1000).toFixed(2)
+    },
+
+    formatDuration(seconds) {
+      if (!seconds) return '0分钟'
+      const h = Math.floor(seconds / 3600)
+      const m = Math.floor((seconds % 3600) / 60)
+      if (h > 0) return `${h}时${m}分`
+      return `${m}分钟`
     },
     
     getRoleType(role) {
@@ -534,11 +601,16 @@ export default {
 
 .filter-row {
   display: grid;
-  grid-template-columns: 1fr 1fr auto;
+  grid-template-columns: 1fr 1fr;
   gap: var(--spacing-lg);
   align-items: end;
 }
 
+.filter-btn-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--spacing-lg);
+}
 .filter-group {
   display: flex;
   flex-direction: column;

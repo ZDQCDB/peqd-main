@@ -19,6 +19,7 @@ import MorningExercise from '@/views/Group/MorningExercise.vue'
 import ExtracurricularActivity from '@/views/Group/ExtracurricularActivity.vue'
 import Activity from '@/views/Group/Activity.vue'
 import SunshineRun from '@/views/Group/SunshineRun.vue'
+import HomeworkDashboard from '@/views/Group/HomeworkDashboard.vue'
 import PEManagement from '@/views/Group/PEManagement.vue'
 import RaceResults from '@/views/Group/RaceResults.vue'
 
@@ -87,7 +88,7 @@ const routes = [
     path: '/teaching/teacher',
     name: 'TeacherTeaching',
     component: TeacherTeaching,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true, roles: ['teacher', 'department_admin', 'school_admin', 'super_admin'] }
   },
   {
     path: '/teaching/student',
@@ -150,10 +151,16 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/group/homework',
+    name: 'HomeworkDashboard',
+    component: HomeworkDashboard,
+    meta: { requiresAuth: true, roles: ['department_admin', 'school_admin', 'super_admin'] }
+  },
+  {
     path: '/group/management',
     name: 'PEManagement',
     component: PEManagement,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true, roles: ['department_admin', 'school_admin', 'super_admin'] }
   },
   {
     path: '/group/race-results',
@@ -171,7 +178,7 @@ const routes = [
     path: '/training/teacher',
     name: 'TeacherTraining',
     component: TeacherTraining,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true, roles: ['teacher', 'department_admin', 'school_admin', 'super_admin'] }
   },
   {
     path: '/training/student',
@@ -183,7 +190,7 @@ const routes = [
     path: '/training/score',
     name: 'PEScore',
     component: PEScore,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true, roles: ['department_admin', 'school_admin', 'super_admin'] }
   },
   {
     path: '/physical-test',
@@ -219,7 +226,7 @@ const routes = [
     path: '/venue/management',
     name: 'VenueManagement',
     component: VenueManagement,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true, roles: ['department_admin', 'school_admin', 'super_admin'] }
   },
   {
     path: '/venue/reservation',
@@ -231,7 +238,7 @@ const routes = [
     path: '/listening',
     name: 'Listening',
     component: Listening,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true, roles: ['teacher', 'department_admin', 'school_admin', 'super_admin'] }
   },
   {
     path: '/sports-equipment',

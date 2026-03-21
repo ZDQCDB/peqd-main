@@ -26,6 +26,12 @@
             </svg>
             创建用户
           </button>
+          <button v-if="isSuperAdminRole" class="action-btn import-btn" @click="openImportDialog">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            导入名单
+          </button>
           <button class="action-btn secondary" @click="exportUserData">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -637,11 +643,91 @@
 
       </div>
     </main>
+
+    <!-- checkuser 数据导入弹窗（仅超管可见） -->
+    <el-dialog
+      v-if="isSuperAdminRole"
+      v-model="showImportDialog"
+      title="导入 checkuser 数据"
+      width="560px"
+      :close-on-click-modal="false"
+    >
+      <el-tabs v-model="importTab">
+        <el-tab-pane label="学生数据" name="student">
+          <div class="import-section">
+            <p class="import-tip">
+              Excel 列顺序：<strong>学校 / 学院 / 班级 / 学号 / 姓名</strong><br/>
+              以学号为唯一键，重复学号自动跳过。
+            </p>
+            <div class="import-actions">
+              <el-button size="small" @click="downloadTemplate('student')">⬇ 下载学生模板</el-button>
+              <el-upload
+                ref="studentUploadRef"
+                :auto-upload="false"
+                :limit="1"
+                accept=".xlsx,.xls"
+                :on-change="(f) => { studentFile = f.raw }"
+                :on-remove="() => { studentFile = null }"
+              >
+                <el-button size="small" type="primary">选择 Excel 文件</el-button>
+              </el-upload>
+            </div>
+            <el-button type="success" :loading="importLoading" :disabled="!studentFile"
+              @click="doImport('student')" style="margin-top:12px;width:100%">
+              开始导入
+            </el-button>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane label="教师数据" name="teacher">
+          <div class="import-section">
+            <p class="import-tip">
+              Excel 列顺序：<strong>学校 / 学院 / 工号 / 姓名</strong><br/>
+              以工号为唯一键，重复工号自动跳过。
+            </p>
+            <div class="import-actions">
+              <el-button size="small" @click="downloadTemplate('teacher')">⬇ 下载教师模板</el-button>
+              <el-upload
+                ref="teacherUploadRef"
+                :auto-upload="false"
+                :limit="1"
+                accept=".xlsx,.xls"
+                :on-change="(f) => { teacherFile = f.raw }"
+                :on-remove="() => { teacherFile = null }"
+              >
+                <el-button size="small" type="primary">选择 Excel 文件</el-button>
+              </el-upload>
+            </div>
+            <el-button type="success" :loading="importLoading" :disabled="!teacherFile"
+              @click="doImport('teacher')" style="margin-top:12px;width:100%">
+              开始导入
+            </el-button>
+          </div>
+        </el-tab-pane>
+      </el-tabs>
+
+      <div v-if="importResult" class="import-result">
+        <el-alert
+          :title="`导入完成：共 ${importResult.total} 行，新增 ${importResult.inserted} 条，跳过重复 ${importResult.skipped} 条`"
+          :type="importResult.errors?.length ? 'warning' : 'success'"
+          show-icon :closable="false"
+        />
+        <ul v-if="importResult.errors?.length" style="font-size:12px;color:#595959;padding-left:16px;margin:8px 0 0">
+          <li v-for="e in importResult.errors" :key="e">{{ e }}</li>
+        </ul>
+      </div>
+
+      <template #footer>
+        <el-button @click="closeImportDialog">关闭</el-button>
+      </template>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
 import authService from '@/services/authService'
+import api from '@/services/api'
 import { isSchoolAdmin, isSuperAdmin, isDepartmentAdmin } from '@/utils/permissionManager'
 
 export default {
@@ -680,6 +766,13 @@ export default {
       showDetailDialog: false,
       showAuditDialog: false,
       showResetPasswordDialog: false,
+      // checkuser 导入
+      showImportDialog: false,
+      importTab: 'student',
+      studentFile: null,
+      teacherFile: null,
+      importLoading: false,
+      importResult: null,
       selectedUser: null,
       newRole: '',
       operationReason: '',
@@ -706,6 +799,10 @@ export default {
   },
 
   computed: {
+    isSuperAdminRole() {
+      return isSuperAdmin()
+    },
+
     canManageStudent() {
       // 所有管理员都可以管理学生
       return isDepartmentAdmin() || isSchoolAdmin() || isSuperAdmin()
@@ -1229,6 +1326,61 @@ export default {
         forceChange: true,
         notifyUser: true,
         reason: ''
+      }
+    },
+
+    // ── checkuser 导入 ────────────────────────────────────────────────────────
+    openImportDialog() {
+      this.importResult = null
+      this.studentFile = null
+      this.teacherFile = null
+      this.showImportDialog = true
+    },
+
+    closeImportDialog() {
+      this.showImportDialog = false
+      this.importResult = null
+      this.studentFile = null
+      this.teacherFile = null
+    },
+
+    async downloadTemplate(type) {
+      try {
+        const res = type === 'student'
+          ? await api.checkUserImport.downloadStudentTemplate()
+          : await api.checkUserImport.downloadTeacherTemplate()
+        const blob = new Blob([res], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        })
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = type === 'student' ? '学生导入模板.xlsx' : '教师导入模板.xlsx'
+        a.click()
+        URL.revokeObjectURL(url)
+      } catch (e) {
+        this.$message?.error('下载失败：' + (e.message || e))
+      }
+    },
+
+    async doImport(type) {
+      const file = type === 'student' ? this.studentFile : this.teacherFile
+      if (!file) return
+      this.importLoading = true
+      this.importResult = null
+      try {
+        const res = type === 'student'
+          ? await api.checkUserImport.importStudents(file)
+          : await api.checkUserImport.importTeachers(file)
+        if (res.code === 200) {
+          this.importResult = res.data
+        } else {
+          this.$message?.error(res.message || '导入失败')
+        }
+      } catch (e) {
+        this.$message?.error('导入失败：' + (e.message || e))
+      } finally {
+        this.importLoading = false
       }
     },
 
@@ -1809,4 +1961,28 @@ export default {
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .user-detail-grid { grid-template-columns: 1fr; }
 }
+.action-btn.import-btn {
+  background: #f6ffed;
+  color: #52c41a;
+  border: 1px solid #b7eb8f;
+}
+.action-btn.import-btn:hover { background: #d9f7be; }
+
+.import-section { padding: 8px 0; }
+.import-tip {
+  font-size: 13px;
+  color: #606266;
+  background: #f5f7fa;
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  line-height: 1.8;
+}
+.import-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.import-result { margin-top: 16px; }
 </style> 

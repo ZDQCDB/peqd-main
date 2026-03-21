@@ -19,7 +19,7 @@
         <div class="header-actions">
           <div class="activity-stats">
             <div class="stat-item">
-              <span class="stat-number">7</span>
+              <span class="stat-number">8</span>
               <span class="stat-label">功能模块</span>
             </div>
             <div class="stat-divider"></div>
@@ -140,6 +140,32 @@
                 <div class="card-features">
                   <span class="feature-tag">路线管理</span>
                   <span class="feature-tag">健康统计</span>
+                </div>
+              </div>
+              <div class="card-footer">
+                <span class="action-text">进入模块</span>
+                <div class="action-arrow">→</div>
+              </div>
+            </div>
+
+            <div class="activity-card animate-slide-up" @click="$router.push('/group/homework')" style="animation-delay: 0.45s">
+              <div class="card-header">
+                <div class="activity-icon homework">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div class="card-status">
+                  <span class="status-badge active">运行中</span>
+                </div>
+              </div>
+              <div class="card-content">
+                <h3 class="card-title">课后作业统计</h3>
+                <p class="card-description">课后运动作业完成情况、班级排名、趋势分析</p>
+                <div class="card-features">
+                  <span class="feature-tag">完成统计</span>
+                  <span class="feature-tag">班级排名</span>
                 </div>
               </div>
               <div class="card-footer">
@@ -441,6 +467,7 @@ export default {
 .activity-icon.morning         { background: #fff7e6; color: #d46b08; }
 .activity-icon.extracurricular { background: #e6fffb; color: #08979c; }
 .activity-icon.sunshine        { background: #f6ffed; color: #389e0d; }
+.activity-icon.homework        { background: #f0f5ff; color: #2f54eb; }
 .activity-icon.management      { background: #fff0f6; color: #c41d7f; }
 .activity-icon.activity        { background: #f0f5ff; color: #2f54eb; }
 .activity-icon.race-results    { background: #fff2e8; color: #d4380d; }

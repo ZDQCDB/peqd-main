@@ -188,61 +188,56 @@ export default {
 
 <style scoped>
 .school-statistics {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border-radius: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e8eaed;
   overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
 
 .panel-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 30px;
-  background: rgba(255, 255, 255, 0.03);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 16px 24px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e8eaed;
 }
 
 .panel-title {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   margin: 0;
-  font-size: 20px;
-  font-weight: bold;
-  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
 }
 
-.icon {
-  font-size: 24px;
-}
+.icon { font-size: 20px; }
 
 .refresh-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
+  gap: 6px;
+  padding: 6px 14px;
+  background: #fff;
+  color: #606266;
+  border: 1px solid #dcdfe6;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.3s;
+  font-size: 13px;
+  transition: all 0.2s;
 }
 
 .refresh-btn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.15);
+  border-color: #1677ff;
+  color: #1677ff;
 }
 
-.refresh-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
+.refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-.refresh-icon {
-  animation: spin 1s linear infinite;
-}
+.refresh-icon { animation: spin 1s linear infinite; }
 
 @keyframes spin {
   from { transform: rotate(0deg); }
@@ -255,139 +250,114 @@ export default {
   align-items: center;
   justify-content: center;
   padding: 60px 20px;
-  color: #b0bec5;
+  color: #909399;
 }
 
 .loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid rgba(255, 255, 255, 0.1);
-  border-left-color: #2196f3;
+  width: 36px;
+  height: 36px;
+  border: 3px solid #e8eaed;
+  border-left-color: #1677ff;
   border-radius: 50%;
   animation: spin 1s linear infinite;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
-.no-data-icon {
-  font-size: 48px;
-  margin-bottom: 15px;
-}
+.no-data-icon { font-size: 40px; margin-bottom: 12px; }
 
-.panel-content {
-  padding: 30px;
-}
+.panel-content { padding: 24px; }
 
-.school-overview {
-  margin-bottom: 30px;
-}
+.school-overview { margin-bottom: 24px; }
 
 .overview-card {
   display: flex;
   align-items: center;
-  gap: 20px;
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 16px;
+  padding: 16px 20px;
+  background: #f5f7fa;
+  border-radius: 10px;
+  border: 1px solid #e8eaed;
 }
 
-.overview-icon {
-  font-size: 40px;
-}
+.overview-icon { font-size: 36px; }
 
 .overview-info h3 {
-  margin: 0 0 8px 0;
-  font-size: 24px;
-  color: #ffffff;
+  margin: 0 0 4px 0;
+  font-size: 20px;
+  color: #2c3e50;
 }
 
 .overview-info p {
   margin: 0;
-  color: #b0bec5;
-  font-size: 16px;
+  color: #909399;
+  font-size: 14px;
 }
 
 .section-title {
-  margin: 0 0 20px 0;
-  font-size: 18px;
-  color: #ffffff;
-  border-left: 4px solid #2196f3;
-  padding-left: 15px;
+  margin: 0 0 16px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #2c3e50;
+  border-left: 3px solid #1677ff;
+  padding-left: 12px;
 }
 
-.compliance-overview {
-  margin-bottom: 40px;
-}
+.compliance-overview { margin-bottom: 32px; }
 
 .compliance-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
 }
 
 .compliance-card {
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 18px;
+  background: #f5f7fa;
+  border-radius: 10px;
+  border: 1px solid #e8eaed;
 }
 
 .compliance-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
 }
 
-.compliance-label {
-  font-size: 14px;
-  color: #b0bec5;
-}
+.compliance-label { font-size: 13px; color: #909399; }
 
-.compliance-target {
-  font-size: 12px;
-  color: #81c784;
-}
+.compliance-target { font-size: 12px; color: #52c41a; }
 
 .compliance-value {
-  font-size: 32px;
-  font-weight: bold;
-  color: #ffffff;
-  margin-bottom: 15px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 12px;
 }
 
 .compliance-bar {
-  height: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+  height: 6px;
+  background: #e8eaed;
+  border-radius: 3px;
   overflow: hidden;
 }
 
 .compliance-progress {
   height: 100%;
-  border-radius: 4px;
+  border-radius: 3px;
   transition: width 0.5s ease;
 }
 
-.compliance-progress.weekly {
-  background: linear-gradient(90deg, #64b5f6, #2196f3);
-}
+.compliance-progress.weekly  { background: linear-gradient(90deg, #69b1ff, #1677ff); }
+.compliance-progress.monthly { background: linear-gradient(90deg, #95de64, #52c41a); }
+.compliance-progress.total   { background: linear-gradient(90deg, #ffc069, #fa8c16); }
 
-.compliance-progress.monthly {
-  background: linear-gradient(90deg, #81c784, #4caf50);
-}
-
-.compliance-progress.total {
-  background: linear-gradient(90deg, #ffb74d, #ff9800);
-}
-
-.college-rankings {
-  margin-top: 40px;
-}
+.college-rankings { margin-top: 32px; }
 
 .rankings-table {
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 12px;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #e8eaed;
   overflow: hidden;
 }
 
@@ -395,75 +365,50 @@ export default {
   display: grid;
   grid-template-columns: 80px 1fr 100px 120px 200px;
   gap: 15px;
-  padding: 15px 20px;
-  background: rgba(255, 255, 255, 0.05);
-  font-weight: bold;
-  color: #b0bec5;
-  font-size: 14px;
+  padding: 12px 20px;
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #909399;
+  font-size: 13px;
 }
 
 .table-row {
   display: grid;
   grid-template-columns: 80px 1fr 100px 120px 200px;
   gap: 15px;
-  padding: 15px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  transition: background 0.3s;
+  padding: 14px 20px;
+  border-bottom: 1px solid #f0f2f5;
+  transition: background 0.15s;
 }
 
-.table-row:hover {
-  background: rgba(255, 255, 255, 0.03);
-}
+.table-row:last-child { border-bottom: none; }
 
-.table-row.top-rank {
-  background: rgba(255, 193, 7, 0.1);
-}
+.table-row:hover { background: #f5f7fa; }
+
+.table-row.top-rank { background: #fffbe6; }
+.table-row.top-rank:hover { background: #fff7cc; }
 
 .rank-badge {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 4px 8px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: bold;
-}
-
-.rank-badge.rank-1 {
-  background: linear-gradient(45deg, #ffd700, #ffed4e);
-  color: #333;
-}
-
-.rank-badge.rank-2 {
-  background: linear-gradient(45deg, #c0c0c0, #e8e8e8);
-  color: #333;
-}
-
-.rank-badge.rank-3 {
-  background: linear-gradient(45deg, #cd7f32, #daa520);
-  color: #fff;
-}
-
-.college-col {
-  color: #ffffff;
-  font-weight: 500;
-}
-
-.students-col {
-  color: #b0bec5;
-}
-
-.rate-value {
-  font-size: 18px;
-  font-weight: bold;
-  color: #4caf50;
-}
-
-.detail-rates {
-  display: flex;
-  flex-direction: column;
   gap: 4px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
 }
+
+.rank-badge.rank-1 { background: #fff7e6; color: #d48806; border: 1px solid #ffd666; }
+.rank-badge.rank-2 { background: #f5f5f5; color: #595959; border: 1px solid #d9d9d9; }
+.rank-badge.rank-3 { background: #fff2e8; color: #d4380d; border: 1px solid #ffbb96; }
+
+.college-col { color: #2c3e50; font-weight: 500; }
+
+.students-col { color: #909399; }
+
+.rate-value { font-size: 16px; font-weight: 700; color: #52c41a; }
+
+.detail-rates { display: flex; flex-direction: column; gap: 4px; }
 
 .rate-item {
   font-size: 12px;
@@ -471,56 +416,26 @@ export default {
   border-radius: 4px;
 }
 
-.rate-item.weekly {
-  background: rgba(33, 150, 243, 0.2);
-  color: #64b5f6;
-}
+.rate-item.weekly  { background: #e6f4ff; color: #1677ff; }
+.rate-item.monthly { background: #f6ffed; color: #52c41a; }
+.rate-item.total   { background: #fff7e6; color: #fa8c16; }
 
-.rate-item.monthly {
-  background: rgba(76, 175, 80, 0.2);
-  color: #81c784;
-}
-
-.rate-item.total {
-  background: rgba(255, 152, 0, 0.2);
-  color: #ffb74d;
-}
-
-/* 响应式设计 */
 @media (max-width: 1200px) {
   .table-header, .table-row {
     grid-template-columns: 60px 1fr 80px 100px 150px;
     gap: 10px;
-    padding: 12px 15px;
+    padding: 10px 14px;
     font-size: 13px;
-  }
-  
-  .detail-rates {
-    gap: 2px;
-  }
-  
-  .rate-item {
-    font-size: 11px;
   }
 }
 
 @media (max-width: 768px) {
-  .compliance-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .table-header, .table-row {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-  
-  .table-header > div, .table-row > div {
-    padding: 5px 0;
-  }
-  
-  .college-col::before { content: "院系: "; color: #b0bec5; }
-  .students-col::before { content: "学生数: "; color: #b0bec5; }
-  .rate-col::before { content: "综合达标率: "; color: #b0bec5; }
-  .detail-col::before { content: "详细达标率: "; color: #b0bec5; display: block; margin-bottom: 5px; }
+  .compliance-grid { grid-template-columns: 1fr; }
+  .table-header, .table-row { grid-template-columns: 1fr; gap: 6px; }
+  .table-header > div, .table-row > div { padding: 4px 0; }
+  .college-col::before  { content: "院系: ";    color: #909399; }
+  .students-col::before { content: "学生数: ";  color: #909399; }
+  .rate-col::before     { content: "综合达标率: "; color: #909399; }
+  .detail-col::before   { content: "详细达标率: "; color: #909399; display: block; margin-bottom: 4px; }
 }
 </style>

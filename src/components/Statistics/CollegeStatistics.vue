@@ -336,12 +336,298 @@ export default {
 
 <style scoped>
 .college-statistics {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border-radius: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e8eaed;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e8eaed;
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.icon { font-size: 20px; }
+
+.refresh-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: #fff;
+  color: #606266;
+  border: 1px solid #dcdfe6;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.refresh-btn:hover:not(:disabled) { border-color: #1677ff; color: #1677ff; }
+.refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.refresh-icon { animation: spin 1s linear infinite; }
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.loading-state, .no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #909399;
+}
+
+.loading-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #e8eaed;
+  border-left-color: #1677ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+.no-data-icon { font-size: 40px; margin-bottom: 12px; }
+
+.panel-content { padding: 24px; }
+
+.college-overview { margin-bottom: 24px; }
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.overview-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: #f5f7fa;
+  border-radius: 10px;
+  border: 1px solid #e8eaed;
+}
+
+.overview-icon { font-size: 28px; flex-shrink: 0; }
+
+.overview-info h3 { margin: 0 0 4px 0; font-size: 18px; color: #2c3e50; }
+.overview-info p  { margin: 0; color: #909399; font-size: 13px; }
+
+.section-title {
+  margin: 0 0 16px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #2c3e50;
+  border-left: 3px solid #1677ff;
+  padding-left: 12px;
+}
+
+.targets-info { margin-bottom: 24px; }
+
+.targets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+}
+
+.target-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px;
+  background: #f5f7fa;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid #e8eaed;
+}
+
+.target-label { font-size: 13px; color: #909399; }
+.target-value { font-size: 18px; font-weight: 700; color: #52c41a; }
+
+.compliance-overview { margin-bottom: 32px; }
+
+.compliance-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.compliance-card {
+  padding: 18px;
+  background: #f5f7fa;
+  border-radius: 10px;
+  border: 1px solid #e8eaed;
+}
+
+.compliance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.compliance-label { font-size: 13px; color: #909399; }
+.compliance-icon  { font-size: 18px; }
+
+.compliance-value {
+  font-size: 30px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 12px;
+}
+
+.compliance-bar {
+  height: 8px;
+  background: #e8eaed;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.compliance-progress { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+.compliance-progress.weekly  { background: linear-gradient(90deg, #69b1ff, #1677ff); }
+.compliance-progress.monthly { background: linear-gradient(90deg, #95de64, #52c41a); }
+.compliance-progress.total   { background: linear-gradient(90deg, #ffc069, #fa8c16); }
+
+.compliance-status { font-size: 12px; color: #52c41a; font-weight: 500; }
+
+.class-rankings { margin-top: 32px; }
+
+.rankings-container { display: flex; flex-direction: column; gap: 24px; }
+
+.top-three {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.podium-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 18px;
+  background: #f5f7fa;
+  border-radius: 12px;
+  border: 1px solid #e8eaed;
+  position: relative;
   overflow: hidden;
 }
+
+.podium-item.rank-1::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #ffd700, #ffed4e); }
+.podium-item.rank-2::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #c0c0c0, #e8e8e8); }
+.podium-item.rank-3::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #cd7f32, #daa520); }
+
+.podium-medal { font-size: 36px; margin-bottom: 8px; }
+.podium-rank  { font-size: 13px; color: #909399; margin-bottom: 4px; }
+.podium-name  { font-size: 15px; color: #2c3e50; font-weight: 600; margin-bottom: 6px; text-align: center; }
+.podium-rate  { font-size: 18px; color: #52c41a; font-weight: 700; }
+
+.rankings-table {
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #e8eaed;
+  overflow: hidden;
+}
+
+.table-header {
+  display: grid;
+  grid-template-columns: 80px 1fr 100px 120px 200px;
+  gap: 15px;
+  padding: 12px 20px;
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #909399;
+  font-size: 13px;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 100px 120px 200px;
+  gap: 15px;
+  padding: 13px 20px;
+  border-bottom: 1px solid #f0f2f5;
+  transition: background 0.15s;
+}
+
+.table-row:last-child { border-bottom: none; }
+.table-row:hover { background: #f5f7fa; }
+.table-row.top-rank { background: #fffbe6; }
+.table-row.top-rank:hover { background: #fff7cc; }
+.table-row.low-rank { background: #fff2f0; }
+.table-row.low-rank:hover { background: #ffe7e5; }
+
+.rank-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.rank-badge.rank-1 { background: #fff7e6; color: #d48806; border: 1px solid #ffd666; }
+.rank-badge.rank-2 { background: #f5f5f5; color: #595959; border: 1px solid #d9d9d9; }
+.rank-badge.rank-3 { background: #fff2e8; color: #d4380d; border: 1px solid #ffbb96; }
+
+.name-col     { color: #2c3e50; font-weight: 500; }
+.students-col { color: #909399; }
+
+.rate-value           { font-size: 16px; font-weight: 700; }
+.rate-value.excellent { color: #52c41a; }
+.rate-value.good      { color: #73d13d; }
+.rate-value.pass      { color: #fa8c16; }
+.rate-value.low       { color: #ff7a45; }
+.rate-value.poor      { color: #f5222d; }
+
+.detail-rates { display: flex; flex-direction: column; gap: 4px; }
+.rate-row     { display: flex; flex-direction: column; gap: 2px; }
+
+.rate-item { font-size: 12px; padding: 2px 6px; border-radius: 4px; }
+.rate-item.weekly  { background: #e6f4ff; color: #1677ff; }
+.rate-item.monthly { background: #f6ffed; color: #52c41a; }
+.rate-item.total   { background: #fff7e6; color: #fa8c16; }
+
+@media (max-width: 1200px) {
+  .table-header, .table-row {
+    grid-template-columns: 60px 1fr 80px 100px 150px;
+    gap: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 768px) {
+  .overview-grid, .compliance-grid, .top-three { grid-template-columns: 1fr; }
+  .table-header, .table-row { grid-template-columns: 1fr; gap: 6px; }
+  .table-header > div, .table-row > div { padding: 4px 0; }
+  .name-col::before     { content: "名称: ";    color: #909399; }
+  .students-col::before { content: "学生数: ";  color: #909399; }
+  .rate-col::before     { content: "综合达标率: "; color: #909399; }
+  .detail-col::before   { content: "详细达标率: "; color: #909399; display: block; margin-bottom: 4px; }
+}
+</style>
 
 .panel-header {
   display: flex;

@@ -397,7 +397,7 @@ export const api = {
     getTeacherAttendance: (params) => apiClient.get('/teaching/teacher/attendance', { params })
   },
 
-  // PE校园管理端API
+    // PE校园管理端API
   peManagement: {
     // 活动管理
     getActivities: (params) => apiClient.get('/pe/activities', { params }),
@@ -410,6 +410,10 @@ export const api = {
     getUser: (id) => apiClient.get(`/pe/users/${id}`),
     setUserRole: (id, data) => apiClient.put(`/pe/users/${id}/role`, data),
     getUserPointsHistory: (id, params) => apiClient.get(`/pe/users/${id}/points-history`, { params }),
+    // 强制登出（清除登录状态）
+    forceLogout: (id) => apiClient.post(`/pe/users/${id}/force-logout`),
+    // 修改手机号
+    updateUserPhone: (id, phoneNumber) => apiClient.put(`/pe/users/${id}/phone`, { phoneNumber }),
     
     // 早操管理
     getMorningExercises: (params) => apiClient.get('/pe/morning-exercises', { params }),
@@ -464,6 +468,62 @@ export const api = {
     
     // 获取院系统计数据 (院级管理员和校级管理员)
     getCollegeStatistics: () => apiClient.get('/pe/admin/statistics/college')
+  },
+
+  // 训练管理API
+  training: {
+    // 体能档案
+    getMyProfile: () => apiClient.get('/training/profile'),
+    getStudentProfile: (userId) => apiClient.get(`/training/profile/${userId}`),
+    uploadTiceData: (data) => apiClient.post('/training/profile/tice-data', data),
+    getClassProfiles: (params) => apiClient.get('/training/profiles/class', { params }),
+    getClassesProfiles: (params) => apiClient.get('/training/profiles/classes', { params }),
+    searchProfiles: (params) => apiClient.get('/training/profiles/search', { params }),
+    getClassOverview: (className) => apiClient.get('/training/profiles/class-overview', { params: { className } }),
+    triggerAiAnalysis: (userId) => apiClient.post(`/training/profile/${userId}/analyze`),
+    getAvailableClasses: () => apiClient.get('/training/classes'),
+
+    // 训练任务
+    createTask: (data) => apiClient.post('/training/tasks', data),
+    getTasks: (params) => apiClient.get('/training/tasks', { params }),
+    getTaskDetail: (taskId) => apiClient.get(`/training/tasks/${taskId}`),
+    getTaskRecords: (taskId, params) => apiClient.get(`/training/tasks/${taskId}/records`, { params }),
+    getMyTasks: () => apiClient.get('/training/my-tasks'),
+    updateTaskStatus: (taskId, status) => apiClient.put(`/training/tasks/${taskId}/status`, { status }),
+    deleteTask: (taskId) => apiClient.delete(`/training/tasks/${taskId}`),
+    getAiSuggestion: (data) => apiClient.post('/training/tasks/ai-suggestion', data),
+    getStats: () => apiClient.get('/training/stats')
+  },
+
+  // 课后作业统计API（管理端）
+  homeworkStats: {
+    getOverview: () => apiClient.get('/statistics/homework/overview'),
+    getTrend: () => apiClient.get('/statistics/homework/trend'),
+    getClassRank: () => apiClient.get('/statistics/homework/class-rank'),
+    getDepartmentRank: () => apiClient.get('/statistics/homework/department-rank'),
+    getDeptClassRank: () => apiClient.get('/statistics/homework/dept-class-rank')
+  },
+
+  // checkuser 库导入（仅超管）
+  checkUserImport: {
+    downloadStudentTemplate: () =>
+      apiClient.get('/checkuser/template/student', { responseType: 'blob' }),
+    downloadTeacherTemplate: () =>
+      apiClient.get('/checkuser/template/teacher', { responseType: 'blob' }),
+    importStudents: (file) => {
+      const form = new FormData()
+      form.append('file', file)
+      return apiClient.post('/checkuser/import/student', form, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+    },
+    importTeachers: (file) => {
+      const form = new FormData()
+      form.append('file', file)
+      return apiClient.post('/checkuser/import/teacher', form, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+    }
   }
 }
 
