@@ -19,7 +19,7 @@
         <div class="header-actions">
           <div class="activity-stats">
             <div class="stat-item">
-              <span class="stat-number">8</span>
+              <span class="stat-number">6</span>
               <span class="stat-label">功能模块</span>
             </div>
             <div class="stat-divider"></div>
@@ -43,33 +43,7 @@
           </div>
           
           <div class="modules-grid">
-            <div class="activity-card animate-slide-up" @click="$router.push('/group/pe-campus')" style="animation-delay: 0.1s">
-              <div class="card-header">
-                <div class="activity-icon pe-campus">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <circle cx="12" cy="12" r="1" fill="currentColor"/>
-                  </svg>
-                </div>
-                <div class="card-status">
-                  <span class="status-badge active">运行中</span>
-                </div>
-              </div>
-              <div class="card-content">
-                <h3 class="card-title">PE校园</h3>
-                <p class="card-description">举办体育比赛、参加校园竞技活动、赛事组织管理</p>
-                <div class="card-features">
-                  <span class="feature-tag">比赛管理</span>
-                  <span class="feature-tag">成绩统计</span>
-                </div>
-              </div>
-              <div class="card-footer">
-                <span class="action-text">进入模块</span>
-                <div class="action-arrow">→</div>
-              </div>
-            </div>
-
-            <div class="activity-card animate-slide-up" @click="$router.push('/group/morning-exercise')" style="animation-delay: 0.2s">
+            <div class="activity-card animate-slide-up" @click="$router.push('/group/morning-exercise')" style="animation-delay: 0.1s">
               <div class="card-header">
                 <div class="activity-icon morning">
                   <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -95,32 +69,7 @@
               </div>
             </div>
 
-            <div class="activity-card animate-slide-up" @click="$router.push('/group/extracurricular')" style="animation-delay: 0.3s">
-              <div class="card-header">
-                <div class="activity-icon extracurricular">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </div>
-                <div class="card-status">
-                  <span class="status-badge active">运行中</span>
-                </div>
-              </div>
-              <div class="card-content">
-                <h3 class="card-title">课外活动</h3>
-                <p class="card-description">课外体育活动安排、社团管理、兴趣小组组织</p>
-                <div class="card-features">
-                  <span class="feature-tag">活动安排</span>
-                  <span class="feature-tag">社团管理</span>
-                </div>
-              </div>
-              <div class="card-footer">
-                <span class="action-text">进入模块</span>
-                <div class="action-arrow">→</div>
-              </div>
-            </div>
-
-            <div class="activity-card animate-slide-up" @click="$router.push('/group/sunshine-run')" style="animation-delay: 0.4s">
+            <div class="activity-card animate-slide-up" @click="$router.push('/group/sunshine-run')" style="animation-delay: 0.2s">
               <div class="card-header">
                 <div class="activity-icon sunshine">
                   <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -148,7 +97,7 @@
               </div>
             </div>
 
-            <div class="activity-card animate-slide-up" @click="$router.push('/group/homework')" style="animation-delay: 0.45s">
+            <div class="activity-card animate-slide-up" @click="$router.push('/group/homework')" style="animation-delay: 0.3s">
               <div class="card-header">
                 <div class="activity-icon homework">
                   <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -174,7 +123,7 @@
               </div>
             </div>
 
-            <div class="activity-card animate-slide-up" @click="$router.push('/group/management')" style="animation-delay: 0.5s">
+            <div class="activity-card animate-slide-up" @click="$router.push('/group/management')" style="animation-delay: 0.4s">
               <div class="card-header">
                 <div class="activity-icon management">
                   <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -200,7 +149,7 @@
               </div>
             </div>
 
-            <div class="activity-card animate-slide-up" @click="$router.push('/group/activity')" style="animation-delay: 0.6s">
+            <div class="activity-card animate-slide-up" @click="$router.push('/group/activity')" style="animation-delay: 0.5s">
               <div class="card-header">
                 <div class="activity-icon activity">
                   <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -226,7 +175,7 @@
               </div>
             </div>
 
-            <div class="activity-card animate-slide-up" @click="$router.push('/group/race-results')" style="animation-delay: 0.7s">
+            <div class="activity-card animate-slide-up" @click="$router.push('/group/race-results')" style="animation-delay: 0.6s">
               <div class="card-header">
                 <div class="activity-icon race-results">
                   <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

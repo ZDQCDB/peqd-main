@@ -31,12 +31,8 @@ import PEScore from '@/views/Training/PEScore.vue'
 
 // 其他模块
 import PhysicalTest from '@/views/PhysicalTest.vue'
-import Equipment from '@/views/Equipment/Equipment.vue'
 import TeacherEquipment from '@/views/Equipment/TeacherEquipment.vue'
-import StudentEquipment from '@/views/Equipment/StudentEquipment.vue'
-import Venue from '@/views/Venue/Venue.vue'
 import VenueManagement from '@/views/Venue/VenueManagement.vue'
-import VenueReservation from '@/views/Venue/VenueReservation.vue'
 import Listening from '@/views/Listening.vue'
 import SportsEquipment from '@/views/SportsEquipment/SportsEquipment.vue'
 import EquipmentSharing from '@/views/SportsEquipment/EquipmentSharing.vue'
@@ -200,39 +196,23 @@ const routes = [
   },
   {
     path: '/equipment',
-    name: 'Equipment',
-    component: Equipment,
-    meta: { requiresAuth: true }
+    redirect: '/equipment/teacher'
   },
   {
     path: '/equipment/teacher',
     name: 'TeacherEquipment',
     component: TeacherEquipment,
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/equipment/student',
-    name: 'StudentEquipment',
-    component: StudentEquipment,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true, roles: ['department_admin', 'school_admin', 'super_admin'] }
   },
   {
     path: '/venue',
-    name: 'Venue',
-    component: Venue,
-    meta: { requiresAuth: true }
+    redirect: '/venue/management'
   },
   {
     path: '/venue/management',
     name: 'VenueManagement',
     component: VenueManagement,
     meta: { requiresAuth: true, roles: ['department_admin', 'school_admin', 'super_admin'] }
-  },
-  {
-    path: '/venue/reservation',
-    name: 'VenueReservation',
-    component: VenueReservation,
-    meta: { requiresAuth: true }
   },
   {
     path: '/listening',

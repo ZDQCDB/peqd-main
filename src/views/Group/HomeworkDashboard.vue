@@ -205,11 +205,13 @@ const isDeptAdminRole = computed(() =>
 
 // ── 颜色 / 标签 ──────────────────────────────────────────────────────────────
 const TYPE_MAP = {
-  SQUAT:     { label: '深蹲',     color: '#1677ff' },
-  SIT_UP:    { label: '仰卧起坐', color: '#52c41a' },
-  PUSH_UP:   { label: '俯卧撑',   color: '#fa8c16' },
-  PULL_UP:   { label: '引体向上', color: '#722ed1' },
-  JUMP_ROPE: { label: '跳绳',     color: '#eb2f96' },
+  SQUAT:        { label: '深蹲',     color: '#1677ff' },
+  SIT_UP:       { label: '仰卧起坐', color: '#52c41a' },
+  PUSH_UP:      { label: '俯卧撑',   color: '#fa8c16' },
+  PULL_UP:      { label: '引体向上', color: '#722ed1' },
+  JUMP_ROPE:    { label: '跳绳',     color: '#eb2f96' },
+  JUMPING_JACK: { label: '开合跳',   color: '#00897b' },
+  HIGH_KNEES:   { label: '高抬腿',   color: '#f4511e' },
 }
 const typeLabel = (t) => TYPE_MAP[t]?.label ?? t
 const typeColor = (t) => TYPE_MAP[t]?.color ?? '#8c8c8c'

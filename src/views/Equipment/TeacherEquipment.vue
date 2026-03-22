@@ -1,15 +1,26 @@
-﻿<template>
+<template>
   <div class="teacher-equipment">
     <div class="header-section">
       <h2>器材库存管理</h2>
       <div class="header-actions">
-        <button class="btn btn-primary" @click="showAddModal = true">
-          <span>➕</span> 添加器材
-        </button>
-        <button class="btn btn-success" @click="refreshData">
-          <span>🔄</span> 刷新
-        </button>
+        <button class="btn btn-primary" @click="showAddModal = true">添加器材</button>
+        <button class="btn btn-primary" @click="downloadTemplate">下载导入模板</button>
+        <label class="btn btn-success import-label">
+          批量导入
+          <input type="file" accept=".xlsx,.xls" @change="handleImport" style="display:none" ref="importInput" />
+        </label>
+        <button class="btn btn-success" @click="refreshData">刷新</button>
       </div>
+    </div>
+
+    <!-- 导入结果提示 -->
+    <div v-if="importResult" class="import-result card">
+      <span>导入完成：成功 <strong>{{ importResult.imported }}</strong> 条</span>
+      <span v-if="importResult.errors && importResult.errors.length"> ，错误 {{ importResult.errors.length }} 条</span>
+      <ul v-if="importResult.errors && importResult.errors.length" class="error-list">
+        <li v-for="err in importResult.errors" :key="err">{{ err }}</li>
+      </ul>
+      <button class="btn btn-small" @click="importResult = null">关闭</button>
     </div>
 
     <!-- 搜索筛选区域 -->
@@ -58,6 +69,7 @@
               <th>借出</th>
               <th>损坏</th>
               <th>存放位置</th>
+              <th>所属学校</th>
               <th>操作</th>
             </tr>
           </thead>
@@ -73,6 +85,7 @@
               <td class="quantity-borrowed">{{ item.borrowed_quantity }}</td>
               <td class="quantity-damaged">{{ item.damaged_quantity }}</td>
               <td>{{ item.storage_location }}</td>
+              <td>{{ item.school || '—' }}</td>
               <td class="actions">
                 <button class="btn btn-small btn-primary" @click="editItem(item)">
                   编辑
@@ -275,6 +288,7 @@ export default {
       categories: [],
       equipmentItems: [],
       pendingApplications: [],
+      importResult: null,
       
       // 搜索筛选
       filters: {
@@ -384,7 +398,32 @@ export default {
     async refreshData() {
       await this.initData()
     },
-    
+
+    async downloadTemplate() {
+      try {
+        const res = await api.importData.getEquipmentTemplate()
+        const url = URL.createObjectURL(new Blob([res]))
+        const a = document.createElement('a')
+        a.href = url; a.download = 'equipment_import_template.xlsx'; a.click()
+        URL.revokeObjectURL(url)
+      } catch (e) {
+        alert('下载失败: ' + e.message)
+      }
+    },
+
+    async handleImport(e) {
+      const file = e.target.files[0]
+      if (!file) return
+      this.$refs.importInput.value = ''
+      try {
+        const res = await api.importData.importEquipment(file)
+        this.importResult = res.data
+        await this.initData()
+      } catch (e) {
+        alert('导入失败: ' + e.message)
+      }
+    },
+
     editItem(item) {
       this.currentItem = item
       this.equipmentForm = { ...item }
@@ -829,5 +868,29 @@ export default {
 .stock-item span {
   font-weight: 600;
   color: #000000d9;
+}
+
+.import-label {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+.import-result {
+  padding: 14px 20px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 14px;
+  color: #000000d9;
+}
+
+.error-list {
+  margin: 4px 0 0 16px;
+  padding: 0;
+  color: #f56c6c;
+  font-size: 13px;
 }
 </style> 

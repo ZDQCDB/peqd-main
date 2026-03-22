@@ -504,6 +504,68 @@ export const api = {
     getDeptClassRank: () => apiClient.get('/statistics/homework/dept-class-rank')
   },
 
+  // 批量导入API
+  importData: {
+    // 下载场馆导入模板
+    getVenueTemplate: () => apiClient.get('/import/venues/template', { responseType: 'blob' }),
+    // 批量导入场馆
+    importVenues: (file) => {
+      const form = new FormData()
+      form.append('file', file)
+      return apiClient.post('/import/venues', form, { headers: { 'Content-Type': 'multipart/form-data' } })
+    },
+    // 下载器材导入模板
+    getEquipmentTemplate: () => apiClient.get('/import/equipment/template', { responseType: 'blob' }),
+    // 批量导入器材
+    importEquipment: (file) => {
+      const form = new FormData()
+      form.append('file', file)
+      return apiClient.post('/import/equipment', form, { headers: { 'Content-Type': 'multipart/form-data' } })
+    }
+  },
+
+  // 场馆管理API
+  venue: {
+    // 场馆列表（支持 type/status/keyword 筛选）
+    getVenues: (params) => apiClient.get('/venue/venues', { params }),
+
+    // 场馆详情
+    getVenue: (id) => apiClient.get(`/venue/venues/${id}`),
+
+    // 添加场馆（院级及以上管理员）
+    addVenue: (data) => apiClient.post('/venue/venues', data),
+
+    // 更新场馆信息（院级及以上管理员）
+    updateVenue: (id, data) => apiClient.put(`/venue/venues/${id}`, data),
+
+    // 更新场馆状态（院级及以上管理员）
+    updateVenueStatus: (id, status) => apiClient.put(`/venue/venues/${id}/status`, { status }),
+
+    // 删除场馆（院级及以上管理员）
+    deleteVenue: (id) => apiClient.delete(`/venue/venues/${id}`),
+
+    // 获取某场馆某日期的预约安排（日历视图）
+    getSchedule: (venueId, date) => apiClient.get('/venue/reservations/schedule', { params: { venue_id: venueId, date } }),
+
+    // 获取所有预约（管理端，支持筛选）
+    getAllReservations: (params) => apiClient.get('/venue/reservations', { params }),
+
+    // 获取我的预约
+    getMyReservations: () => apiClient.get('/venue/reservations/my'),
+
+    // 创建预约
+    createReservation: (data) => apiClient.post('/venue/reservations', data),
+
+    // 审批预约（院级及以上管理员）
+    approveReservation: (id, data) => apiClient.post(`/venue/reservations/${id}/approve`, data),
+
+    // 取消预约
+    cancelReservation: (id) => apiClient.post(`/venue/reservations/${id}/cancel`),
+
+    // 标记预约完成（院级及以上管理员）
+    completeReservation: (id) => apiClient.post(`/venue/reservations/${id}/complete`)
+  },
+
   // checkuser 库导入（仅超管）
   checkUserImport: {
     downloadStudentTemplate: () =>
