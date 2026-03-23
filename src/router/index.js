@@ -22,6 +22,8 @@ import SunshineRun from '@/views/Group/SunshineRun.vue'
 import HomeworkDashboard from '@/views/Group/HomeworkDashboard.vue'
 import PEManagement from '@/views/Group/PEManagement.vue'
 import RaceResults from '@/views/Group/RaceResults.vue'
+import SportsManagement from '@/views/Group/SportsManagement.vue'
+import SportsMeetingDetail from '@/views/Group/SportsMeetingDetail.vue'
 
 // 训练模块
 import Training from '@/views/Training/Training.vue'
@@ -163,6 +165,18 @@ const routes = [
     name: 'RaceResults',
     component: RaceResults,
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/group/sports-management',
+    name: 'SportsManagement',
+    component: SportsManagement,
+    meta: { requiresAuth: true, roles: ['school_admin', 'super_admin'] }
+  },
+  {
+    path: '/group/sports-management/:id',
+    name: 'SportsMeetingDetail',
+    component: SportsMeetingDetail,
+    meta: { requiresAuth: true, roles: ['school_admin', 'super_admin'] }
   },
   {
     path: '/training',

@@ -11,9 +11,19 @@
             返回群体管理
           </button>
           <div class="page-info">
-            <h1 class="page-title">运动员比赛成绩</h1>
-            <p class="page-subtitle">Race Results Management</p>
+            <h1 class="page-title">比赛成绩文件</h1>
+            <p class="page-subtitle">Race Results · Excel</p>
           </div>
+        </div>
+        <div class="header-right">
+          <button class="upload-trigger-btn" @click="openUpload">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <polyline points="17 8 12 3 7 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <line x1="12" y1="3" x2="12" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            上传成绩文件
+          </button>
         </div>
       </div>
     </header>
@@ -22,159 +32,34 @@
     <main class="main-content">
       <div class="content-container">
 
-        <!-- 统计卡片 -->
-        <section class="stats-section">
-          <div class="stats-grid">
-            <div class="stat-card total">
-              <div class="stat-icon">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/>
-                  <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
-                  <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2"/>
-                </svg>
-              </div>
-              <div class="stat-info">
-                <span class="stat-value">{{ statsLoading ? '—' : (statistics.totalCount ?? '—') }}</span>
-                <span class="stat-label">总参赛人数</span>
-              </div>
-            </div>
-            <div class="stat-card finished">
-              <div class="stat-icon">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2"/>
-                  <polyline points="22 4 12 14.01 9 11.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-              <div class="stat-info">
-                <span class="stat-value">{{ statsLoading ? '—' : (statistics.finishedCount ?? '—') }}</span>
-                <span class="stat-label">完赛人数</span>
-              </div>
-            </div>
-            <div class="stat-card unfinished">
-              <div class="stat-icon">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-                  <line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                  <line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-              </div>
-              <div class="stat-info">
-                <span class="stat-value">{{ statsLoading ? '—' : (statistics.unfinishedCount ?? '—') }}</span>
-                <span class="stat-label">未完赛人数</span>
-              </div>
-            </div>
-            <div class="stat-card rate">
-              <div class="stat-icon">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <line x1="18" y1="20" x2="18" y2="10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                  <line x1="12" y1="20" x2="12" y2="4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                  <line x1="6" y1="20" x2="6" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-              </div>
-              <div class="stat-info">
-                <span class="stat-value">{{ finishRate }}</span>
-                <span class="stat-label">完赛率</span>
-              </div>
-            </div>
-          </div>
-        </section>
-
         <!-- 筛选区域 -->
         <section class="filter-section">
-          <div class="filter-header">
-            <h3 class="filter-title">条件筛选</h3>
-            <button class="reset-btn" @click="resetFilters">重置筛选</button>
-          </div>
           <div class="filter-form">
-            <div class="filter-row">
-              <!-- 关键词 -->
-              <div class="filter-group">
-                <label class="filter-label">关键词</label>
-                <input
-                  v-model="filters.keyword"
-                  type="text"
-                  placeholder="学号或姓名"
-                  class="filter-input"
-                  @keyup.enter="handleSearch"
-                />
-              </div>
-              <!-- 性别 -->
-              <div class="filter-group">
-                <label class="filter-label">性别</label>
-                <select v-model="filters.gender" class="filter-select">
-                  <option value="">全部</option>
-                  <option value="男">男</option>
-                  <option value="女">女</option>
-                </select>
-              </div>
-              <!-- 教师姓名 -->
-              <div class="filter-group">
-                <label class="filter-label">上传教师</label>
-                <input
-                  v-model="filters.teacherName"
-                  type="text"
-                  placeholder="教师姓名"
-                  class="filter-input"
-                  @keyup.enter="handleSearch"
-                />
-              </div>
-              <!-- 学校（仅 super_admin 可见） -->
-              <div v-if="isSuperAdmin" class="filter-group">
-                <label class="filter-label">学校</label>
-                <input
-                  v-model="filters.school"
-                  type="text"
-                  placeholder="学校名称"
-                  class="filter-input"
-                  @keyup.enter="handleSearch"
-                />
-              </div>
+            <div class="filter-group">
+              <label class="filter-label">教师姓名</label>
+              <input v-model="filters.teacherName" type="text" placeholder="教师姓名" class="filter-input" @keyup.enter="handleSearch" />
             </div>
-            <div class="filter-row">
-              <!-- 上传日期范围 -->
-              <div class="filter-group">
-                <label class="filter-label">上传日期起</label>
-                <input v-model="filters.startDate" type="date" class="filter-input" />
-              </div>
-              <div class="filter-group">
-                <label class="filter-label">上传日期止</label>
-                <input v-model="filters.endDate" type="date" class="filter-input" />
-              </div>
-              <!-- 操作按钮 -->
-              <div class="filter-group filter-actions-group">
-                <button class="search-btn" @click="handleSearch">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
-                    <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                  查询
-                </button>
-              </div>
+            <div v-if="isSuperAdmin" class="filter-group">
+              <label class="filter-label">学校</label>
+              <input v-model="filters.school" type="text" placeholder="学校名称" class="filter-input" @keyup.enter="handleSearch" />
+            </div>
+            <div class="filter-group filter-actions-group">
+              <button class="search-btn" @click="handleSearch">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+                  <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                查询
+              </button>
+              <button class="reset-btn" @click="resetFilters">重置</button>
             </div>
           </div>
         </section>
 
-        <!-- 数据表格 -->
+        <!-- 文件列表 -->
         <section class="table-section">
           <div class="table-toolbar">
-            <div class="toolbar-left">
-              <span class="result-count">共 {{ pagination.total }} 条记录</span>
-              <span v-if="selectedIds.length > 0" class="selected-hint">已选 {{ selectedIds.length }} 条</span>
-            </div>
-            <div class="toolbar-right">
-              <button
-                v-if="canDelete && selectedIds.length > 0"
-                class="batch-delete-btn"
-                @click="handleBatchDelete"
-              >
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <polyline points="3 6 5 6 21 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M10 11v6M14 11v6M9 6V4h6v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                批量删除
-              </button>
-            </div>
+            <span class="result-count">共 {{ pagination.total }} 个文件</span>
           </div>
 
           <div class="table-wrapper">
@@ -186,66 +71,49 @@
             <table v-else class="data-table">
               <thead>
                 <tr>
-                  <th v-if="canDelete" class="col-check">
-                    <input type="checkbox" :checked="isAllSelected" @change="toggleSelectAll" />
-                  </th>
-                  <th>学号</th>
-                  <th>姓名</th>
+                  <th>文件名</th>
                   <th v-if="isSuperAdmin">学校</th>
-                  <th>性别</th>
-                  <th>完成圈数</th>
-                  <th>成绩</th>
-                  <th>完赛状态</th>
                   <th>上传教师</th>
-                  <th>上传时间</th>
+                  <th>比赛时间</th>
+                  <th>文件大小</th>
+                  <th>入库时间</th>
                   <th>操作</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-if="list.length === 0">
-                  <td :colspan="canDelete ? (isSuperAdmin ? 11 : 10) : (isSuperAdmin ? 10 : 9)" class="empty-row">
+                  <td :colspan="isSuperAdmin ? 7 : 6" class="empty-row">
                     <div class="empty-state">
                       <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
-                        <path d="M9 9h.01M15 9h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        <path d="M9 15a3 3 0 0 0 6 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                        <polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
                       </svg>
-                      暂无数据
+                      暂无成绩文件
                     </div>
                   </td>
                 </tr>
                 <tr v-for="row in list" :key="row.id" class="data-row">
-                  <td v-if="canDelete" class="col-check">
-                    <input
-                      type="checkbox"
-                      :checked="selectedIds.includes(row.id)"
-                      @change="toggleSelect(row.id)"
-                    />
+                  <td>
+                    <div class="filename-cell">
+                      <svg class="file-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                        <polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                      </svg>
+                      <span class="filename-text">{{ row.originalFilename }}</span>
+                    </div>
                   </td>
-                  <td>{{ row.studentNumber }}</td>
-                  <td class="name-cell">{{ row.name }}</td>
                   <td v-if="isSuperAdmin">{{ row.school }}</td>
-                  <td>
-                    <span :class="['gender-tag', row.gender === '男' ? 'male' : 'female']">
-                      {{ row.gender }}
-                    </span>
-                  </td>
-                  <td>{{ row.totalLaps }} 圈</td>
-                  <td class="time-cell">
-                    <span v-if="row.finalTime" class="time-value">{{ row.finalTime }}</span>
-                    <span v-else class="no-time">—</span>
-                  </td>
-                  <td>
-                    <span :class="['status-tag', row.finished ? 'finished' : 'unfinished']">
-                      {{ row.finished ? '已完赛' : '未完赛' }}
-                    </span>
-                  </td>
                   <td>{{ row.teacherName }}</td>
-                  <td class="date-cell">{{ formatDate(row.uploadedAt) }}</td>
+                  <td class="date-cell">{{ formatDateTime(row.uploadedAt) }}</td>
+                  <td class="size-cell">{{ formatSize(row.fileSize) }}</td>
+                  <td class="date-cell">{{ formatDateTime(row.createdAt) }}</td>
                   <td>
                     <div class="action-btns">
-                      <button class="action-btn view" @click="openDetail(row.id)">详情</button>
-                      <button v-if="canDelete" class="action-btn delete" @click="handleDelete(row)">删除</button>
+                      <button class="action-btn download" :disabled="downloadingId === row.id" @click="handleDownload(row)">
+                        <span v-if="downloadingId === row.id">下载中...</span>
+                        <span v-else>下载</span>
+                      </button>
+                      <button v-if="canDelete" class="action-btn delete" @click="confirmDelete(row)">删除</button>
                     </div>
                   </td>
                 </tr>
@@ -255,19 +123,9 @@
 
           <!-- 分页 -->
           <div class="pagination">
-            <button
-              class="page-btn"
-              :disabled="pagination.page <= 1"
-              @click="changePage(pagination.page - 1)"
-            >上一页</button>
-            <span class="page-info">
-              第 {{ pagination.page }} / {{ pagination.totalPages }} 页
-            </span>
-            <button
-              class="page-btn"
-              :disabled="pagination.page >= pagination.totalPages"
-              @click="changePage(pagination.page + 1)"
-            >下一页</button>
+            <button class="page-btn" :disabled="pagination.page <= 1" @click="changePage(pagination.page - 1)">上一页</button>
+            <span class="page-info-text">第 {{ pagination.page }} / {{ pagination.totalPages }} 页</span>
+            <button class="page-btn" :disabled="pagination.page >= pagination.totalPages" @click="changePage(pagination.page + 1)">下一页</button>
             <select v-model.number="pagination.pageSize" class="page-size-select" @change="handlePageSizeChange">
               <option :value="10">10条/页</option>
               <option :value="20">20条/页</option>
@@ -275,87 +133,86 @@
             </select>
           </div>
         </section>
+
       </div>
     </main>
 
-    <!-- 详情弹窗 -->
-    <div v-if="detailVisible" class="modal-overlay" @click.self="detailVisible = false">
-      <div class="modal-card">
+    <!-- 上传弹窗 -->
+    <div v-if="uploadVisible" class="modal-overlay" @click.self="closeUpload">
+      <div class="upload-card">
         <div class="modal-header">
-          <h3 class="modal-title">成绩详情</h3>
-          <button class="modal-close" @click="detailVisible = false">
+          <h3 class="modal-title">上传成绩文件</h3>
+          <button class="modal-close" @click="closeUpload">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
           </button>
         </div>
-        <div v-if="detailLoading" class="modal-loading">
-          <div class="loading-spinner"></div>
-          加载中...
-        </div>
-        <div v-else-if="detail" class="modal-body">
-          <div class="detail-grid">
-            <div class="detail-item">
-              <span class="detail-label">学号</span>
-              <span class="detail-value">{{ detail.studentNumber }}</span>
+        <div class="upload-body">
+          <!-- 拖拽 / 点击选文件区域 -->
+          <div
+            class="drop-zone"
+            :class="{ 'drag-over': isDragOver, 'has-file': !!uploadFile }"
+            @dragover.prevent="isDragOver = true"
+            @dragleave.prevent="isDragOver = false"
+            @drop.prevent="onDrop"
+            @click="$refs.fileInput.click()"
+          >
+            <input ref="fileInput" type="file" accept=".xlsx" style="display:none" @change="onFileSelect" />
+            <template v-if="!uploadFile">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <polyline points="17 8 12 3 7 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="12" y1="3" x2="12" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <p class="drop-hint">点击或拖拽 <strong>.xlsx</strong> 文件到此处</p>
+            </template>
+            <template v-else>
+              <svg class="file-ok-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                <polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+              </svg>
+              <p class="selected-filename">{{ uploadFile.name }}</p>
+              <p class="selected-size">{{ formatSize(uploadFile.size) }}</p>
+              <button class="reselect-btn" @click.stop="$refs.fileInput.click()">重新选择</button>
+            </template>
+          </div>
+
+          <!-- 元信息字段 -->
+          <div class="upload-fields">
+            <div class="field-group">
+              <label class="field-label">学校 <span class="required">*</span></label>
+              <input v-model="uploadForm.school" type="text" class="field-input" placeholder="学校名称" />
             </div>
-            <div class="detail-item">
-              <span class="detail-label">姓名</span>
-              <span class="detail-value">{{ detail.name }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">学校</span>
-              <span class="detail-value">{{ detail.school }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">性别</span>
-              <span class="detail-value">
-                <span :class="['gender-tag', detail.gender === '男' ? 'male' : 'female']">{{ detail.gender }}</span>
-              </span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">完成圈数</span>
-              <span class="detail-value">{{ detail.totalLaps }} 圈</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">最终成绩</span>
-              <span class="detail-value time-value">{{ detail.finalTime || '—' }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">成绩(毫秒)</span>
-              <span class="detail-value">{{ detail.finalTimeMs != null ? detail.finalTimeMs + ' ms' : '—' }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">完赛状态</span>
-              <span class="detail-value">
-                <span :class="['status-tag', detail.finished ? 'finished' : 'unfinished']">
-                  {{ detail.finished ? '已完赛' : '未完赛' }}
-                </span>
-              </span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">上传教师</span>
-              <span class="detail-value">{{ detail.teacherName }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">上传者ID</span>
-              <span class="detail-value mono">{{ detail.uploaderId }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">比赛时间</span>
-              <span class="detail-value">{{ formatDateTime(detail.uploadedAt) }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">入库时间</span>
-              <span class="detail-value">{{ formatDateTime(detail.createdAt) }}</span>
+            <div class="field-group">
+              <label class="field-label">上传教师</label>
+              <input v-model="uploadForm.teacherName" type="text" class="field-input" placeholder="教师姓名" />
             </div>
           </div>
+
+          <!-- 错误提示 -->
+          <div v-if="uploadError" class="upload-error">{{ uploadError }}</div>
+
+          <!-- 成功提示 -->
+          <div v-if="uploadSuccess" class="upload-success">
+            ✓ 上传成功！文件已保存。
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="cancel-btn" @click="closeUpload">关闭</button>
+          <button
+            class="submit-btn"
+            :disabled="uploading || !uploadFile"
+            @click="doUpload"
+          >
+            {{ uploading ? '上传中...' : '确认上传' }}
+          </button>
         </div>
       </div>
     </div>
 
     <!-- 删除确认弹窗 -->
-    <div v-if="deleteConfirmVisible" class="modal-overlay" @click.self="deleteConfirmVisible = false">
+    <div v-if="deleteVisible" class="modal-overlay" @click.self="deleteVisible = false">
       <div class="confirm-card">
         <div class="confirm-icon danger">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -365,10 +222,10 @@
           </svg>
         </div>
         <h3 class="confirm-title">确认删除</h3>
-        <p class="confirm-msg">{{ deleteConfirmMsg }}</p>
+        <p class="confirm-msg">确定要删除文件「{{ pendingDeleteRow && pendingDeleteRow.originalFilename }}」吗？此操作不可撤销。</p>
         <div class="confirm-actions">
-          <button class="confirm-cancel" @click="deleteConfirmVisible = false">取消</button>
-          <button class="confirm-ok danger" :disabled="deleteLoading" @click="confirmDelete">
+          <button class="confirm-cancel" @click="deleteVisible = false">取消</button>
+          <button class="confirm-ok danger" :disabled="deleteLoading" @click="doDelete">
             {{ deleteLoading ? '删除中...' : '确认删除' }}
           </button>
         </div>
@@ -377,9 +234,7 @@
 
     <!-- 全局消息提示 -->
     <transition name="msg-fade">
-      <div v-if="message.visible" :class="['message-toast', message.type]">
-        {{ message.text }}
-      </div>
+      <div v-if="message.visible" :class="['message-toast', message.type]">{{ message.text }}</div>
     </transition>
   </div>
 </template>
@@ -391,71 +246,41 @@ export default {
   name: 'RaceResults',
   data() {
     return {
-      // 用户角色信息
       userRole: '',
       userSchool: '',
 
-      // 统计数据
-      statistics: {},
-      statsLoading: false,
-
-      // 列表数据
       list: [],
       listLoading: false,
 
-      // 筛选条件
-      filters: {
-        keyword: '',
-        gender: '',
-        teacherName: '',
-        school: '',
-        startDate: '',
-        endDate: ''
-      },
+      filters: { teacherName: '', school: '' },
 
-      // 分页
-      pagination: {
-        page: 1,
-        pageSize: 20,
-        total: 0,
-        totalPages: 1
-      },
+      pagination: { page: 1, pageSize: 20, total: 0, totalPages: 1 },
 
-      // 多选
-      selectedIds: [],
+      // 上传弹窗
+      uploadVisible: false,
+      uploadFile: null,
+      isDragOver: false,
+      uploading: false,
+      uploadError: '',
+      uploadSuccess: false,
+      uploadForm: { school: '', teacherName: '' },
 
-      // 详情弹窗
-      detailVisible: false,
-      detailLoading: false,
-      detail: null,
+      // 下载
+      downloadingId: null,
 
-      // 删除相关
-      deleteConfirmVisible: false,
-      deleteConfirmMsg: '',
+      // 删除
+      deleteVisible: false,
       deleteLoading: false,
-      pendingDeleteIds: [],
-      isBatchDelete: false,
+      pendingDeleteRow: null,
 
-      // 消息提示
       message: { visible: false, type: 'success', text: '' },
       messageTimer: null
     }
   },
   computed: {
-    isSuperAdmin() {
-      return this.userRole === 'super_admin'
-    },
+    isSuperAdmin() { return this.userRole === 'super_admin' },
     canDelete() {
       return ['department_admin', 'school_admin', 'super_admin'].includes(this.userRole)
-    },
-    isAllSelected() {
-      return this.list.length > 0 && this.list.every(r => this.selectedIds.includes(r.id))
-    },
-    finishRate() {
-      const total = this.statistics.totalCount
-      const finished = this.statistics.finishedCount
-      if (!total || total === 0) return '—'
-      return Math.round((finished / total) * 100) + '%'
     }
   },
   mounted() {
@@ -467,140 +292,128 @@ export default {
         const raw = localStorage.getItem('userInfo')
         if (raw) {
           const user = JSON.parse(raw)
-          this.userRole = user.userType || user.role || ''
-          this.userSchool = user.school || ''
+          this.userRole    = user.userType || user.role || ''
+          this.userSchool  = user.school   || ''
+          // 非超管默认填入本校
+          if (this.userRole !== 'super_admin') {
+            this.uploadForm.school = this.userSchool
+          }
+          // 教师名默认填入
+          if (user.realName) this.uploadForm.teacherName = user.realName
         }
-      } catch (e) {
-        // ignore
-      }
-      this.loadStatistics()
+      } catch (e) { /* ignore */ }
       this.loadList()
-    },
-
-    async loadStatistics() {
-      this.statsLoading = true
-      try {
-        const params = {}
-        if (this.isSuperAdmin && this.filters.school) params.school = this.filters.school
-        const res = await api.raceResults.getStatistics(params)
-        this.statistics = res.data || {}
-      } catch (e) {
-        this.showMessage('加载统计数据失败：' + e.message, 'error')
-      } finally {
-        this.statsLoading = false
-      }
     },
 
     async loadList() {
       this.listLoading = true
-      this.selectedIds = []
       try {
-        const params = {
-          page: this.pagination.page,
-          pageSize: this.pagination.pageSize
-        }
-        if (this.filters.keyword) params.keyword = this.filters.keyword
-        if (this.filters.gender) params.gender = this.filters.gender
+        const params = { page: this.pagination.page, pageSize: this.pagination.pageSize }
         if (this.filters.teacherName) params.teacherName = this.filters.teacherName
-        if (this.filters.startDate) params.startDate = this.filters.startDate
-        if (this.filters.endDate) params.endDate = this.filters.endDate
         if (this.isSuperAdmin && this.filters.school) params.school = this.filters.school
+        else if (!this.isSuperAdmin && this.userSchool) params.school = this.userSchool
 
-        const res = await api.raceResults.getList(params)
+        const res = await api.raceExcel.getList(params)
         const data = res.data || {}
-        this.list = data.list || []
-        this.pagination.total = data.total || 0
+        this.list               = data.list       || []
+        this.pagination.total      = data.total      || 0
         this.pagination.totalPages = data.totalPages || 1
-        this.pagination.page = data.page || 1
+        this.pagination.page       = data.page       || 1
       } catch (e) {
-        this.showMessage('加载成绩列表失败：' + e.message, 'error')
+        this.showMessage('加载文件列表失败：' + e.message, 'error')
       } finally {
         this.listLoading = false
       }
     },
 
-    handleSearch() {
-      this.pagination.page = 1
-      this.loadStatistics()
-      this.loadList()
-    },
+    handleSearch() { this.pagination.page = 1; this.loadList() },
+    resetFilters()  { this.filters = { teacherName: '', school: '' }; this.pagination.page = 1; this.loadList() },
+    changePage(p)   { if (p < 1 || p > this.pagination.totalPages) return; this.pagination.page = p; this.loadList() },
+    handlePageSizeChange() { this.pagination.page = 1; this.loadList() },
 
-    resetFilters() {
-      this.filters = { keyword: '', gender: '', teacherName: '', school: '', startDate: '', endDate: '' }
-      this.pagination.page = 1
-      this.loadStatistics()
-      this.loadList()
+    // ── 上传 ────────────────────────────────────────────────────────────
+    openUpload() {
+      this.uploadFile    = null
+      this.uploadError   = ''
+      this.uploadSuccess = false
+      this.uploading     = false
+      this.uploadVisible = true
     },
-
-    changePage(page) {
-      if (page < 1 || page > this.pagination.totalPages) return
-      this.pagination.page = page
-      this.loadList()
+    closeUpload() {
+      if (this.uploading) return
+      this.uploadVisible = false
     },
-
-    handlePageSizeChange() {
-      this.pagination.page = 1
-      this.loadList()
+    onFileSelect(e) {
+      const f = e.target.files[0]
+      if (f) this.setFile(f)
+      e.target.value = ''
     },
-
-    toggleSelect(id) {
-      const idx = this.selectedIds.indexOf(id)
-      if (idx === -1) this.selectedIds.push(id)
-      else this.selectedIds.splice(idx, 1)
+    onDrop(e) {
+      this.isDragOver = false
+      const f = e.dataTransfer.files[0]
+      if (f) this.setFile(f)
     },
-
-    toggleSelectAll(e) {
-      if (e.target.checked) {
-        this.selectedIds = this.list.map(r => r.id)
-      } else {
-        this.selectedIds = []
+    setFile(f) {
+      if (!f.name.toLowerCase().endsWith('.xlsx')) {
+        this.uploadError = '仅支持 .xlsx 格式文件'
+        return
       }
+      this.uploadFile  = f
+      this.uploadError = ''
     },
-
-    async openDetail(id) {
-      this.detailVisible = true
-      this.detail = null
-      this.detailLoading = true
+    async doUpload() {
+      if (!this.uploadFile) return
+      if (!this.uploadForm.school.trim()) { this.uploadError = '请填写学校名称'; return }
+      this.uploading     = true
+      this.uploadError   = ''
+      this.uploadSuccess = false
       try {
-        const res = await api.raceResults.getDetail(id)
-        this.detail = res.data || null
+        const fd = new FormData()
+        fd.append('file',        this.uploadFile)
+        fd.append('school',      this.uploadForm.school.trim())
+        fd.append('teacherName', this.uploadForm.teacherName.trim())
+        fd.append('uploadedAt',  new Date().toISOString())
+        await api.raceExcel.upload(fd)
+        this.uploadSuccess = true
+        this.loadList()
       } catch (e) {
-        this.showMessage('加载详情失败：' + e.message, 'error')
-        this.detailVisible = false
+        this.uploadError = '上传失败：' + (e.message || '未知错误')
       } finally {
-        this.detailLoading = false
+        this.uploading = false
       }
     },
 
-    handleDelete(row) {
-      this.pendingDeleteIds = [row.id]
-      this.isBatchDelete = false
-      this.deleteConfirmMsg = `确定要删除「${row.name}（${row.studentNumber}）」的成绩记录吗？此操作不可撤销。`
-      this.deleteConfirmVisible = true
+    // ── 下载 ────────────────────────────────────────────────────────────
+    async handleDownload(row) {
+      this.downloadingId = row.id
+      try {
+        const res = await api.raceExcel.download(row.id)
+        const blob = new Blob([res], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        })
+        const url  = URL.createObjectURL(blob)
+        const a    = document.createElement('a')
+        a.href     = url
+        a.download = row.originalFilename
+        a.click()
+        URL.revokeObjectURL(url)
+      } catch (e) {
+        this.showMessage('下载失败：' + e.message, 'error')
+      } finally {
+        this.downloadingId = null
+      }
     },
 
-    handleBatchDelete() {
-      this.pendingDeleteIds = [...this.selectedIds]
-      this.isBatchDelete = true
-      this.deleteConfirmMsg = `确定要批量删除选中的 ${this.selectedIds.length} 条成绩记录吗？此操作不可撤销。`
-      this.deleteConfirmVisible = true
-    },
-
-    async confirmDelete() {
+    // ── 删除 ────────────────────────────────────────────────────────────
+    confirmDelete(row) { this.pendingDeleteRow = row; this.deleteVisible = true },
+    async doDelete() {
+      if (!this.pendingDeleteRow) return
       this.deleteLoading = true
       try {
-        if (this.isBatchDelete) {
-          const res = await api.raceResults.deleteBatch(this.pendingDeleteIds)
-          const deleted = res.data?.deletedCount ?? this.pendingDeleteIds.length
-          this.showMessage(`批量删除成功，共删除 ${deleted} 条记录`, 'success')
-        } else {
-          await api.raceResults.deleteOne(this.pendingDeleteIds[0])
-          this.showMessage('删除成功', 'success')
-        }
-        this.deleteConfirmVisible = false
-        this.selectedIds = []
+        await api.raceExcel.deleteOne(this.pendingDeleteRow.id)
+        this.showMessage('删除成功', 'success')
+        this.deleteVisible = false
         this.loadList()
-        this.loadStatistics()
       } catch (e) {
         this.showMessage('删除失败：' + e.message, 'error')
       } finally {
@@ -608,22 +421,21 @@ export default {
       }
     },
 
-    formatDate(dateStr) {
-      if (!dateStr) return '—'
-      return dateStr.replace('T', ' ').slice(0, 10)
+    // ── 工具 ────────────────────────────────────────────────────────────
+    formatDateTime(s) {
+      if (!s) return '—'
+      return String(s).replace('T', ' ').slice(0, 19)
     },
-
-    formatDateTime(dateStr) {
-      if (!dateStr) return '—'
-      return dateStr.replace('T', ' ').slice(0, 19)
+    formatSize(bytes) {
+      if (bytes == null) return '—'
+      if (bytes < 1024)        return bytes + ' B'
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB'
+      return (bytes / 1024 / 1024).toFixed(2) + ' MB'
     },
-
     showMessage(text, type = 'success') {
       if (this.messageTimer) clearTimeout(this.messageTimer)
       this.message = { visible: true, type, text }
-      this.messageTimer = setTimeout(() => {
-        this.message.visible = false
-      }, 3000)
+      this.messageTimer = setTimeout(() => { this.message.visible = false }, 3000)
     }
   }
 }
@@ -631,48 +443,29 @@ export default {
 
 <style scoped>
 /* ===== 整体布局 ===== */
-.race-results {
-  min-height: 100vh;
-  background: var(--bg-body);
-}
+.race-results { min-height: 100vh; background: var(--bg-body); }
 
 /* ===== 顶部导航 ===== */
 .page-header {
-  background: #ffffff;
+  background: #fff;
   border-bottom: 1px solid var(--border-light);
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  position: sticky; top: 0; z-index: 100;
   box-shadow: var(--shadow-sm);
 }
-
 .header-container {
-  max-width: 1400px;
-  margin: 0 auto;
+  max-width: 1400px; margin: 0 auto;
   padding: 0 var(--spacing-xl);
-  display: flex;
-  align-items: center;
+  display: flex; align-items: center; justify-content: space-between;
   height: var(--header-height);
 }
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-lg);
-}
+.header-left  { display: flex; align-items: center; gap: var(--spacing-lg); }
+.header-right { display: flex; align-items: center; gap: 10px; }
 
 .back-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
-  background: #ffffff;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  color: #000000d9;
-  cursor: pointer;
-  font-size: 14px;
-  font-family: inherit;
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 12px; background: #fff;
+  border: 1px solid var(--border-color); border-radius: var(--radius-sm);
+  color: #000000d9; cursor: pointer; font-size: 14px; font-family: inherit;
   transition: border-color 0.15s, color 0.15s;
 }
 .back-btn:hover { border-color: #1677ff; color: #1677ff; }
@@ -682,444 +475,245 @@ export default {
 .page-title { font-size: 18px; font-weight: 600; color: #000000d9; margin: 0; }
 .page-subtitle { font-size: 12px; color: #00000073; margin-top: 2px; }
 
+.upload-trigger-btn {
+  display: flex; align-items: center; gap: 6px;
+  height: 34px; padding: 0 16px;
+  background: #1677ff; border: none; border-radius: var(--radius-sm);
+  color: #fff; font-size: 13px; cursor: pointer; font-family: inherit;
+  transition: background 0.15s;
+}
+.upload-trigger-btn:hover { background: #4096ff; }
+.upload-trigger-btn svg { width: 16px; height: 16px; }
+
 /* ===== 主内容 ===== */
 .main-content { padding: var(--spacing-xl) 0; }
 .content-container { max-width: 1400px; margin: 0 auto; padding: 0 var(--spacing-xl); }
 
-/* ===== 统计卡片 ===== */
-.stats-section { margin-bottom: var(--spacing-xl); }
-.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--spacing-lg); }
-
-.stat-card {
-  background: #ffffff;
-  border: 1px solid var(--border-light);
-  border-radius: 8px;
-  padding: 20px 24px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  box-shadow: var(--shadow-card);
-}
-
-.stat-icon {
-  width: 52px;
-  height: 52px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.stat-icon svg { width: 24px; height: 24px; }
-
-.stat-card.total .stat-icon   { background: #e6f4ff; color: #1677ff; }
-.stat-card.finished .stat-icon { background: #f6ffed; color: #52c41a; }
-.stat-card.unfinished .stat-icon { background: #fff2e8; color: #fa8c16; }
-.stat-card.rate .stat-icon    { background: #f9f0ff; color: #722ed1; }
-
-.stat-info { display: flex; flex-direction: column; }
-.stat-value { font-size: 28px; font-weight: 700; color: #000000d9; line-height: 1.2; }
-.stat-label { font-size: 13px; color: #00000073; margin-top: 4px; }
-
-/* ===== 筛选区域 ===== */
+/* ===== 筛选 ===== */
 .filter-section {
-  background: #ffffff;
-  border: 1px solid var(--border-light);
-  border-radius: 8px;
-  padding: 20px 24px;
-  margin-bottom: var(--spacing-xl);
-  box-shadow: var(--shadow-card);
+  background: #fff; border: 1px solid var(--border-light); border-radius: 8px;
+  padding: 16px 20px; margin-bottom: var(--spacing-xl); box-shadow: var(--shadow-card);
 }
-
-.filter-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
+.filter-form { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end; }
+.filter-group { display: flex; flex-direction: column; gap: 4px; min-width: 160px; }
+.filter-label { font-size: 12px; color: #00000073; font-weight: 500; }
+.filter-input {
+  height: 32px; padding: 0 10px;
+  border: 1px solid var(--border-color); border-radius: var(--radius-sm);
+  font-size: 13px; color: #000000d9; background: #fff; outline: none;
+  transition: border-color 0.15s; font-family: inherit;
 }
-.filter-title { font-size: 14px; font-weight: 600; color: #000000d9; margin: 0; }
+.filter-input:focus { border-color: #1677ff; }
+.filter-actions-group { flex-direction: row; gap: 8px; min-width: unset; align-items: flex-end; }
+.search-btn {
+  display: flex; align-items: center; gap: 6px;
+  height: 32px; padding: 0 14px; background: #1677ff; border: none;
+  border-radius: var(--radius-sm); color: #fff; font-size: 13px;
+  cursor: pointer; font-family: inherit; transition: background 0.15s;
+}
+.search-btn:hover { background: #4096ff; }
+.search-btn svg { width: 14px; height: 14px; }
 .reset-btn {
-  padding: 4px 12px;
-  background: #fff;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  color: #000000d9;
-  cursor: pointer;
-  font-size: 13px;
+  height: 32px; padding: 0 14px;
+  background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-sm);
+  color: #000000d9; font-size: 13px; cursor: pointer; font-family: inherit;
   transition: border-color 0.15s;
 }
 .reset-btn:hover { border-color: #1677ff; color: #1677ff; }
 
-.filter-form { display: flex; flex-direction: column; gap: 12px; }
-.filter-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end; }
-
-.filter-group { display: flex; flex-direction: column; gap: 4px; min-width: 160px; }
-.filter-label { font-size: 12px; color: #00000073; font-weight: 500; }
-
-.filter-input,
-.filter-select {
-  height: 32px;
-  padding: 0 10px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  color: #000000d9;
-  background: #fff;
-  outline: none;
-  transition: border-color 0.15s;
-  font-family: inherit;
-}
-.filter-input:focus,
-.filter-select:focus { border-color: #1677ff; }
-
-.filter-actions-group { justify-content: flex-end; }
-
-.search-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  height: 32px;
-  padding: 0 16px;
-  background: #1677ff;
-  border: none;
-  border-radius: var(--radius-sm);
-  color: #fff;
-  font-size: 13px;
-  cursor: pointer;
-  font-family: inherit;
-  transition: background 0.15s;
-}
-.search-btn:hover { background: #4096ff; }
-.search-btn svg { width: 14px; height: 14px; }
-
 /* ===== 表格区域 ===== */
 .table-section {
-  background: #ffffff;
-  border: 1px solid var(--border-light);
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: var(--shadow-card);
+  background: #fff; border: 1px solid var(--border-light);
+  border-radius: 8px; overflow: hidden; box-shadow: var(--shadow-card);
 }
-
 .table-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--border-light);
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 16px; border-bottom: 1px solid var(--border-light);
 }
-
 .result-count { font-size: 13px; color: #00000073; }
-.selected-hint { font-size: 13px; color: #1677ff; margin-left: 12px; }
-
-.batch-delete-btn {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 5px 12px;
-  background: #fff;
-  border: 1px solid #ff4d4f;
-  border-radius: var(--radius-sm);
-  color: #ff4d4f;
-  font-size: 13px;
-  cursor: pointer;
-  font-family: inherit;
-  transition: background 0.15s;
-}
-.batch-delete-btn:hover { background: #fff1f0; }
-.batch-delete-btn svg { width: 14px; height: 14px; }
-
-/* ===== 表格 ===== */
 .table-wrapper { overflow-x: auto; }
-
 .table-loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 60px 0;
-  color: #00000073;
-  font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  gap: 10px; padding: 60px 0; color: #00000073; font-size: 14px;
 }
-
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
 .data-table thead th {
-  background: #f8f9fa;
-  color: #000000d9;
-  font-weight: 600;
-  padding: 12px 14px;
-  text-align: left;
-  border-bottom: 1px solid var(--border-light);
+  background: #f8f9fa; color: #000000d9; font-weight: 600;
+  padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border-light);
   white-space: nowrap;
 }
-
-.data-table .col-check { width: 40px; text-align: center; }
-
 .data-row td {
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--border-light);
-  color: #000000d9;
-  vertical-align: middle;
+  padding: 12px 14px; border-bottom: 1px solid var(--border-light);
+  color: #000000d9; vertical-align: middle;
 }
 .data-row:last-child td { border-bottom: none; }
 .data-row:hover td { background: #f5f7ff; }
 
-.empty-row td {
-  padding: 60px 0;
-}
+.empty-row td { padding: 60px 0; }
 .empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  color: #00000040;
-  font-size: 14px;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 10px; color: #00000040; font-size: 14px;
 }
 .empty-state svg { width: 40px; height: 40px; }
 
-.name-cell { font-weight: 500; }
-.time-cell .time-value { font-family: monospace; font-size: 14px; font-weight: 600; color: #1677ff; }
-.time-cell .no-time { color: #00000040; }
+.filename-cell { display: flex; align-items: center; gap: 8px; }
+.file-icon { width: 18px; height: 18px; color: #52c41a; flex-shrink: 0; }
+.filename-text { font-weight: 500; color: #000000d9; word-break: break-all; }
+
 .date-cell { color: #00000073; white-space: nowrap; }
+.size-cell { color: #00000073; }
 
-/* 性别标签 */
-.gender-tag {
-  padding: 2px 8px;
-  border-radius: 10px;
-  font-size: 12px;
-  font-weight: 500;
-}
-.gender-tag.male   { background: #e6f4ff; color: #1677ff; }
-.gender-tag.female { background: #fff0f6; color: #c41d7f; }
-
-/* 状态标签 */
-.status-tag {
-  padding: 2px 8px;
-  border-radius: 10px;
-  font-size: 12px;
-  font-weight: 500;
-  white-space: nowrap;
-}
-.status-tag.finished   { background: #f6ffed; color: #52c41a; border: 1px solid #b7eb8f; }
-.status-tag.unfinished { background: #fff2e8; color: #fa8c16; border: 1px solid #ffd591; }
-
-/* 操作按钮 */
 .action-btns { display: flex; gap: 6px; }
 .action-btn {
-  padding: 3px 10px;
-  border-radius: var(--radius-sm);
-  font-size: 12px;
-  cursor: pointer;
-  font-family: inherit;
-  transition: background 0.15s;
-  border: 1px solid;
+  padding: 3px 10px; border-radius: var(--radius-sm); font-size: 12px;
+  cursor: pointer; font-family: inherit; transition: background 0.15s; border: 1px solid;
 }
-.action-btn.view   { background: #e6f4ff; border-color: #91caff; color: #1677ff; }
-.action-btn.view:hover { background: #bae0ff; }
-.action-btn.delete { background: #fff1f0; border-color: #ffa39e; color: #ff4d4f; }
+.action-btn.download { background: #e6f4ff; border-color: #91caff; color: #1677ff; }
+.action-btn.download:hover:not(:disabled) { background: #bae0ff; }
+.action-btn.download:disabled { opacity: 0.5; cursor: not-allowed; }
+.action-btn.delete  { background: #fff1f0; border-color: #ffa39e; color: #ff4d4f; }
 .action-btn.delete:hover { background: #ffccc7; }
 
 /* ===== 分页 ===== */
 .pagination {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 10px;
-  padding: 12px 16px;
-  border-top: 1px solid var(--border-light);
+  display: flex; align-items: center; justify-content: flex-end;
+  gap: 10px; padding: 12px 16px; border-top: 1px solid var(--border-light);
 }
-
 .page-btn {
-  padding: 5px 14px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  background: #fff;
-  color: #000000d9;
-  font-size: 13px;
-  cursor: pointer;
-  font-family: inherit;
-  transition: border-color 0.15s;
+  padding: 5px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-sm);
+  background: #fff; color: #000000d9; font-size: 13px; cursor: pointer;
+  font-family: inherit; transition: border-color 0.15s;
 }
 .page-btn:hover:not(:disabled) { border-color: #1677ff; color: #1677ff; }
 .page-btn:disabled { opacity: 0.45; cursor: not-allowed; }
-
-.page-info { font-size: 13px; color: #00000073; }
-
+.page-info-text { font-size: 13px; color: #00000073; }
 .page-size-select {
-  height: 30px;
-  padding: 0 8px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  background: #fff;
-  cursor: pointer;
+  height: 30px; padding: 0 8px; border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm); font-size: 13px; background: #fff; cursor: pointer;
 }
 
 /* ===== 弹窗遮罩 ===== */
 .modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
+  position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+  display: flex; align-items: center; justify-content: center; z-index: 1000;
 }
 
-/* ===== 详情弹窗 ===== */
-.modal-card {
-  background: #fff;
-  border-radius: 10px;
-  width: 600px;
-  max-width: 90vw;
-  max-height: 80vh;
-  overflow-y: auto;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+/* ===== 上传弹窗 ===== */
+.upload-card {
+  background: #fff; border-radius: 10px; width: 520px; max-width: 92vw;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.18); display: flex; flex-direction: column;
 }
-
 .modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 18px 24px;
-  border-bottom: 1px solid var(--border-light);
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 18px 24px; border-bottom: 1px solid var(--border-light);
 }
 .modal-title { font-size: 16px; font-weight: 600; color: #000000d9; margin: 0; }
 .modal-close {
-  width: 28px; height: 28px;
-  display: flex; align-items: center; justify-content: center;
-  border: none; background: transparent; cursor: pointer;
-  border-radius: 4px; color: #00000073;
+  width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+  border: none; background: transparent; cursor: pointer; border-radius: 4px; color: #00000073;
 }
 .modal-close:hover { background: #f5f5f5; color: #000000d9; }
 .modal-close svg { width: 16px; height: 16px; }
 
-.modal-loading {
-  display: flex; align-items: center; justify-content: center;
-  gap: 10px; padding: 40px; color: #00000073;
-}
+.upload-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
 
-.modal-body { padding: 24px; }
-
-.detail-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+.drop-zone {
+  border: 2px dashed var(--border-color); border-radius: 8px;
+  padding: 32px 20px; text-align: center; cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  display: flex; flex-direction: column; align-items: center; gap: 10px; color: #00000073;
 }
-
-.detail-item {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+.drop-zone svg { width: 36px; height: 36px; }
+.drop-zone:hover, .drop-zone.drag-over { border-color: #1677ff; background: #e6f4ff22; }
+.drop-zone.has-file { border-color: #52c41a; background: #f6ffed33; }
+.drop-hint { font-size: 14px; margin: 0; }
+.drop-hint strong { color: #1677ff; }
+.file-ok-icon { width: 36px; height: 36px; color: #52c41a; }
+.selected-filename { font-size: 14px; font-weight: 600; color: #000000d9; margin: 0; word-break: break-all; }
+.selected-size { font-size: 12px; color: #00000073; margin: 0; }
+.reselect-btn {
+  padding: 3px 12px; border: 1px solid var(--border-color); border-radius: var(--radius-sm);
+  background: #fff; color: #000000d9; font-size: 12px; cursor: pointer; font-family: inherit;
 }
-.detail-label { font-size: 12px; color: #00000073; }
-.detail-value { font-size: 14px; color: #000000d9; font-weight: 500; }
-.detail-value.mono { font-family: monospace; font-size: 13px; }
+.reselect-btn:hover { border-color: #1677ff; color: #1677ff; }
+
+.upload-fields { display: flex; flex-direction: column; gap: 12px; }
+.field-group { display: flex; flex-direction: column; gap: 4px; }
+.field-label { font-size: 12px; color: #00000073; font-weight: 500; }
+.required { color: #ff4d4f; }
+.field-input {
+  height: 34px; padding: 0 10px;
+  border: 1px solid var(--border-color); border-radius: var(--radius-sm);
+  font-size: 13px; color: #000000d9; outline: none; font-family: inherit;
+  transition: border-color 0.15s;
+}
+.field-input:focus { border-color: #1677ff; }
+
+.upload-error   { font-size: 13px; color: #ff4d4f; background: #fff1f0; border: 1px solid #ffa39e; border-radius: 6px; padding: 8px 12px; }
+.upload-success { font-size: 13px; color: #52c41a; background: #f6ffed; border: 1px solid #b7eb8f; border-radius: 6px; padding: 8px 12px; }
+
+.modal-footer {
+  display: flex; justify-content: flex-end; gap: 10px;
+  padding: 14px 24px; border-top: 1px solid var(--border-light);
+}
+.cancel-btn {
+  padding: 6px 18px; border: 1px solid var(--border-color); border-radius: var(--radius-sm);
+  background: #fff; color: #000000d9; font-size: 14px; cursor: pointer; font-family: inherit;
+}
+.cancel-btn:hover { border-color: #1677ff; }
+.submit-btn {
+  padding: 6px 18px; border: none; border-radius: var(--radius-sm);
+  background: #1677ff; color: #fff; font-size: 14px; cursor: pointer; font-family: inherit;
+  transition: background 0.15s;
+}
+.submit-btn:hover:not(:disabled) { background: #4096ff; }
+.submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* ===== 确认弹窗 ===== */
 .confirm-card {
-  background: #fff;
-  border-radius: 10px;
-  width: 400px;
-  max-width: 90vw;
-  padding: 32px 28px 24px;
-  text-align: center;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+  background: #fff; border-radius: 10px; width: 400px; max-width: 90vw;
+  padding: 32px 28px 24px; text-align: center; box-shadow: 0 12px 40px rgba(0,0,0,0.18);
 }
-
-.confirm-icon {
-  width: 56px; height: 56px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 16px;
-}
+.confirm-icon { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
 .confirm-icon.danger { background: #fff1f0; color: #ff4d4f; }
 .confirm-icon svg { width: 26px; height: 26px; }
-
 .confirm-title { font-size: 16px; font-weight: 600; color: #000000d9; margin: 0 0 8px; }
-.confirm-msg { font-size: 14px; color: #00000073; line-height: 1.6; margin: 0 0 24px; }
-
+.confirm-msg { font-size: 14px; color: #00000073; line-height: 1.6; margin: 0 0 24px; word-break: break-all; }
 .confirm-actions { display: flex; gap: 10px; justify-content: center; }
-
 .confirm-cancel {
-  flex: 1; max-width: 140px;
-  height: 36px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  background: #fff;
-  color: #000000d9;
-  font-size: 14px;
-  cursor: pointer;
-  font-family: inherit;
-  transition: border-color 0.15s;
+  flex: 1; max-width: 140px; height: 36px;
+  border: 1px solid var(--border-color); border-radius: var(--radius-sm);
+  background: #fff; color: #000000d9; font-size: 14px; cursor: pointer; font-family: inherit;
 }
 .confirm-cancel:hover { border-color: #1677ff; }
-
-.confirm-ok {
-  flex: 1; max-width: 140px;
-  height: 36px;
-  border: none;
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  cursor: pointer;
-  font-family: inherit;
-  transition: background 0.15s;
-}
+.confirm-ok { flex: 1; max-width: 140px; height: 36px; border: none; border-radius: var(--radius-sm); font-size: 14px; cursor: pointer; font-family: inherit; }
 .confirm-ok.danger { background: #ff4d4f; color: #fff; }
 .confirm-ok.danger:hover { background: #ff7875; }
 .confirm-ok:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* ===== 加载动画 ===== */
 .loading-spinner {
-  width: 20px; height: 20px;
-  border: 2px solid #e8e8e8;
-  border-top-color: #1677ff;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  width: 20px; height: 20px; border: 2px solid #e8e8e8;
+  border-top-color: #1677ff; border-radius: 50%; animation: spin 0.8s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ===== 消息提示 ===== */
 .message-toast {
-  position: fixed;
-  top: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-size: 14px;
-  z-index: 2000;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  position: fixed; top: 24px; left: 50%; transform: translateX(-50%);
+  padding: 10px 20px; border-radius: 6px; font-size: 14px;
+  z-index: 2000; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 .message-toast.success { background: #f6ffed; color: #52c41a; border: 1px solid #b7eb8f; }
 .message-toast.error   { background: #fff1f0; color: #ff4d4f; border: 1px solid #ffa39e; }
-
-.msg-fade-enter-active,
-.msg-fade-leave-active { transition: opacity 0.3s, transform 0.3s; }
-.msg-fade-enter-from,
-.msg-fade-leave-to { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+.msg-fade-enter-active, .msg-fade-leave-active { transition: opacity 0.3s, transform 0.3s; }
+.msg-fade-enter-from, .msg-fade-leave-to { opacity: 0; transform: translateX(-50%) translateY(-10px); }
 
 /* ===== 响应式 ===== */
-@media (max-width: 1024px) {
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
-}
-
 @media (max-width: 768px) {
   .header-container { padding: 0 var(--spacing-md); }
   .content-container { padding: 0 var(--spacing-md); }
-  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: var(--spacing-md); }
-  .filter-row { flex-direction: column; }
+  .filter-form { flex-direction: column; }
   .filter-group { min-width: unset; width: 100%; }
-  .detail-grid { grid-template-columns: 1fr; }
-}
-
-@media (max-width: 480px) {
-  .stats-grid { grid-template-columns: 1fr 1fr; }
-  .stat-value { font-size: 22px; }
 }
 </style>

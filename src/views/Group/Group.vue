@@ -19,7 +19,7 @@
         <div class="header-actions">
           <div class="activity-stats">
             <div class="stat-item">
-              <span class="stat-number">6</span>
+              <span class="stat-number">7</span>
               <span class="stat-label">功能模块</span>
             </div>
             <div class="stat-divider"></div>
@@ -201,6 +201,35 @@
                 <div class="action-arrow">→</div>
               </div>
             </div>
+
+            <div class="activity-card animate-slide-up" @click="$router.push('/group/sports-management')" style="animation-delay: 0.7s" v-if="isSchoolAdmin">
+              <div class="card-header">
+                <div class="activity-icon sports-meeting">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5C7.5 4 8 5.5 8 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5C16.5 4 16 5.5 16 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M4 22h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M10 14.66V17c0 2 -2 3.5 -2 5M14 14.66V17c0 2 2 3.5 2 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M8 6h8a4 4 0 0 1 4 4v1a6 6 0 0 1-6 6h-4a6 6 0 0 1-6-6v-1a4 4 0 0 1 4-4Z" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div class="card-status">
+                  <span class="status-badge admin">管理端</span>
+                </div>
+              </div>
+              <div class="card-content">
+                <h3 class="card-title">运动会管理</h3>
+                <p class="card-description">运动会在线编排、报名导入、成绩录入、团体积分排名</p>
+                <div class="card-features">
+                  <span class="feature-tag">编排管理</span>
+                  <span class="feature-tag">成绩录入</span>
+                </div>
+              </div>
+              <div class="card-footer">
+                <span class="action-text">进入模块</span>
+                <div class="action-arrow">→</div>
+              </div>
+            </div>
           </div>
         </section>
       </div>
@@ -209,8 +238,21 @@
 </template>
 
 <script>
+import authService from '@/services/authService'
+
 export default {
-  name: 'Group'
+  name: 'Group',
+  data() {
+    return { isSchoolAdmin: false }
+  },
+  async mounted() {
+    try {
+      const user = await authService.getCurrentUser()
+      this.isSchoolAdmin = user && (user.userType === 'school_admin' || user.userType === 'super_admin')
+    } catch (e) {
+      this.isSchoolAdmin = false
+    }
+  }
 }
 </script>
 
@@ -420,6 +462,7 @@ export default {
 .activity-icon.management      { background: #fff0f6; color: #c41d7f; }
 .activity-icon.activity        { background: #f0f5ff; color: #2f54eb; }
 .activity-icon.race-results    { background: #fff2e8; color: #d4380d; }
+.activity-icon.sports-meeting  { background: #f9f0ff; color: #722ed1; }
 
 .activity-icon svg { width: 22px; height: 22px; }
 

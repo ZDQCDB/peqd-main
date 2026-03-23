@@ -9,7 +9,7 @@ const RACE_BASE_URL = 'http://38.207.179.218:8888'
 // 创建比赛成绩专用 axios 实例
 const raceApiClient = axios.create({
   baseURL: RACE_BASE_URL,
-  timeout: 10000,
+  timeout: 30000,
   headers: { 'Content-Type': 'application/json' }
 })
 
@@ -440,22 +440,22 @@ export const api = {
     getMorningExerciseStatistics: (params) => apiClient.get('/pe/statistics/morning-exercises', { params })
   },
 
-  // 比赛成绩管理API
-  raceResults: {
-    // 分页查询成绩列表
-    getList: (params) => raceApiClient.get('/race/results', { params }),
+  // 比赛成绩 Excel 文件管理 API
+  raceExcel: {
+    // 上传 Excel 文件（multipart/form-data）
+    upload: (formData) => raceApiClient.post('/race/results/upload', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 30000
+    }),
 
-    // 成绩统计数据
-    getStatistics: (params) => raceApiClient.get('/race/results/statistics', { params }),
+    // 分页列表
+    getList: (params) => raceApiClient.get('/race/excel/files', { params }),
 
-    // 查询单条成绩详情
-    getDetail: (id) => raceApiClient.get(`/race/results/${id}`),
+    // 下载文件（返回二进制流，用于构造 Blob 另存为）
+    download: (id) => raceApiClient.get(`/race/excel/files/${id}/download`, { responseType: 'arraybuffer' }),
 
-    // 删除单条成绩
-    deleteOne: (id) => raceApiClient.delete(`/race/results/${id}`),
-
-    // 批量删除成绩
-    deleteBatch: (ids) => raceApiClient.delete('/race/results/batch', { data: { ids } })
+    // 删除
+    deleteOne: (id) => raceApiClient.delete(`/race/excel/files/${id}`)
   },
 
   // PE积分统计管理API
@@ -502,6 +502,53 @@ export const api = {
     getClassRank: () => apiClient.get('/statistics/homework/class-rank'),
     getDepartmentRank: () => apiClient.get('/statistics/homework/department-rank'),
     getDeptClassRank: () => apiClient.get('/statistics/homework/dept-class-rank')
+  },
+
+  // 运动会管理API
+  sportsMeeting: {
+    // 运动会 CRUD
+    create: (data) => raceApiClient.post('/sports/meetings', data),
+    list: (params) => raceApiClient.get('/sports/meetings', { params }),
+    get: (id) => raceApiClient.get(`/sports/meetings/${id}`),
+    update: (id, data) => raceApiClient.put(`/sports/meetings/${id}`, data),
+    updateStatus: (id, status) => raceApiClient.put(`/sports/meetings/${id}/status`, { status }),
+    remove: (id) => raceApiClient.delete(`/sports/meetings/${id}`),
+
+    // 项目管理
+    createEvent: (meetingId, data) => raceApiClient.post(`/sports/meetings/${meetingId}/events`, data),
+    batchCreateEvents: (meetingId, data) => raceApiClient.post(`/sports/meetings/${meetingId}/events/batch`, data),
+    listEvents: (meetingId) => raceApiClient.get(`/sports/meetings/${meetingId}/events`),
+    updateEvent: (eventId, data) => raceApiClient.put(`/sports/events/${eventId}`, data),
+    deleteEvent: (eventId) => raceApiClient.delete(`/sports/events/${eventId}`),
+
+    // 报名管理
+    downloadTemplate: (meetingId) => raceApiClient.get(`/sports/meetings/${meetingId}/registration/template`, { responseType: 'arraybuffer' }),
+    importRegistrations: (meetingId, formData) => raceApiClient.post(`/sports/meetings/${meetingId}/registration/import`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }, timeout: 60000
+    }),
+    listRegistrations: (meetingId, params) => raceApiClient.get(`/sports/meetings/${meetingId}/registrations`, { params }),
+    deleteRegistration: (regId) => raceApiClient.delete(`/sports/registrations/${regId}`),
+    clearRegistrations: (meetingId) => raceApiClient.delete(`/sports/meetings/${meetingId}/registrations`),
+
+    // 编排管理
+    scheduleEvent: (eventId, lanesPerHeat) => raceApiClient.post(`/sports/events/${eventId}/schedule?lanesPerHeat=${lanesPerHeat || 8}`),
+    scheduleAll: (meetingId, lanesPerHeat) => raceApiClient.post(`/sports/meetings/${meetingId}/schedule-all?lanesPerHeat=${lanesPerHeat || 8}`),
+    getEventHeats: (eventId) => raceApiClient.get(`/sports/events/${eventId}/heats`),
+    updateHeatLanes: (heatId, lanes) => raceApiClient.put(`/sports/heats/${heatId}/lanes`, lanes),
+
+    // 成绩管理
+    saveResult: (eventId, data) => raceApiClient.post(`/sports/events/${eventId}/results`, data),
+    batchSaveResults: (eventId, data) => raceApiClient.post(`/sports/events/${eventId}/results/batch`, data),
+    calculateRankings: (eventId) => raceApiClient.post(`/sports/events/${eventId}/results/calculate`),
+    getEventResults: (eventId) => raceApiClient.get(`/sports/events/${eventId}/results`),
+
+    // 计分规则
+    saveScoreRules: (meetingId, rules) => raceApiClient.post(`/sports/meetings/${meetingId}/score-rules`, rules),
+    getScoreRules: (meetingId) => raceApiClient.get(`/sports/meetings/${meetingId}/score-rules`),
+
+    // 团体排名 & 统计
+    getRankings: (meetingId) => raceApiClient.get(`/sports/meetings/${meetingId}/rankings`),
+    getStatistics: (meetingId) => raceApiClient.get(`/sports/meetings/${meetingId}/statistics`)
   },
 
   // 批量导入API
