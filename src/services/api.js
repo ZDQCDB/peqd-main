@@ -455,7 +455,19 @@ export const api = {
     download: (id) => raceApiClient.get(`/race/excel/files/${id}/download`, { responseType: 'arraybuffer' }),
 
     // 删除
-    deleteOne: (id) => raceApiClient.delete(`/race/excel/files/${id}`)
+    deleteOne: (id) => raceApiClient.delete(`/race/excel/files/${id}`),
+
+    // 预览 Excel 内容（返回元信息 + 数据行）
+    preview: (id) => raceApiClient.get(`/race/excel/files/${id}/preview`),
+
+    // 解析 Excel 数据行入库
+    parse: (id, rows) => raceApiClient.post(`/race/excel/files/${id}/parse`, { rows }),
+
+    // 数据库成绩列表（分页查询 race_results）
+    getRecords: (params) => raceApiClient.get('/race/results', { params }),
+
+    // 数据库成绩统计
+    getStats: () => raceApiClient.get('/race/results/statistics')
   },
 
   // PE积分统计管理API
@@ -497,11 +509,11 @@ export const api = {
 
   // 课后作业统计API（管理端）
   homeworkStats: {
-    getOverview: () => apiClient.get('/statistics/homework/overview'),
-    getTrend: () => apiClient.get('/statistics/homework/trend'),
-    getClassRank: () => apiClient.get('/statistics/homework/class-rank'),
-    getDepartmentRank: () => apiClient.get('/statistics/homework/department-rank'),
-    getDeptClassRank: () => apiClient.get('/statistics/homework/dept-class-rank')
+    getOverview: (params) => apiClient.get('/statistics/homework/overview', { params }),
+    getTrend: (params) => apiClient.get('/statistics/homework/trend', { params }),
+    getClassRank: (params) => apiClient.get('/statistics/homework/class-rank', { params }),
+    getDepartmentRank: (params) => apiClient.get('/statistics/homework/department-rank', { params }),
+    getDeptClassRank: (params) => apiClient.get('/statistics/homework/dept-class-rank', { params })
   },
 
   // 运动会管理API
@@ -613,8 +625,16 @@ export const api = {
     completeReservation: (id) => apiClient.post(`/venue/reservations/${id}/complete`)
   },
 
+  // 注册页公开接口
+  register: {
+    // 获取教师预导入库中的学校列表（无需登录）
+    getTeacherSchools: () => apiClient.get('/checkuser/teacher-schools')
+  },
+
   // checkuser 库导入（仅超管）
   checkUserImport: {
+    // 各学校预导入学生/教师数量统计
+    getSchoolStats: () => apiClient.get('/checkuser/schools'),
     downloadStudentTemplate: () =>
       apiClient.get('/checkuser/template/student', { responseType: 'blob' }),
     downloadTeacherTemplate: () =>
@@ -631,6 +651,19 @@ export const api = {
       form.append('file', file)
       return apiClient.post('/checkuser/import/teacher', form, {
         headers: { 'Content-Type': 'multipart/form-data' }
+      })
+    }
+  },
+
+  // 人脸库导入（代理到 38.207.179.218:5000，仅超管）
+  faceImport: {
+    importFaces: (file, overwrite = true) => {
+      const form = new FormData()
+      form.append('file', file)
+      form.append('overwrite', String(overwrite))
+      return apiClient.post('/face/import', form, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        timeout: 120000
       })
     }
   }

@@ -32,6 +32,19 @@
             </svg>
             导入名单
           </button>
+          <button v-if="isSuperAdminRole" class="action-btn stats-btn" @click="openSchoolStatsDialog">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M18 20V10M12 20V4M6 20v-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            预导入统计
+          </button>
+          <button v-if="isSuperAdminRole" class="action-btn face-btn" @click="openFaceImportDialog">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/>
+              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            人脸库导入
+          </button>
           <button class="action-btn secondary" @click="exportUserData">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -108,6 +121,55 @@
                 <p class="stat-number">{{ stats.onlineCount }}</p>
                 <span class="stat-label">当前在线</span>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 超管数据导入教程 -->
+        <section v-if="isSuperAdminRole" class="notice-section notice-blue">
+          <div class="notice-header">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="notice-icon">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+              <line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span class="notice-title">数据导入教程</span>
+          </div>
+          <p class="notice-desc">
+            系统注册逻辑为先导入预导入表，在用户注册时会对预导入表的信息做匹配以规避混乱注册，信息导入步骤如下：
+          </p>
+          <ol class="notice-steps">
+            <li>
+              <span class="step-num">1</span>
+              点击顶部 <strong>「预导入统计」</strong> 按钮，查看各学校当前已导入的学生/教师数量
+            </li>
+            <li>
+              <span class="step-num">2</span>
+              点击顶部 <strong>「导入名单」</strong> 按钮，下载模版后填写教师信息和学生信息，分别上传导入
+            </li>
+            <li>
+              <span class="step-num">3</span>
+              点击顶部 <strong>「人脸库导入」</strong> 按钮，将以学号/工号命名的人脸照片打包成 <strong>.zip</strong> 压缩包后上传
+            </li>
+          </ol>
+        </section>
+
+        <!-- 校管/超管角色说明 -->
+        <section v-if="isSuperAdminRole || isSchoolAdminRole" class="notice-section notice-orange">
+          <div class="notice-header">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="notice-icon">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="notice-title">用户角色说明</span>
+          </div>
+          <div class="notice-role-rows">
+            <div class="notice-role-item">
+              <span class="role-tag teacher-tag">教师</span>
+              <span>教师用户注册后初始身份为教师，可通过列表中的 <strong>「提升权限」</strong> 按钮将其提权为院级管理员或校级管理员</span>
+            </div>
+            <div class="notice-role-item">
+              <span class="role-tag student-tag">学生</span>
+              <span>学生用户注册后可在 <strong>群体活动 → PE校园管理端</strong> 中查看；可指定学生设为签到员，签到员身份即为班级管理员</span>
             </div>
           </div>
         </section>
@@ -644,6 +706,188 @@
       </div>
     </main>
 
+    <!-- 用户创建成功 - 凭据展示弹窗 -->
+    <div v-if="showCredentialsDialog" class="modal-overlay">
+      <div class="modal-content credentials-modal" @click.stop>
+        <div class="modal-header credentials-header">
+          <div class="credentials-title-wrap">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="credentials-icon">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <polyline points="22,4 12,14.01 9,11.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <h3>用户创建成功</h3>
+          </div>
+          <button class="close-btn" @click="closeCredentialsDialog">×</button>
+        </div>
+        <div class="modal-body" v-if="createdCredentials">
+          <div class="credentials-notice">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+              <line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            请将以下登录凭据告知用户，此窗口关闭后密码将无法再次查看
+          </div>
+
+          <div class="credentials-user-info">
+            <span class="credentials-name">{{ createdCredentials.realName }}</span>
+            <span class="role-badge" :class="createdCredentials.userType">{{ getRoleText(createdCredentials.userType) }}</span>
+          </div>
+
+          <div class="credentials-item">
+            <div class="credentials-label">用户名（登录账号）</div>
+            <div class="credentials-value-row">
+              <span class="credentials-value">{{ createdCredentials.username }}</span>
+              <button class="copy-btn" @click="copyText(createdCredentials.username)">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                复制
+              </button>
+            </div>
+          </div>
+
+          <div class="credentials-item">
+            <div class="credentials-label">初始密码</div>
+            <div class="credentials-value-row">
+              <span class="credentials-value credentials-password">{{ createdCredentials.initialPassword }}</span>
+              <button class="copy-btn" @click="copyText(createdCredentials.initialPassword)">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                复制
+              </button>
+            </div>
+          </div>
+
+          <button class="copy-all-btn" @click="copyText(`用户名：${createdCredentials.username}\n初始密码：${createdCredentials.initialPassword}`)">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            一键复制全部凭据
+          </button>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-primary" @click="closeCredentialsDialog">我已记录，关闭</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 学校预导入统计弹窗 -->
+    <div v-if="showSchoolStatsDialog" class="modal-overlay" @click="showSchoolStatsDialog = false">
+      <div class="modal-content large-modal" @click.stop>
+        <div class="modal-header">
+          <h3>checkuser 预导入名单统计</h3>
+          <button class="close-btn" @click="showSchoolStatsDialog = false">×</button>
+        </div>
+        <div class="modal-body">
+          <div v-if="schoolStatsLoading" class="loading">加载中...</div>
+          <div v-else-if="schoolStats.length === 0" class="no-data">暂无数据</div>
+          <table v-else class="users-table">
+            <thead>
+              <tr>
+                <th>学校</th>
+                <th style="text-align:right">预导入学生数</th>
+                <th style="text-align:right">预导入教师数</th>
+                <th style="text-align:right">合计</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in schoolStats" :key="row.school">
+                <td>{{ row.school || '（未设置）' }}</td>
+                <td style="text-align:right">
+                  <span v-if="row.studentCount > 0" class="stat-badge student-badge">{{ row.studentCount.toLocaleString() }}</span>
+                  <span v-else class="stat-badge zero-badge">0</span>
+                </td>
+                <td style="text-align:right">
+                  <span v-if="row.teacherCount > 0" class="stat-badge teacher-badge">{{ row.teacherCount.toLocaleString() }}</span>
+                  <span v-else class="stat-badge zero-badge">0</span>
+                </td>
+                <td style="text-align:right;font-weight:600">{{ (row.studentCount + row.teacherCount).toLocaleString() }}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr class="stats-total-row">
+                <td><strong>合计</strong></td>
+                <td style="text-align:right"><strong>{{ schoolStats.reduce((s, r) => s + r.studentCount, 0).toLocaleString() }}</strong></td>
+                <td style="text-align:right"><strong>{{ schoolStats.reduce((s, r) => s + r.teacherCount, 0).toLocaleString() }}</strong></td>
+                <td style="text-align:right"><strong>{{ schoolStats.reduce((s, r) => s + r.studentCount + r.teacherCount, 0).toLocaleString() }}</strong></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" @click="showSchoolStatsDialog = false">关闭</button>
+          <button class="btn btn-primary" @click="loadSchoolStats">刷新</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 人脸库批量导入弹窗 -->
+    <div v-if="showFaceImportDialog" class="modal-overlay" @click="showFaceImportDialog = false">
+      <div class="modal-content" @click.stop style="max-width:480px">
+        <div class="modal-header">
+          <h3>人脸库批量导入</h3>
+          <button class="close-btn" @click="closeFaceImportDialog">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="face-tip">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+              <line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <div>
+              上传 <strong>.zip</strong> 压缩包，文件名（不含后缀）即为学号，支持 .jpg / .jpeg / .png / .gif<br/>
+              <span style="color:#00000073">最大 100MB，支持子目录</span>
+            </div>
+          </div>
+
+          <div class="face-upload-area" :class="{ 'has-file': faceFile }" @click="$refs.faceFileInput.click()" @dragover.prevent @drop.prevent="onFaceDrop">
+            <input ref="faceFileInput" type="file" accept=".zip" style="display:none" @change="onFaceFileChange" />
+            <svg v-if="!faceFile" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="upload-icon">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <svg v-else viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="upload-icon file-ok-icon">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <polyline points="22,4 12,14.01 9,11.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <p v-if="!faceFile" class="upload-hint">点击或拖拽 zip 文件至此处</p>
+            <p v-else class="upload-filename">{{ faceFile.name }}<span class="upload-filesize">（{{ (faceFile.size / 1024 / 1024).toFixed(2) }} MB）</span></p>
+            <button v-if="faceFile" type="button" class="remove-file-btn" @click.stop="faceFile = null; faceImportResult = null">移除</button>
+          </div>
+
+          <label class="overwrite-label">
+            <input type="checkbox" v-model="faceOverwrite" />
+            覆盖已有同名图片
+          </label>
+
+          <div v-if="faceImportResult" class="face-result">
+            <div class="face-result-summary" :class="faceImportResult.fail_count > 0 ? 'result-warn' : 'result-ok'">
+              <span>✅ 导入成功 <strong>{{ faceImportResult.success_count }}</strong> 张</span>
+              <span v-if="faceImportResult.skip_count > 0"> &nbsp;⏭ 跳过 <strong>{{ faceImportResult.skip_count }}</strong> 个</span>
+              <span v-if="faceImportResult.fail_count > 0"> &nbsp;❌ 失败 <strong>{{ faceImportResult.fail_count }}</strong> 个</span>
+            </div>
+            <div v-if="faceImportResult.failed && faceImportResult.failed.length" class="face-result-errors">
+              <p style="font-size:12px;color:#ff4d4f;margin:0 0 4px">失败详情：</p>
+              <div v-for="f in faceImportResult.failed" :key="f.file" class="face-error-item">
+                {{ f.file }}：{{ f.reason }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" @click="closeFaceImportDialog">取消</button>
+          <button class="btn btn-primary" :disabled="!faceFile || faceImporting" @click="doFaceImport">
+            {{ faceImporting ? '导入中...' : '开始导入' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- checkuser 数据导入弹窗（仅超管可见） -->
     <el-dialog
       v-if="isSuperAdminRole"
@@ -766,6 +1010,8 @@ export default {
       showDetailDialog: false,
       showAuditDialog: false,
       showResetPasswordDialog: false,
+      showCredentialsDialog: false,
+      createdCredentials: null,
       // checkuser 导入
       showImportDialog: false,
       importTab: 'student',
@@ -773,6 +1019,16 @@ export default {
       teacherFile: null,
       importLoading: false,
       importResult: null,
+      // 学校预导入统计
+      showSchoolStatsDialog: false,
+      schoolStats: [],
+      schoolStatsLoading: false,
+      // 人脸库导入
+      showFaceImportDialog: false,
+      faceFile: null,
+      faceOverwrite: true,
+      faceImporting: false,
+      faceImportResult: null,
       selectedUser: null,
       newRole: '',
       operationReason: '',
@@ -801,6 +1057,10 @@ export default {
   computed: {
     isSuperAdminRole() {
       return isSuperAdmin()
+    },
+
+    isSchoolAdminRole() {
+      return isSchoolAdmin()
     },
 
     canManageStudent() {
@@ -1021,7 +1281,7 @@ export default {
     },
 
     async createUser() {
-      if (!this.createForm.realName || !this.createForm.username || !this.createForm.studentId || !this.createForm.userType || !this.createForm.school) {
+      if (!this.createForm.realName || !this.createForm.studentId || !this.createForm.userType || !this.createForm.school) {
         alert('请填写所有必填字段')
         return
       }
@@ -1030,8 +1290,14 @@ export default {
       try {
         const result = await authService.createUser(this.createForm)
         if (result.code === 200) {
-          alert('用户创建成功')
-          this.closeModals()
+          this.showCreateDialog = false
+          this.createdCredentials = {
+            realName: result.data?.realName || this.createForm.realName,
+            username: result.data?.username || this.createForm.username,
+            initialPassword: result.data?.initialPassword || result.data?.temporaryPassword || '（请查看短信通知）',
+            userType: result.data?.userType || this.createForm.userType
+          }
+          this.showCredentialsDialog = true
           this.loadUsers()
           this.loadStats()
         } else {
@@ -1043,6 +1309,26 @@ export default {
       } finally {
         this.saving = false
       }
+    },
+
+    copyText(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert('已复制到剪贴板')
+      }).catch(() => {
+        const ta = document.createElement('textarea')
+        ta.value = text
+        document.body.appendChild(ta)
+        ta.select()
+        document.execCommand('copy')
+        document.body.removeChild(ta)
+        alert('已复制到剪贴板')
+      })
+    },
+
+    closeCredentialsDialog() {
+      this.showCredentialsDialog = false
+      this.createdCredentials = null
+      this.resetCreateForm()
     },
 
     // 用户详情
@@ -1317,6 +1603,8 @@ export default {
       this.showDetailDialog = false
       this.showAuditDialog = false
       this.showResetPasswordDialog = false
+      this.showCredentialsDialog = false
+      this.createdCredentials = null
       this.selectedUser = null
       this.newRole = ''
       this.operationReason = ''
@@ -1326,6 +1614,82 @@ export default {
         forceChange: true,
         notifyUser: true,
         reason: ''
+      }
+    },
+
+    // ── 学校预导入统计 ────────────────────────────────────────────────────────
+    async openSchoolStatsDialog() {
+      this.showSchoolStatsDialog = true
+      await this.loadSchoolStats()
+    },
+
+    async loadSchoolStats() {
+      this.schoolStatsLoading = true
+      try {
+        const res = await api.checkUserImport.getSchoolStats()
+        if (res.code === 200) {
+          this.schoolStats = res.data || []
+        } else {
+          alert(res.message || '获取统计数据失败')
+        }
+      } catch (e) {
+        alert('获取统计数据失败：' + (e.message || e))
+      } finally {
+        this.schoolStatsLoading = false
+      }
+    },
+
+    // ── 人脸库导入 ────────────────────────────────────────────────────────────
+    openFaceImportDialog() {
+      this.faceFile = null
+      this.faceImportResult = null
+      this.faceOverwrite = true
+      this.showFaceImportDialog = true
+    },
+
+    closeFaceImportDialog() {
+      this.showFaceImportDialog = false
+      this.faceFile = null
+      this.faceImportResult = null
+    },
+
+    onFaceFileChange(e) {
+      const f = e.target.files[0]
+      if (!f) return
+      if (!f.name.toLowerCase().endsWith('.zip')) {
+        alert('只支持 .zip 格式文件')
+        return
+      }
+      this.faceFile = f
+      this.faceImportResult = null
+    },
+
+    onFaceDrop(e) {
+      const f = e.dataTransfer.files[0]
+      if (!f) return
+      if (!f.name.toLowerCase().endsWith('.zip')) {
+        alert('只支持 .zip 格式文件')
+        return
+      }
+      this.faceFile = f
+      this.faceImportResult = null
+    },
+
+    async doFaceImport() {
+      if (!this.faceFile) return
+      this.faceImporting = true
+      this.faceImportResult = null
+      try {
+        const res = await api.faceImport.importFaces(this.faceFile, this.faceOverwrite)
+        if (res && res.code === 200) {
+          this.faceImportResult = res.data
+        } else {
+          alert((res && res.message) || '导入失败')
+        }
+      } catch (e) {
+        alert('导入失败：' + (e.message || e))
+      } finally {
+        this.faceImporting = false
       }
     },
 
@@ -1968,6 +2332,224 @@ export default {
 }
 .action-btn.import-btn:hover { background: #d9f7be; }
 
+.action-btn.stats-btn {
+  background: #e6f4ff;
+  color: #1677ff;
+  border: 1px solid #91caff;
+}
+.action-btn.stats-btn:hover { background: #bae0ff; }
+
+.action-btn.face-btn {
+  background: #fff0f6;
+  color: #c41d7f;
+  border: 1px solid #ffadd2;
+}
+.action-btn.face-btn:hover { background: #ffd6e7; }
+
+/* 统计弹窗 */
+.stat-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.student-badge { background: #e6f4ff; color: #1677ff; }
+.teacher-badge { background: #fff7e6; color: #d46b08; }
+.zero-badge    { background: #fafafa; color: #bfbfbf; }
+
+.stats-total-row td {
+  background: #fafafa;
+  border-top: 2px solid #d9d9d9;
+  padding: 10px 16px;
+}
+
+/* 人脸库导入弹窗 */
+.face-tip {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: #e6f4ff;
+  border: 1px solid #91caff;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #003a8c;
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+.face-tip svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; color: #1677ff; }
+
+.face-upload-area {
+  border: 2px dashed #d9d9d9;
+  border-radius: 8px;
+  padding: 28px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  margin-bottom: 12px;
+  position: relative;
+}
+.face-upload-area:hover { border-color: #1677ff; background: #f0f7ff; }
+.face-upload-area.has-file { border-color: #52c41a; background: #f6ffed; }
+
+.upload-icon { width: 36px; height: 36px; color: #bfbfbf; margin-bottom: 8px; }
+.file-ok-icon { color: #52c41a; }
+.upload-hint { color: #00000073; font-size: 13px; margin: 0; }
+.upload-filename { color: #000000d9; font-size: 14px; font-weight: 500; margin: 0; }
+.upload-filesize { color: #00000073; font-size: 12px; margin-left: 4px; }
+
+.remove-file-btn {
+  margin-top: 8px;
+  padding: 2px 10px;
+  background: white;
+  border: 1px solid #ff4d4f;
+  color: #ff4d4f;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.remove-file-btn:hover { background: #fff2f0; }
+
+.overwrite-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #000000d9;
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+.overwrite-label input { accent-color: #1677ff; }
+
+.face-result { margin-top: 12px; }
+
+.face-result-summary {
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 13px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.result-ok   { background: #f6ffed; border: 1px solid #b7eb8f; color: #237804; }
+.result-warn { background: #fffbe6; border: 1px solid #ffe58f; color: #874d00; }
+
+.face-result-errors { margin-top: 8px; max-height: 120px; overflow-y: auto; }
+.face-error-item { font-size: 12px; color: #ff4d4f; padding: 2px 0; border-bottom: 1px solid #fff2f0; }
+
+/* ===== 说明卡片 ===== */
+.notice-section {
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  border: 1px solid;
+}
+
+.notice-blue {
+  background: #e6f4ff;
+  border-color: #91caff;
+}
+
+.notice-orange {
+  background: #fff7e6;
+  border-color: #ffd591;
+}
+
+.notice-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 10px;
+}
+
+.notice-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.notice-blue .notice-icon { color: #1677ff; }
+.notice-orange .notice-icon { color: #d46b08; }
+
+.notice-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.notice-blue .notice-title { color: #003a8c; }
+.notice-orange .notice-title { color: #7c3c00; }
+
+.notice-desc {
+  font-size: 13px;
+  color: #003a8c;
+  margin: 0 0 10px;
+  line-height: 1.6;
+}
+
+.notice-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.notice-steps li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 13px;
+  color: #003a8c;
+  line-height: 1.6;
+}
+
+.step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background: #1677ff;
+  color: white;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.notice-role-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.notice-role-item {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 13px;
+  color: #7c3c00;
+  line-height: 1.6;
+}
+
+.role-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+  border: 1px solid;
+}
+
+.teacher-tag { background: #fff7e6; color: #d46b08; border-color: #ffd591; }
+.student-tag { background: #f6ffed; color: #389e0d; border-color: #b7eb8f; }
+
 .import-section { padding: 8px 0; }
 .import-tip {
   font-size: 13px;
@@ -1985,4 +2567,123 @@ export default {
   flex-wrap: wrap;
 }
 .import-result { margin-top: 16px; }
+
+/* ===== 凭据展示弹窗 ===== */
+.credentials-modal { max-width: 460px; }
+
+.credentials-header { background: #f6ffed; border-bottom: 1px solid #b7eb8f; }
+
+.credentials-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.credentials-title-wrap h3 { color: #389e0d; margin: 0; font-size: 16px; }
+
+.credentials-icon { width: 20px; height: 20px; color: #52c41a; flex-shrink: 0; }
+
+.credentials-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: #fffbe6;
+  border: 1px solid #ffe58f;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #874d00;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.credentials-notice svg { width: 16px; height: 16px; color: #faad14; flex-shrink: 0; margin-top: 1px; }
+
+.credentials-user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.credentials-name { font-size: 16px; font-weight: 600; color: #000000d9; }
+
+.credentials-item {
+  margin-bottom: 14px;
+}
+
+.credentials-label {
+  font-size: 12px;
+  color: #00000073;
+  margin-bottom: 6px;
+  font-weight: 400;
+}
+
+.credentials-value-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fafafa;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 10px 12px;
+}
+
+.credentials-value {
+  flex: 1;
+  font-size: 15px;
+  font-family: 'SFMono-Regular', Consolas, monospace;
+  color: #000000d9;
+  word-break: break-all;
+}
+
+.credentials-password {
+  color: #1677ff;
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: 1px;
+}
+
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  color: #00000073;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+  font-family: inherit;
+  flex-shrink: 0;
+}
+
+.copy-btn svg { width: 13px; height: 13px; }
+.copy-btn:hover { border-color: #1677ff; color: #1677ff; }
+
+.copy-all-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 6px;
+  padding: 9px;
+  background: #e6f4ff;
+  border: 1px solid #91caff;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #1677ff;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: inherit;
+}
+
+.copy-all-btn svg { width: 15px; height: 15px; }
+.copy-all-btn:hover { background: #bae0ff; }
 </style> 

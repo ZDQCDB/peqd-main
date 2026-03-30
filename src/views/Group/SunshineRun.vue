@@ -1,9 +1,16 @@
-﻿<template>
+<template>
   <div class="sunshine-run-dashboard">
     <!-- 顶部标题栏 -->
     <div class="dashboard-header">
       <h1>校园阳光跑数据大屏</h1>
       <div class="header-actions">
+        <el-radio-group v-model="periodFilter" size="small" @change="refreshData" style="margin-right:8px">
+          <el-radio-button label="all">全部</el-radio-button>
+          <el-radio-button label="today">今天</el-radio-button>
+          <el-radio-button label="week">最近一周</el-radio-button>
+          <el-radio-button label="month">最近一月</el-radio-button>
+          <el-radio-button label="four_months">最近四月</el-radio-button>
+        </el-radio-group>
         <el-radio-group v-model="viewMode" size="small" @change="handleViewModeChange">
           <el-radio-button label="school">院系统计</el-radio-button>
           <el-radio-button label="college">班级统计</el-radio-button>
@@ -35,7 +42,7 @@
         <div class="chart-card ranking-card">
           <div class="card-header">
             <h3>{{ viewMode === 'school' ? '院系排名' : '班级排名' }}</h3>
-            <span class="subtitle">人均距离</span>
+            <span class="subtitle">人均距离(km)</span>
           </div>
           <div class="ranking-list">
             <div
@@ -52,7 +59,7 @@
                   <div class="rank-bar" :style="{ width: getProgressWidth(item.avgDistancePerStudent), background: getRankColor(index) }"></div>
                 </div>
               </div>
-              <div class="rank-dist">{{ item.avgDistancePerStudent }}<em>m</em></div>
+              <div class="rank-dist">{{ toKm(item.avgDistancePerStudent) }}<em>km</em></div>
             </div>
           </div>
         </div>
@@ -63,7 +70,7 @@
           <div class="chart-card">
             <div class="card-header">
               <h3>跑步距离对比</h3>
-              <span class="subtitle">人均(米)</span>
+              <span class="subtitle">人均(公里)</span>
             </div>
             <div ref="barChart" style="width:100%;height:220px;"></div>
           </div>
@@ -90,21 +97,25 @@
           <el-table-column :label="viewMode === 'school' ? '院系' : '班级'" prop="groupName" min-width="120" />
           <el-table-column label="人数" prop="studentCount" width="70" align="center" />
           <el-table-column label="总次数" prop="aggregate.totalRuns" width="80" align="center" />
-          <el-table-column label="总距离(m)" prop="aggregate.totalDistance" width="100" align="center" />
-          <el-table-column label="总时长(s)" prop="aggregate.totalDuration" width="100" align="center" />
+          <el-table-column label="总距离(km)" width="100" align="center">
+            <template #default="{ row }">{{ toKm(row.aggregate.totalDistance) }}</template>
+          </el-table-column>
+          <el-table-column label="总时长(h)" width="100" align="center">
+            <template #default="{ row }">{{ toHours(row.aggregate.totalDuration) }}</template>
+          </el-table-column>
           <el-table-column label="人均次数" prop="aggregate.avgRunsPerStudent" width="90" align="center">
             <template #default="{ row }">
               <el-tag size="small" type="info">{{ row.aggregate.avgRunsPerStudent }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="人均距离(m)" prop="aggregate.avgDistancePerStudent" width="110" align="center">
+          <el-table-column label="人均距离(km)" width="110" align="center">
             <template #default="{ row }">
-              <el-tag size="small" type="success">{{ row.aggregate.avgDistancePerStudent }}</el-tag>
+              <el-tag size="small" type="success">{{ toKm(row.aggregate.avgDistancePerStudent) }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="人均时长(s)" prop="aggregate.avgDurationPerStudent" width="110" align="center">
+          <el-table-column label="人均时长(h)" width="110" align="center">
             <template #default="{ row }">
-              <el-tag size="small">{{ row.aggregate.avgDurationPerStudent }}</el-tag>
+              <el-tag size="small">{{ toHours(row.aggregate.avgDurationPerStudent) }}</el-tag>
             </template>
           </el-table-column>
         </el-table>
@@ -127,6 +138,16 @@ export default {
     const viewMode = ref('school')
     const statsData = ref(null)
     const searchText = ref('')
+    const periodFilter = ref('all')
+
+    const toKm = (meters) => {
+      if (meters == null || meters === 0) return '0'
+      return (meters / 1000).toFixed(2)
+    }
+    const toHours = (seconds) => {
+      if (seconds == null || seconds === 0) return '0'
+      return (seconds / 3600).toFixed(2)
+    }
 
     const barChart = ref(null)
     const radarChart = ref(null)
@@ -143,8 +164,8 @@ export default {
       return [
         { label: '总学生数', value: totalStudents || 0, unit: '人', icon: '🎓', accent: '#667eea' },
         { label: '总跑步次数', value: overall?.totalRuns || 0, unit: '次', icon: '🏃', accent: '#f5576c' },
-        { label: '人均跑步距离', value: overall?.avgDistancePerStudent || 0, unit: '米', icon: '📏', accent: '#4facfe' },
-        { label: '人均跑步时长', value: overall?.avgDurationPerStudent || 0, unit: '秒', icon: '⏱', accent: '#43e97b' }
+        { label: '人均跑步距离', value: toKm(overall?.avgDistancePerStudent || 0), unit: 'km', icon: '📏', accent: '#4facfe' },
+        { label: '人均跑步时长', value: toHours(overall?.avgDurationPerStudent || 0), unit: 'h', icon: '⏱', accent: '#43e97b' }
       ]
     })
 
@@ -163,8 +184,13 @@ export default {
         const endpoint = viewMode.value === 'school'
           ? '/pe/admin/statistics/sunshine-run/school'
           : '/pe/admin/statistics/sunshine-run/college'
+        const params = {}
+        if (periodFilter.value && periodFilter.value !== 'all') {
+          params.period = periodFilter.value
+        }
         const response = await axios.get(`${API_BASE_URL}${endpoint}`, {
-          headers: { 'Authorization': `Bearer ${token}` }
+          headers: { 'Authorization': `Bearer ${token}` },
+          params
         })
         if (response.data.code === 200) {
           statsData.value = response.data.data
@@ -195,7 +221,7 @@ export default {
         grid: { left: 12, right: 48, top: 8, bottom: 4, containLabel: true },
         xAxis: {
           type: 'value',
-          axisLabel: { fontSize: 10, formatter: v => v + 'm' },
+          axisLabel: { fontSize: 10, formatter: v => (v / 1000).toFixed(1) + 'km' },
           splitLine: { lineStyle: { color: '#f0f0f0' } }
         },
         yAxis: {
@@ -215,7 +241,7 @@ export default {
             ]),
             borderRadius: [0, 3, 3, 0]
           },
-          label: { show: true, position: 'right', fontSize: 10, formatter: '{c}m' }
+          label: { show: true, position: 'right', fontSize: 10, formatter: p => (p.value / 1000).toFixed(2) + 'km' }
         }]
       })
     }
@@ -322,9 +348,9 @@ export default {
     })
 
     return {
-      loading, viewMode, topStats, rankings, filteredTableData, searchText,
+      loading, viewMode, periodFilter, topStats, rankings, filteredTableData, searchText,
       barChart, radarChart,
-      handleViewModeChange, refreshData,
+      handleViewModeChange, refreshData, toKm, toHours,
       getRankClass, getRankColor, getProgressWidth, selectRanking, tableRowClassName,
       Refresh, Loading
     }

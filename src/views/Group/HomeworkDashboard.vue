@@ -9,6 +9,13 @@
         <el-tag v-else-if="isDeptAdminRole" type="success" size="small" effect="plain">院级管理员</el-tag>
       </div>
       <div class="header-actions">
+        <el-radio-group v-model="periodFilter" size="small" @change="loadAll">
+          <el-radio-button label="all">全部</el-radio-button>
+          <el-radio-button label="today">今天</el-radio-button>
+          <el-radio-button label="week">最近一周</el-radio-button>
+          <el-radio-button label="month">最近一月</el-radio-button>
+          <el-radio-button label="four_months">最近四月</el-radio-button>
+        </el-radio-group>
         <el-button size="small" :icon="Refresh" @click="loadAll" circle :loading="loading" />
       </div>
     </div>
@@ -190,6 +197,7 @@ const deptRank = ref([])
 const trendRaw = ref([])
 const searchText = ref('')
 const deptSearchText = ref('')
+const periodFilter = ref('all')
 
 const trendChartRef = ref(null)
 let trendChartInstance = null
@@ -222,16 +230,25 @@ const getRankColor = (index) => {
 }
 
 // ── 顶部卡片 ─────────────────────────────────────────────────────────────────
+const periodLabel = computed(() => {
+  const map = { all: '累计', today: '今日', week: '本周', month: '本月', four_months: '近四月' }
+  return map[periodFilter.value] || '累计'
+})
+
 const topStats = computed(() => {
   if (!overview.value) return []
   const o = overview.value
+  const p = periodLabel.value
+  const isFiltered = periodFilter.value !== 'all'
   return [
-    { label: '累计提交次数', value: o.totalRecords ?? 0, unit: '次', icon: '📋', accent: '#1677ff' },
+    { label: p + '提交次数', value: o.totalRecords ?? 0, unit: '次', icon: '📋', accent: '#1677ff' },
     { label: '参与学生数',   value: o.totalStudents ?? 0, unit: '人', icon: '👥', accent: '#52c41a' },
-    { label: '累计完成次数', value: o.totalReps ?? 0,    unit: '次', icon: '💪', accent: '#fa8c16' },
-    { label: '今日提交',     value: o.todayRecords ?? 0, unit: '次', icon: '📅', accent: '#722ed1' },
-    { label: '今日参与',     value: o.todayStudents ?? 0,unit: '人', icon: '🔥', accent: '#eb2f96' },
-    { label: '本周提交',     value: o.weekRecords ?? 0,  unit: '次', icon: '📈', accent: '#13c2c2' },
+    { label: p + '完成次数', value: o.totalReps ?? 0,    unit: '次', icon: '💪', accent: '#fa8c16' },
+    ...(!isFiltered ? [
+      { label: '今日提交',     value: o.todayRecords ?? 0, unit: '次', icon: '📅', accent: '#722ed1' },
+      { label: '今日参与',     value: o.todayStudents ?? 0,unit: '人', icon: '🔥', accent: '#eb2f96' },
+      { label: '本周提交',     value: o.weekRecords ?? 0,  unit: '次', icon: '📈', accent: '#13c2c2' },
+    ] : []),
   ]
 })
 
@@ -319,18 +336,18 @@ function initTrendChart() {
 async function loadAll() {
   loading.value = true
   try {
+    const p = periodFilter.value === 'all' ? undefined : periodFilter.value
+    const qp = p ? { period: p } : undefined
     const requests = [
-      api.homeworkStats.getOverview(),
-      api.homeworkStats.getTrend(),
+      api.homeworkStats.getOverview(qp),
+      api.homeworkStats.getTrend(qp),
     ]
 
-    // 校级管理员：加载全校班级排名 + 院系排名
-    // 院级管理员：加载本院班级排名
     if (isSchoolAdminRole.value) {
-      requests.push(api.homeworkStats.getClassRank())
-      requests.push(api.homeworkStats.getDepartmentRank())
+      requests.push(api.homeworkStats.getClassRank(qp))
+      requests.push(api.homeworkStats.getDepartmentRank(qp))
     } else {
-      requests.push(api.homeworkStats.getDeptClassRank())
+      requests.push(api.homeworkStats.getDeptClassRank(qp))
     }
 
     const results = await Promise.allSettled(requests)
@@ -403,7 +420,7 @@ onUnmounted(() => {
 .dashboard-content { display: flex; flex-direction: column; gap: 12px; }
 
 /* 顶部卡片 */
-.stats-cards { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+.stats-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
 .stat-card {
   background: white; border-radius: 8px; padding: 14px 16px;
   display: flex; justify-content: space-between; align-items: center;
