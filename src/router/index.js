@@ -4,6 +4,7 @@ import Register from '@/views/Register.vue'
 import Dashboard from '@/views/Dashboard.vue'
 import UserProfile from '@/views/UserProfile.vue'
 import AdminManagement from '@/views/AdminManagement.vue'
+import SchoolAccountManagement from '@/views/SchoolAccountManagement.vue'
 
 // 教学模块
 import Teaching from '@/views/Teaching/Teaching.vue'
@@ -74,6 +75,15 @@ const routes = [
     meta: { 
       requiresAuth: true,
       roles: ['super_admin', 'school_admin']
+    }
+  },
+  {
+    path: '/admin/school-accounts',
+    name: 'SchoolAccountManagement',
+    component: SchoolAccountManagement,
+    meta: {
+      requiresAuth: true,
+      roles: ['super_admin']
     }
   },
   {

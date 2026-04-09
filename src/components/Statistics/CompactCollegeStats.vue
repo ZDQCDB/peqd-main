@@ -409,25 +409,27 @@ export default {
 </script>
 
 <style scoped>
+/* 浅色主题：与 Statistics 父页一致，保证正文对比度（WCAG 友好） */
 .compact-college-stats {
   height: 100%;
   overflow-y: auto;
 }
 
-.loading-state, .no-data {
+.loading-state,
+.no-data {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 200px;
-  color: #b0bec5;
+  color: #595959;
 }
 
 .loading-spinner {
   width: 30px;
   height: 30px;
-  border: 3px solid rgba(255, 255, 255, 0.1);
-  border-left-color: #2196f3;
+  border: 3px solid #f0f0f0;
+  border-left-color: #1677ff;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 15px;
@@ -451,10 +453,10 @@ export default {
 }
 
 .stats-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
   overflow: hidden;
 }
 
@@ -462,38 +464,40 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
-  background: rgba(255, 255, 255, 0.03);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px 16px;
+  background: #e6f4ff;
+  border-bottom: 1px solid #91caff;
 }
 
 .card-header h3 {
   margin: 0;
   font-size: 16px;
-  color: #ffffff;
+  font-weight: 600;
+  color: #0958d9;
 }
 
 .refresh-btn-mini {
-  background: none;
-  border: none;
-  color: #b0bec5;
+  background: #ffffff;
+  border: 1px solid #91caff;
+  color: #1677ff;
   cursor: pointer;
   font-size: 14px;
-  padding: 4px;
-  border-radius: 4px;
-  transition: all 0.3s;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.2s, border-color 0.2s;
 }
 
 .refresh-btn-mini:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  background: #bae0ff;
+  border-color: #1677ff;
+  color: #0958d9;
 }
 
 .card-content {
   padding: 20px;
+  background: #fafafa;
 }
 
-/* 概览信息 */
 .overview-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -505,8 +509,9 @@ export default {
   align-items: center;
   gap: 12px;
   padding: 15px;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 10px;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
 }
 
 .overview-icon {
@@ -515,18 +520,18 @@ export default {
 }
 
 .overview-value {
-  font-size: 16px;
-  font-weight: bold;
-  color: #ffffff;
+  font-size: 17px;
+  font-weight: 700;
+  color: #1677ff;
   margin-bottom: 4px;
 }
 
 .overview-label {
   font-size: 12px;
-  color: #b0bec5;
+  color: #595959;
+  font-weight: 500;
 }
 
-/* 视图切换 */
 .view-toggle {
   display: flex;
   gap: 4px;
@@ -534,27 +539,26 @@ export default {
 
 .toggle-btn {
   padding: 6px 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border: 1px solid #d9d9d9;
   border-radius: 6px;
-  color: #b0bec5;
+  color: #434343;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.2s;
   font-size: 14px;
 }
 
 .toggle-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  border-color: #1677ff;
+  color: #1677ff;
 }
 
 .toggle-btn.active {
-  background: #2196f3;
+  background: #1677ff;
   color: #ffffff;
-  border-color: #2196f3;
+  border-color: #1677ff;
 }
 
-/* 柱状图达标率 */
 .compliance-bars {
   display: flex;
   flex-direction: column;
@@ -575,18 +579,19 @@ export default {
 
 .bar-label {
   font-size: 14px;
-  color: #b0bec5;
+  color: #434343;
+  font-weight: 500;
 }
 
 .bar-value {
   font-size: 16px;
-  font-weight: bold;
-  color: #ffffff;
+  font-weight: 700;
+  color: #262626;
 }
 
 .bar-container {
   height: 8px;
-  background: rgba(255, 255, 255, 0.1);
+  background: #e8e8e8;
   border-radius: 4px;
   overflow: hidden;
 }
@@ -597,7 +602,6 @@ export default {
   transition: width 0.5s ease;
 }
 
-/* 圆形进度达标率 */
 .compliance-circles {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -623,7 +627,7 @@ export default {
 
 .circle-bg {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.1);
+  stroke: #e8e8e8;
   stroke-width: 6;
 }
 
@@ -644,17 +648,17 @@ export default {
 
 .circle-value {
   font-size: 16px;
-  font-weight: bold;
-  color: #ffffff;
+  font-weight: 700;
+  color: #262626;
 }
 
 .circle-label {
   font-size: 11px;
-  color: #b0bec5;
+  color: #595959;
   margin-top: 2px;
+  font-weight: 500;
 }
 
-/* 排名控制 */
 .ranking-controls {
   display: flex;
   align-items: center;
@@ -662,10 +666,10 @@ export default {
 }
 
 .sort-select {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #ffffff;
+  border: 1px solid #d9d9d9;
   border-radius: 6px;
-  color: #ffffff;
+  color: #262626;
   padding: 6px 10px;
   font-size: 12px;
   cursor: pointer;
@@ -673,10 +677,10 @@ export default {
 
 .sort-select:focus {
   outline: none;
-  border-color: #2196f3;
+  border-color: #1677ff;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15);
 }
 
-/* 前三名展示 */
 .podium {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -689,9 +693,9 @@ export default {
   flex-direction: column;
   align-items: center;
   padding: 15px;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
 }
 
 .podium-medal {
@@ -701,19 +705,18 @@ export default {
 
 .podium-name {
   font-size: 14px;
-  color: #ffffff;
-  font-weight: bold;
+  color: #262626;
+  font-weight: 600;
   text-align: center;
   margin-bottom: 4px;
 }
 
 .podium-rate {
   font-size: 16px;
-  color: #4caf50;
-  font-weight: bold;
+  color: #389e0d;
+  font-weight: 700;
 }
 
-/* 排名列表 */
 .rankings-list {
   overflow-x: auto;
 }
@@ -723,10 +726,10 @@ export default {
   grid-template-columns: 60px 1fr 80px 100px;
   gap: 10px;
   padding: 10px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid #d9d9d9;
   font-size: 12px;
-  color: #b0bec5;
-  font-weight: bold;
+  color: #434343;
+  font-weight: 600;
 }
 
 .list-row {
@@ -734,20 +737,20 @@ export default {
   grid-template-columns: 60px 1fr 80px 100px;
   gap: 10px;
   padding: 12px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  transition: background 0.3s;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.2s;
 }
 
 .list-row:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: #f5f5f5;
 }
 
 .list-row.top-rank {
-  background: rgba(255, 193, 7, 0.1);
+  background: #fffbe6;
 }
 
 .list-row.low-performance {
-  background: rgba(244, 67, 54, 0.1);
+  background: #fff2f0;
 }
 
 .rank-number {
@@ -756,31 +759,35 @@ export default {
   justify-content: center;
   width: 24px;
   height: 24px;
-  background: rgba(255, 255, 255, 0.1);
+  background: #e6f4ff;
   border-radius: 50%;
   font-size: 12px;
-  font-weight: bold;
-  color: #ffffff;
+  font-weight: 700;
+  color: #0958d9;
 }
 
 .item-name {
-  color: #ffffff;
+  color: #262626;
   font-weight: 500;
   font-size: 14px;
 }
 
+.col-students {
+  color: #595959;
+  font-size: 13px;
+}
+
 .rate-value {
-  font-weight: bold;
+  font-weight: 700;
   font-size: 14px;
 }
 
-.rate-value.excellent { color: #4caf50; }
-.rate-value.good { color: #8bc34a; }
-.rate-value.pass { color: #ffeb3b; }
-.rate-value.low { color: #ff9800; }
-.rate-value.poor { color: #f44336; }
+.rate-value.excellent { color: #389e0d; }
+.rate-value.good { color: #52c41a; }
+.rate-value.pass { color: #d48806; }
+.rate-value.low { color: #d46b08; }
+.rate-value.poor { color: #cf1322; }
 
-/* 分页 */
 .pagination {
   display: flex;
   align-items: center;
@@ -790,30 +797,31 @@ export default {
 }
 
 .page-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #ffffff;
+  border: 1px solid #d9d9d9;
   border-radius: 6px;
-  color: #ffffff;
+  color: #262626;
   padding: 8px 12px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.2s;
 }
 
 .page-btn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.2);
+  border-color: #1677ff;
+  color: #1677ff;
 }
 
 .page-btn:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
 .page-info {
-  color: #b0bec5;
+  color: #595959;
   font-size: 14px;
+  font-weight: 500;
 }
 
-/* 响应式设计 */
 @media (max-width: 768px) {
   .overview-grid {
     grid-template-columns: 1fr;

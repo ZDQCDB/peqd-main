@@ -262,8 +262,11 @@ export const api = {
       })
     },
     
-    // 重置用户密码
     resetPassword: (id) => apiClient.post(`/users/${id}/reset-password`),
+
+    /** 管理员重置密码 POST /admin/users/{userId}/reset-password */
+    adminResetPassword: (userId, body) =>
+      apiClient.post(`/admin/users/${userId}/reset-password`, body),
     
     // 删除用户
     deleteUser: (id) => apiClient.delete(`/users/${id}`),
@@ -417,6 +420,9 @@ export const api = {
     
     // 早操管理
     getMorningExercises: (params) => apiClient.get('/pe/morning-exercises', { params }),
+    /** 出勤率统计大屏（校级：院系+班级；院级：仅班级） */
+    getMorningAttendanceDashboard: (params) =>
+      apiClient.get('/pe/morning-exercises/attendance-dashboard', { params }),
     getMorningExercise: (id) => apiClient.get(`/pe/morning-exercises/${id}`),
     createMorningExercise: (data) => apiClient.post('/pe/morning-exercises', data),
     updateMorningExercise: (id, data) => apiClient.put(`/pe/morning-exercises/${id}`, data),
@@ -653,6 +659,19 @@ export const api = {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
     }
+  },
+
+  // 超管：按 checkuser 学校维度开户（与后端 SchoolAccountController 前缀一致）
+  schoolAccount: {
+    getSchoolModules: () => apiClient.get('/checkuser/school-account/school-modules'),
+    getSchoolDetail: (school) =>
+      apiClient.get('/checkuser/school-account/school-detail', { params: { school } }),
+    activateFromPreimport: (data) =>
+      apiClient.post('/checkuser/school-account/activate-from-preimport', data),
+    createTeacherWithPreimport: (data) =>
+      apiClient.post('/checkuser/school-account/create-teacher-with-preimport', data),
+    createSchool: (data) =>
+      apiClient.post('/checkuser/school-account/create-school', data)
   },
 
   // 人脸库导入（代理到 38.207.179.218:5000，仅超管）

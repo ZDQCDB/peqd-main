@@ -1288,6 +1288,46 @@ export default {
 
 ---
 
+## 超级管理员：学校开户（school-account）
+
+**认证**：`Authorization: Bearer <token>`，且用户类型为 `super_admin`。
+
+**基础路径**：`/checkuser/school-account`（与预导入接口同 `/checkuser` 前缀，便于网关与部署统一）
+
+### GET /checkuser/school-account/school-modules
+
+返回 checkuser 预导入库（`checkstudent` ∪ `checkteacher`）中出现过的学校列表及统计。
+
+**响应 data 项字段**：`school`，`studentCount`，`teacherPreimportCount`，`teacherRegisteredCount`（本校已注册教师含 `teacher` / `department_admin` / `school_admin`）。
+
+### GET /school-account/school-detail
+
+**查询参数**：`school`（必填，与预导入库学校名一致）。
+
+**响应 data**：`school`，`studentCount`，`preimportTeachers`（`teacherId`，`name`，`college`，`hasAccount`），`registeredTeachers`（`id`，`username`，`realName`，`studentId`，`userType`，`departmentName`，`school`）。
+
+### POST /school-account/activate-from-preimport
+
+预导入表中已有教师时直接开户。
+
+**请求体 JSON**：`school`，`teacherId`，`password`，`userType`（`teacher` | `department_admin` | `school_admin`）。
+
+**成功**：返回新建账户的 `username`、`userId` 等。
+
+### POST /school-account/create-teacher-with-preimport
+
+教师不在预导入表：同时写入 `users` 与 `checkuser.checkteacher`。
+
+**请求体 JSON**：`school`，`teacherId`，`name`，`password`，`userType`；`college` 可选。
+
+### POST /school-account/create-school
+
+新建学校：创建该校 `school_admin`，并写入预导入 `checkteacher`。若该校名已在 checkuser 学生或教师表中出现则拒绝。
+
+**请求体 JSON**：`schoolName`，`realName`，`teacherId`，`password`；`college` 可选。
+
+---
+
 **文档版本**: v5.1.0  
 **更新时间**: 2024-01-25  
 **维护团队**: 后端开发组

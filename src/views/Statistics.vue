@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="statistics-dashboard">
     <!-- 顶部标题栏 -->
     <div class="dashboard-header">
@@ -264,9 +264,11 @@ export default {
       schoolStatsLoading.value = true
       try {
         const response = await api.peStatistics.getSchoolStatistics()
-        
-        // 检查响应数据结构
-        if (response && response.data) {
+        if (response && response.code !== undefined && response.code !== 200) {
+          error.value = response.message || '获取学校统计数据失败'
+          schoolStats.value = null
+        } else if (response && response.data) {
+          error.value = ''
           schoolStats.value = response.data
         } else {
           schoolStats.value = response
@@ -284,12 +286,13 @@ export default {
       collegeStatsLoading.value = true
       try {
         const response = await api.peStatistics.getCollegeStatistics()
-        
-        // 检查响应数据结构
-        if (response && response.data) {
+        if (response && response.code !== undefined && response.code !== 200) {
+          error.value = response.message || '获取院系统计失败'
+          collegeStats.value = null
+        } else if (response && response.data) {
+          error.value = ''
           collegeStats.value = response.data
         } else if (response && (response.collegeStats || response.classStats)) {
-          // 如果响应直接包含统计数据
           collegeStats.value = response
         } else {
           collegeStats.value = response
@@ -508,7 +511,8 @@ export default {
 
 .user-info {
   font-size: 13px;
-  color: #00000073;
+  color: #434343;
+  font-weight: 500;
 }
 
 /* 权限提示 */
@@ -704,7 +708,7 @@ export default {
   margin-bottom: 3px;
 }
 
-.stat-mini-label { font-size: 12px; color: #00000073; }
+.stat-mini-label { font-size: 12px; color: #595959; font-weight: 500; }
 
 /* 快速操作 */
 .action-btn {
@@ -754,7 +758,8 @@ export default {
   cursor: pointer;
   border-radius: 4px;
   transition: background 0.15s, color 0.15s;
-  color: #00000073;
+  color: #434343;
+  font-weight: 500;
   display: flex;
   align-items: center;
   justify-content: center;

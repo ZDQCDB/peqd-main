@@ -215,25 +215,27 @@ export default {
 </script>
 
 <style scoped>
+/* 浅色主题：与 Statistics / CompactCollegeStats 一致 */
 .compact-school-stats {
   height: 100%;
   overflow-y: auto;
 }
 
-.loading-state, .no-data {
+.loading-state,
+.no-data {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 200px;
-  color: #b0bec5;
+  color: #595959;
 }
 
 .loading-spinner {
   width: 30px;
   height: 30px;
-  border: 3px solid rgba(255, 255, 255, 0.1);
-  border-left-color: #2196f3;
+  border: 3px solid #f0f0f0;
+  border-left-color: #1677ff;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 15px;
@@ -257,10 +259,10 @@ export default {
 }
 
 .stats-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
   overflow: hidden;
 }
 
@@ -268,43 +270,45 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
-  background: rgba(255, 255, 255, 0.03);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px 16px;
+  background: #e6f4ff;
+  border-bottom: 1px solid #91caff;
 }
 
 .card-header h3 {
   margin: 0;
   font-size: 16px;
-  color: #ffffff;
+  font-weight: 600;
+  color: #0958d9;
 }
 
 .refresh-btn-mini {
-  background: none;
-  border: none;
-  color: #b0bec5;
+  background: #ffffff;
+  border: 1px solid #91caff;
+  color: #1677ff;
   cursor: pointer;
   font-size: 14px;
-  padding: 4px;
-  border-radius: 4px;
-  transition: all 0.3s;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.2s, border-color 0.2s;
 }
 
 .refresh-btn-mini:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  background: #bae0ff;
+  border-color: #1677ff;
+  color: #0958d9;
 }
 
 .refresh-btn-mini:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
 .card-content {
   padding: 20px;
+  background: #fafafa;
 }
 
-/* 整体达标率 */
 .compliance-grid-compact {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -316,9 +320,9 @@ export default {
   align-items: center;
   gap: 12px;
   padding: 15px;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
 }
 
 .compliance-icon {
@@ -332,32 +336,32 @@ export default {
 
 .compliance-label {
   font-size: 12px;
-  color: #b0bec5;
+  color: #595959;
+  font-weight: 500;
   margin-bottom: 4px;
 }
 
 .compliance-value {
   font-size: 20px;
-  font-weight: bold;
-  color: #ffffff;
+  font-weight: 700;
+  color: #1677ff;
   margin-bottom: 8px;
 }
 
 .compliance-bar {
   height: 6px;
-  background: rgba(255, 255, 255, 0.1);
+  background: #e8e8e8;
   border-radius: 3px;
   overflow: hidden;
 }
 
 .compliance-progress {
   height: 100%;
-  background: linear-gradient(90deg, #4caf50, #81c784);
+  background: linear-gradient(90deg, #52c41a, #95de64);
   border-radius: 3px;
   transition: width 0.5s ease;
 }
 
-/* 视图切换 */
 .view-toggle {
   display: flex;
   gap: 4px;
@@ -365,27 +369,26 @@ export default {
 
 .toggle-btn {
   padding: 6px 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border: 1px solid #d9d9d9;
   border-radius: 6px;
-  color: #b0bec5;
+  color: #434343;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.2s;
   font-size: 14px;
 }
 
 .toggle-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  border-color: #1677ff;
+  color: #1677ff;
 }
 
 .toggle-btn.active {
-  background: #2196f3;
+  background: #1677ff;
   color: #ffffff;
-  border-color: #2196f3;
+  border-color: #1677ff;
 }
 
-/* 表格视图 */
 .rankings-table-compact {
   overflow-x: auto;
 }
@@ -395,10 +398,10 @@ export default {
   grid-template-columns: 60px 1fr 80px 80px;
   gap: 10px;
   padding: 10px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid #d9d9d9;
   font-size: 12px;
-  color: #b0bec5;
-  font-weight: bold;
+  color: #434343;
+  font-weight: 600;
 }
 
 .table-row-compact {
@@ -406,16 +409,16 @@ export default {
   grid-template-columns: 60px 1fr 80px 80px;
   gap: 10px;
   padding: 12px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  transition: background 0.3s;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.2s;
 }
 
 .table-row-compact:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: #f5f5f5;
 }
 
 .table-row-compact.top-rank {
-  background: rgba(255, 193, 7, 0.1);
+  background: #fffbe6;
 }
 
 .rank-badge-mini {
@@ -444,23 +447,22 @@ export default {
 }
 
 .col-name {
-  color: #ffffff;
+  color: #262626;
   font-weight: 500;
   font-size: 14px;
 }
 
 .col-students {
-  color: #b0bec5;
+  color: #595959;
   font-size: 13px;
 }
 
 .rate-value-mini {
-  font-weight: bold;
-  color: #4caf50;
+  font-weight: 700;
+  color: #389e0d;
   font-size: 14px;
 }
 
-/* 图表视图 */
 .rankings-chart {
   height: 300px;
 }
@@ -503,32 +505,32 @@ export default {
 }
 
 .bar-name {
-  color: #b0bec5;
+  color: #595959;
   margin-bottom: 2px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-weight: 500;
 }
 
 .bar-value {
-  color: #ffffff;
-  font-weight: bold;
+  color: #262626;
+  font-weight: 700;
 }
 
-/* 展开/收起 */
 .expand-toggle {
   margin-top: 15px;
   text-align: center;
 }
 
 .expand-btn {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border: 1px solid #d9d9d9;
   border-radius: 8px;
-  color: #b0bec5;
+  color: #434343;
   padding: 8px 16px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.2s;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -537,8 +539,8 @@ export default {
 }
 
 .expand-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  border-color: #1677ff;
+  color: #1677ff;
 }
 
 .expand-icon {
@@ -550,7 +552,6 @@ export default {
   transform: rotate(180deg);
 }
 
-/* 响应式设计 */
 @media (max-width: 768px) {
   .compliance-grid-compact {
     grid-template-columns: 1fr;

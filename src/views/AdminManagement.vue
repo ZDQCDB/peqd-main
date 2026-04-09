@@ -20,12 +20,6 @@
         </div>
         
         <div class="header-actions">
-          <button class="action-btn primary" @click="showCreateUserModal">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            创建用户
-          </button>
           <button v-if="isSuperAdminRole" class="action-btn import-btn" @click="openImportDialog">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -37,6 +31,15 @@
               <path d="M18 20V10M12 20V4M6 20v-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             预导入统计
+          </button>
+          <button v-if="isSuperAdminRole" class="action-btn school-account-btn" @click="$router.push('/admin/school-accounts')" title="按预导入学校可视化开户">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="3" y="3" width="7" height="9" rx="1" stroke="currentColor" stroke-width="2"/>
+              <rect x="14" y="3" width="7" height="5" rx="1" stroke="currentColor" stroke-width="2"/>
+              <rect x="14" y="12" width="7" height="9" rx="1" stroke="currentColor" stroke-width="2"/>
+              <rect x="3" y="16" width="7" height="5" rx="1" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            学校开户
           </button>
           <button v-if="isSuperAdminRole" class="action-btn face-btn" @click="openFaceImportDialog">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2338,6 +2341,13 @@ export default {
   border: 1px solid #91caff;
 }
 .action-btn.stats-btn:hover { background: #bae0ff; }
+
+.action-btn.school-account-btn {
+  background: #f9f0ff;
+  color: #722ed1;
+  border: 1px solid #d3adf7;
+}
+.action-btn.school-account-btn:hover { background: #efdbff; }
 
 .action-btn.face-btn {
   background: #fff0f6;
