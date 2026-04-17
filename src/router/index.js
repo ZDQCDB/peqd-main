@@ -83,7 +83,7 @@ const routes = [
     component: SchoolAccountManagement,
     meta: {
       requiresAuth: true,
-      roles: ['super_admin']
+      roles: ['super_admin', 'school_admin']
     }
   },
   {

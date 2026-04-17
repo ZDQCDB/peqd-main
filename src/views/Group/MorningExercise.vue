@@ -34,6 +34,9 @@
           <el-button type="primary" :loading="dashboardLoading" @click="loadDashboard">
             刷新统计
           </el-button>
+          <el-button type="success" :loading="exportingDashboard" @click="exportDashboardExcel">
+            导出Excel
+          </el-button>
         </div>
 
         <div v-loading="dashboardLoading" class="dashboard-summary">
@@ -259,6 +262,7 @@ export default {
   data() {
     return {
       dashboardLoading: false,
+      exportingDashboard: false,
       dashboardData: null,
       dashboardRange: null,
       dateShortcuts: [
@@ -397,6 +401,30 @@ export default {
         this.dashboardData = null
       } finally {
         this.dashboardLoading = false
+      }
+    },
+
+    async exportDashboardExcel() {
+      this.exportingDashboard = true
+      try {
+        const range = this.dashboardRange
+        const params = {}
+        if (Array.isArray(range) && range.length === 2 && range[0] && range[1]) {
+          params.startDate = range[0]
+          params.endDate = range[1]
+        }
+        const res = await api.peManagement.exportMorningExercise(params)
+        const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = '早操考勤统计.xlsx'
+        a.click()
+        URL.revokeObjectURL(url)
+      } catch (e) {
+        this.$message.error('导出失败：' + (e.message || '网络错误'))
+      } finally {
+        this.exportingDashboard = false
       }
     },
 

@@ -173,6 +173,32 @@ PE校园管理端API为管理员提供活动审核、用户管理、早操管理
 
 ## 2. 用户管理
 
+### 2.0 获取当前用户权限信息
+
+**接口地址**: `GET /pe/users/permission-info`
+
+**说明**: 返回当前登录用户的角色和所属学校/学院，前端据此决定管理端起始层级。
+
+**响应数据**:
+```json
+{
+  "code": 200,
+  "message": "获取成功",
+  "data": {
+    "userType": "school_admin",
+    "school": "青岛大学",
+    "departmentName": null
+  }
+}
+```
+
+**权限层级对应关系**:
+| userType | 起始层级 | 说明 |
+|----------|----------|------|
+| super_admin | 学校列表 | 可查看所有学校 |
+| school_admin | 学院列表 | 自动锁定到本校，查看本校学院 |
+| department_admin | 班级列表 | 自动锁定到本校本院，查看本院班级 |
+
 ### 2.1 获取用户列表
 
 **接口地址**: `GET /pe/users`
@@ -184,8 +210,9 @@ PE校园管理端API为管理员提供活动审核、用户管理、早操管理
   "pageSize": 20,
   "search": "张三",          // 可选，按姓名或学号搜索
   "role": "STUDENT",        // 可选，按角色筛选：STUDENT/CHECKER/SUB_CHECKER/ADMIN
-  "school": "某大学",       // 可选，按学校筛选
-  "college": "计算机学院"   // 可选，按学院筛选
+  "school": "某大学",       // 可选，按学校精确筛选
+  "college": "计算机学院",  // 可选，按学院精确筛选
+  "className": "计科1班"    // 可选，按班级精确筛选
 }
 ```
 

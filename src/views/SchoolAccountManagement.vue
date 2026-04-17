@@ -12,7 +12,7 @@
           <h1 class="page-title">学校开户</h1>
           <p class="page-subtitle">以 checkuser 预导入库中的学校为范围，为教师开户或新建学校</p>
         </div>
-        <button type="button" class="action-btn create-school-top" @click="showNewSchool = true">
+        <button v-if="isSuperAdminRole" type="button" class="action-btn create-school-top" @click="showNewSchool = true">
           ＋ 新建学校（校管）
         </button>
       </div>
@@ -190,6 +190,8 @@
 
 <script>
 import api from '@/services/api'
+import authService from '@/services/authService'
+import { isSuperAdmin } from '@/utils/permissionManager'
 
 export default {
   name: 'SchoolAccountManagement',
@@ -220,11 +222,24 @@ export default {
       showNewSchool: false,
       submitting: false,
       resetTarget: null,
-      resetPasswordInput: ''
+      resetPasswordInput: '',
+      currentUserSchool: ''
     }
   },
-  mounted () {
+  computed: {
+    isSuperAdminRole () {
+      return isSuperAdmin()
+    }
+  },
+  async mounted () {
+    const user = await authService.getCurrentUser()
+    if (user) {
+      this.currentUserSchool = user.school || ''
+    }
     this.loadModules()
+    if (!this.isSuperAdminRole && this.currentUserSchool) {
+      this.openDetail(this.currentUserSchool)
+    }
   },
   methods: {
     roleLabel (t) {

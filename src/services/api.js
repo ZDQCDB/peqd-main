@@ -67,7 +67,9 @@ apiClient.interceptors.request.use(
 // 响应拦截器 - 统一处理响应
 apiClient.interceptors.response.use(
   (response) => {
-    // 返回响应数据
+    if (response.config.responseType === 'blob' || response.config.responseType === 'arraybuffer') {
+      return response.data
+    }
     return response.data
   },
   (error) => {
@@ -413,10 +415,13 @@ export const api = {
     getUser: (id) => apiClient.get(`/pe/users/${id}`),
     setUserRole: (id, data) => apiClient.put(`/pe/users/${id}/role`, data),
     getUserPointsHistory: (id, params) => apiClient.get(`/pe/users/${id}/points-history`, { params }),
-    // 强制登出（清除登录状态）
     forceLogout: (id) => apiClient.post(`/pe/users/${id}/force-logout`),
-    // 修改手机号
     updateUserPhone: (id, phoneNumber) => apiClient.put(`/pe/users/${id}/phone`, { phoneNumber }),
+    // 权限 & 层级聚合查询
+    getPermissionInfo: () => apiClient.get('/pe/users/permission-info'),
+    getSchools: () => apiClient.get('/pe/users/schools'),
+    getColleges: (school) => apiClient.get('/pe/users/colleges', { params: { school } }),
+    getClasses: (school, college) => apiClient.get('/pe/users/classes', { params: { school, college } }),
     
     // 早操管理
     getMorningExercises: (params) => apiClient.get('/pe/morning-exercises', { params }),
@@ -443,7 +448,8 @@ export const api = {
     getStatistics: (params) => apiClient.get('/pe/statistics', { params }),
     getActivityStatistics: (params) => apiClient.get('/pe/statistics/activities', { params }),
     getUserStatistics: (params) => apiClient.get('/pe/statistics/users', { params }),
-    getMorningExerciseStatistics: (params) => apiClient.get('/pe/statistics/morning-exercises', { params })
+    getMorningExerciseStatistics: (params) => apiClient.get('/pe/statistics/morning-exercises', { params }),
+    exportMorningExercise: (params) => apiClient.get('/pe/morning-exercises/attendance-dashboard/export', { params, responseType: 'blob', timeout: 60000 })
   },
 
   // 比赛成绩 Excel 文件管理 API
@@ -478,14 +484,10 @@ export const api = {
 
   // PE积分统计管理API
   peStatistics: {
-    // 设置PE积分指标 (仅校级管理员)
     setTargets: (data) => apiClient.post('/pe/admin/statistics/targets', data),
-    
-    // 获取学校统计数据 (仅校级管理员)
     getSchoolStatistics: () => apiClient.get('/pe/admin/statistics/school'),
-    
-    // 获取院系统计数据 (院级管理员和校级管理员)
-    getCollegeStatistics: () => apiClient.get('/pe/admin/statistics/college')
+    getCollegeStatistics: () => apiClient.get('/pe/admin/statistics/college'),
+    exportSunshineRun: (params) => apiClient.get('/pe/admin/statistics/sunshine-run/export', { params, responseType: 'blob', timeout: 60000 })
   },
 
   // 训练管理API
@@ -519,7 +521,8 @@ export const api = {
     getTrend: (params) => apiClient.get('/statistics/homework/trend', { params }),
     getClassRank: (params) => apiClient.get('/statistics/homework/class-rank', { params }),
     getDepartmentRank: (params) => apiClient.get('/statistics/homework/department-rank', { params }),
-    getDeptClassRank: (params) => apiClient.get('/statistics/homework/dept-class-rank', { params })
+    getDeptClassRank: (params) => apiClient.get('/statistics/homework/dept-class-rank', { params }),
+    exportExcel: (params) => apiClient.get('/statistics/homework/export', { params, responseType: 'blob', timeout: 60000 })
   },
 
   // 运动会管理API
@@ -637,18 +640,47 @@ export const api = {
     getTeacherSchools: () => apiClient.get('/checkuser/teacher-schools')
   },
 
-  // checkuser 库导入（仅超管）
+  // checkuser 库导入（超管和校管可用）
   checkUserImport: {
-    // 各学校预导入学生/教师数量统计
     getSchoolStats: () => apiClient.get('/checkuser/schools'),
     downloadStudentTemplate: () =>
       apiClient.get('/checkuser/template/student', { responseType: 'blob' }),
     downloadTeacherTemplate: () =>
       apiClient.get('/checkuser/template/teacher', { responseType: 'blob' }),
+    previewImportStudents: (file) => {
+      const form = new FormData()
+      form.append('file', file)
+      return apiClient.post('/checkuser/import/student?mode=preview', form, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+    },
+    confirmImportStudents: (file, overrideIds) => {
+      const form = new FormData()
+      form.append('file', file)
+      const ids = overrideIds && overrideIds.length > 0 ? overrideIds.join(',') : ''
+      return apiClient.post(`/checkuser/import/student?mode=confirm&overrideIds=${encodeURIComponent(ids)}`, form, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+    },
     importStudents: (file) => {
       const form = new FormData()
       form.append('file', file)
       return apiClient.post('/checkuser/import/student', form, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+    },
+    previewImportTeachers: (file) => {
+      const form = new FormData()
+      form.append('file', file)
+      return apiClient.post('/checkuser/import/teacher?mode=preview', form, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+    },
+    confirmImportTeachers: (file, overrideIds) => {
+      const form = new FormData()
+      form.append('file', file)
+      const ids = overrideIds && overrideIds.length > 0 ? overrideIds.join(',') : ''
+      return apiClient.post(`/checkuser/import/teacher?mode=confirm&overrideIds=${encodeURIComponent(ids)}`, form, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
     },

@@ -16,6 +16,9 @@
           <el-radio-button label="month">最近一月</el-radio-button>
           <el-radio-button label="four_months">最近四月</el-radio-button>
         </el-radio-group>
+        <el-button v-if="isSchoolAdminRole || isDeptAdminRole" size="small" type="success" :loading="exporting" :disabled="periodFilter === 'all' || periodFilter === 'four_months'" @click="exportExcel">
+          {{ periodFilter === 'all' || periodFilter === 'four_months' ? '导出Excel（最大支持一个月）' : '导出Excel' }}
+        </el-button>
         <el-button size="small" :icon="Refresh" @click="loadAll" circle :loading="loading" />
       </div>
     </div>
@@ -191,6 +194,7 @@ import api from '@/services/api'
 import permissionManager from '@/utils/permissionManager'
 
 const loading = ref(false)
+const exporting = ref(false)
 const overview = ref(null)
 const classRank = ref([])
 const deptRank = ref([])
@@ -330,6 +334,29 @@ function initTrendChart() {
     },
     series: series.length ? series : [{ type: 'bar', data: [] }],
   })
+}
+
+// ── 导出 Excel ──────────────────────────────────────────────────────────────
+async function exportExcel() {
+  exporting.value = true
+  try {
+    const p = periodFilter.value === 'all' ? 'month' : periodFilter.value
+    const res = await api.homeworkStats.exportExcel({ period: p })
+    const blob = res instanceof Blob ? res : new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = '课后作业统计.xlsx'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  } catch (e) {
+    console.error('导出失败:', e)
+    alert('导出失败，请稍后重试')
+  } finally {
+    exporting.value = false
+  }
 }
 
 // ── 数据加载 ─────────────────────────────────────────────────────────────────

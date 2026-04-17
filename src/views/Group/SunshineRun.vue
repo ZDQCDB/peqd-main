@@ -11,10 +11,13 @@
           <el-radio-button label="month">最近一月</el-radio-button>
           <el-radio-button label="four_months">最近四月</el-radio-button>
         </el-radio-group>
-        <el-radio-group v-model="viewMode" size="small" @change="handleViewModeChange">
+        <el-radio-group v-if="!isDeptAdmin" v-model="viewMode" size="small" @change="handleViewModeChange">
           <el-radio-button label="school">院系统计</el-radio-button>
           <el-radio-button label="college">班级统计</el-radio-button>
         </el-radio-group>
+        <el-button size="small" type="success" :loading="exporting" :disabled="exportDisabled" @click="exportExcel">
+          {{ exportDisabled ? '导出Excel（最大支持一个月）' : '导出Excel' }}
+        </el-button>
         <el-button size="small" :icon="Refresh" @click="refreshData" circle />
       </div>
     </div>
@@ -129,16 +132,21 @@ import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { Refresh, Loading } from '@element-plus/icons-vue'
 import * as echarts from 'echarts'
 import axios from 'axios'
+import api from '@/services/api'
+import permissionManager from '@/utils/permissionManager'
 
 export default {
   name: 'SunshineRun',
   components: { Loading },
   setup() {
     const loading = ref(false)
-    const viewMode = ref('school')
+    const exporting = ref(false)
+    const isDeptAdmin = computed(() => permissionManager.hasRole('department_admin'))
+    const viewMode = ref(permissionManager.hasRole('department_admin') ? 'college' : 'school')
     const statsData = ref(null)
     const searchText = ref('')
     const periodFilter = ref('all')
+    const exportDisabled = computed(() => periodFilter.value === 'all' || periodFilter.value === 'four_months')
 
     const toKm = (meters) => {
       if (meters == null || meters === 0) return '0'
@@ -336,6 +344,27 @@ export default {
       }, 200)
     }
 
+    async function exportExcel() {
+      exporting.value = true
+      try {
+        const res = await api.peStatistics.exportSunshineRun({ scope: viewMode.value })
+        const blob = res instanceof Blob ? res : new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = '阳光跑统计.xlsx'
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        URL.revokeObjectURL(url)
+      } catch (e) {
+        console.error('导出失败:', e)
+        alert('导出失败，请稍后重试')
+      } finally {
+        exporting.value = false
+      }
+    }
+
     onMounted(() => {
       fetchData()
       window.addEventListener('resize', handleResize)
@@ -348,9 +377,9 @@ export default {
     })
 
     return {
-      loading, viewMode, periodFilter, topStats, rankings, filteredTableData, searchText,
+      loading, exporting, exportDisabled, isDeptAdmin, viewMode, periodFilter, topStats, rankings, filteredTableData, searchText,
       barChart, radarChart,
-      handleViewModeChange, refreshData, toKm, toHours,
+      handleViewModeChange, refreshData, exportExcel, toKm, toHours,
       getRankClass, getRankColor, getProgressWidth, selectRanking, tableRowClassName,
       Refresh, Loading
     }

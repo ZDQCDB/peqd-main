@@ -1,18 +1,25 @@
 <template>
   <div class="statistics-dashboard">
-    <!-- 顶部标题栏 -->
-    <div class="dashboard-header">
-      <h1 class="dashboard-title">PE校园统计大屏</h1>
-      <div class="header-info">
-        <span class="current-time">{{ currentTime }}</span>
-        <span class="user-info">{{ userInfo.name || '管理员' }} | {{ userRoleText }}</span>
+    <!-- 顶部栏 -->
+    <header class="dashboard-header">
+      <div class="header-left">
+        <button class="back-btn" @click="$router.push('/dashboard')">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <h1 class="dashboard-title">PE校园统计大屏</h1>
       </div>
-    </div>
+      <div class="header-right">
+        <span class="header-time">{{ currentTime }}</span>
+        <span class="header-divider">|</span>
+        <span class="header-user">{{ userInfo.name || '管理员' }}</span>
+        <span class="header-role">{{ userRoleText }}</span>
+      </div>
+    </header>
 
     <!-- 权限提示 -->
-        <div v-if="!hasPermission" class="permission-denied">
-      <div class="permission-message">
-        <svg class="warning-icon" viewBox="0 0 24 24" fill="none" width="48" height="48" style="display:block;margin:0 auto 16px;">
+    <div v-if="!hasPermission" class="permission-denied">
+      <div class="permission-box">
+        <svg viewBox="0 0 24 24" fill="none" width="40" height="40">
           <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="#faad14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           <line x1="12" y1="9" x2="12" y2="13" stroke="#faad14" stroke-width="2" stroke-linecap="round"/>
           <line x1="12" y1="17" x2="12.01" y2="17" stroke="#faad14" stroke-width="2" stroke-linecap="round"/>
@@ -22,150 +29,118 @@
       </div>
     </div>
 
-    <!-- 统计内容 -->
-    <div v-else class="dashboard-content">
-      <!-- 紧凑型网格布局 -->
-      <div class="compact-grid">
-        <!-- 左侧面板 -->
-        <div class="left-panel">
-          <!-- 指标设置区域 (仅校级管理员可见) -->
-          <div v-if="isSchoolAdmin" class="targets-compact">
-            <div class="compact-card">
-              <div class="card-header collapsible" @click="toggleTargetsPanel">
-                <h3>PE积分指标</h3>
-                <i class="toggle-icon" :class="{ 'rotated': !targetsCollapsed }">▼</i>
-              </div>
-              <div v-show="!targetsCollapsed" class="card-content">
-                <div class="targets-mini-grid">
-                  <div class="target-mini-item" v-for="(target, key) in targetItems" :key="key">
-                    <div class="target-mini-label">{{ target.label }}</div>
-                    <div class="target-mini-value" v-if="!editingTargets">
-                      {{ targets?.[target.key] || '--' }}分
-                    </div>
-                    <input 
-                      v-else
-                      v-model.number="editTargets[target.key]"
-                      type="number"
-                      min="1"
-                      class="target-mini-input"
-                    />
-                  </div>
-                </div>
-                <div class="targets-actions">
-                  <button @click="toggleEditTargets" class="btn-mini" :disabled="targetsLoading">
-                    {{ editingTargets ? '取消' : '编辑' }}
-                  </button>
-                  <button 
-                    v-if="editingTargets" 
-                    @click="saveTargets" 
-                    class="btn-mini primary"
-                    :disabled="targetsLoading"
-                  >
-                    {{ targetsLoading ? '保存中...' : '保存' }}
-                  </button>
-                </div>
-              </div>
-            </div>
+    <!-- 统计主体 -->
+    <div v-else class="dashboard-body">
+      <!-- 概览指标行 -->
+      <div class="overview-row">
+        <div class="metric-card">
+          <div class="metric-icon blue">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
-
-          <!-- 概览卡片 -->
-          <div class="overview-compact">
-            <div class="compact-card">
-              <div class="card-header">
-                <h3>数据概览</h3>
-              </div>
-              <div class="card-content">
-                <div class="overview-stats">
-                  <div class="stat-mini">
-                    <div class="stat-mini-value">{{ getOverviewData().school }}</div>
-                    <div class="stat-mini-label">学校</div>
-                  </div>
-                  <div class="stat-mini">
-                    <div class="stat-mini-value">{{ getOverviewData().totalStudents }}</div>
-                    <div class="stat-mini-label">学生总数</div>
-                  </div>
-                  <div class="stat-mini">
-                    <div class="stat-mini-value">{{ getOverviewData().avgCompliance }}%</div>
-                    <div class="stat-mini-label">平均达标率</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 快速操作 -->
-          <div class="quick-actions">
-            <div class="compact-card">
-              <div class="card-header">
-                <h3>快速操作</h3>
-              </div>
-              <div class="card-content">
-                <button @click="refreshAllData" class="action-btn" :disabled="anyLoading">
-                  <i class="icon">🔄</i>
-                  {{ anyLoading ? '刷新中...' : '刷新数据' }}
-                </button>
-                <button @click="toggleCompactMode" class="action-btn">
-                  <i class="icon">{{ isCompactMode ? '📖' : '📋' }}</i>
-                  {{ isCompactMode ? '详细模式' : '紧凑模式' }}
-                </button>
-              </div>
-            </div>
+          <div class="metric-content">
+            <div class="metric-value">{{ getOverviewData().school }}</div>
+            <div class="metric-label">学校</div>
           </div>
         </div>
+        <div class="metric-card">
+          <div class="metric-icon green">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="1.5"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="currentColor" stroke-width="1.5"/></svg>
+          </div>
+          <div class="metric-content">
+            <div class="metric-value">{{ getOverviewData().totalStudents }}</div>
+            <div class="metric-label">学生总数</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon orange">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="metric-content">
+            <div class="metric-value">{{ getOverviewData().avgCompliance }}%</div>
+            <div class="metric-label">平均达标率</div>
+          </div>
+        </div>
+        <!-- 刷新按钮 -->
+        <button class="refresh-btn" @click="refreshAllData" :disabled="anyLoading">
+          <svg viewBox="0 0 24 24" fill="none" :class="{ spinning: anyLoading }"><path d="M23 4v6h-6M1 20v-6h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          {{ anyLoading ? '刷新中...' : '刷新' }}
+        </button>
+      </div>
 
-        <!-- 右侧主要内容区域 -->
-        <div class="main-content-area">
-          <!-- 标签页导航 -->
-          <div class="tab-navigation">
-            <div 
-              v-if="isSchoolAdmin"
-              class="tab-item"
-              :class="{ active: activeTab === 'school' }"
-              @click="activeTab = 'school'"
-            >
-              <i class="icon">🏫</i>
-              学校统计
-            </div>
-            <div 
-              class="tab-item"
-              :class="{ active: activeTab === 'college' }"
-              @click="activeTab = 'college'"
-            >
-              <i class="icon">🏛️</i>
-              {{ isSchoolAdmin ? '院系统计' : '本院统计' }}
+      <!-- PE积分指标 (仅校级管理员) -->
+      <div v-if="isSchoolAdmin" class="targets-row">
+        <div class="targets-card">
+          <div class="targets-header" @click="targetsCollapsed = !targetsCollapsed">
+            <h3>PE积分指标</h3>
+            <div class="targets-header-right">
+              <div v-if="!targetsCollapsed && !editingTargets" class="target-preview">
+                <span v-for="t in targetItems" :key="t.key" class="target-badge">
+                  {{ t.label }}: <strong>{{ targets?.[t.key] || '--' }}</strong>分
+                </span>
+              </div>
+              <svg class="collapse-icon" :class="{ rotated: !targetsCollapsed }" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
           </div>
-
-          <!-- 标签页内容 -->
-          <div class="tab-content">
-            <!-- 学校统计标签页 -->
-            <div v-if="activeTab === 'school' && isSchoolAdmin" class="tab-panel">
-              <CompactSchoolStats 
-                :data="schoolStats"
-                :loading="schoolStatsLoading"
-                :compact-mode="isCompactMode"
-                @refresh="fetchSchoolStatistics"
-              />
+          <div v-show="!targetsCollapsed" class="targets-body">
+            <div class="targets-grid">
+              <div v-for="t in targetItems" :key="t.key" class="target-item">
+                <span class="target-label">{{ t.label }}</span>
+                <span v-if="!editingTargets" class="target-value">{{ targets?.[t.key] || '--' }} 分</span>
+                <input v-else v-model.number="editTargets[t.key]" type="number" min="1" class="target-input" />
+              </div>
             </div>
-
-            <!-- 院系统计标签页 -->
-            <div v-if="activeTab === 'college'" class="tab-panel">
-              <CompactCollegeStats 
-                :data="collegeStats"
-                :loading="collegeStatsLoading"
-                :compact-mode="isCompactMode"
-                @refresh="fetchCollegeStatistics"
-              />
+            <div class="targets-actions">
+              <button @click="toggleEditTargets" class="btn-sm" :disabled="targetsLoading">
+                {{ editingTargets ? '取消' : '编辑指标' }}
+              </button>
+              <button v-if="editingTargets" @click="saveTargets" class="btn-sm primary" :disabled="targetsLoading">
+                {{ targetsLoading ? '保存中...' : '保存' }}
+              </button>
             </div>
           </div>
         </div>
       </div>
 
+      <!-- 标签页导航 -->
+      <div class="tab-bar">
+        <div
+          v-if="isSchoolAdmin"
+          class="tab-item"
+          :class="{ active: activeTab === 'school' }"
+          @click="activeTab = 'school'"
+        >学校统计</div>
+        <div
+          class="tab-item"
+          :class="{ active: activeTab === 'college' }"
+          @click="activeTab = 'college'"
+        >{{ isSchoolAdmin ? '院系统计' : '本院统计' }}</div>
+      </div>
+
+      <!-- 统计内容 -->
+      <div class="tab-content">
+        <div v-if="activeTab === 'school' && isSchoolAdmin" class="tab-panel">
+          <CompactSchoolStats
+            :data="schoolStats"
+            :loading="schoolStatsLoading"
+            :compact-mode="isCompactMode"
+            @refresh="fetchSchoolStatistics"
+          />
+        </div>
+        <div v-if="activeTab === 'college'" class="tab-panel">
+          <CompactCollegeStats
+            :data="collegeStats"
+            :loading="collegeStatsLoading"
+            :compact-mode="isCompactMode"
+            @refresh="fetchCollegeStatistics"
+          />
+        </div>
+      </div>
+
       <!-- 错误提示 -->
       <div v-if="error" class="error-toast" :class="{ show: !!error }">
-        <span style="color:#ff4d4f;font-size:16px">✕</span>
+        <span class="error-icon">!</span>
         <span>{{ error }}</span>
-        <button @click="error = ''" class="close-btn">×</button>
+        <button @click="error = ''" class="close-btn">&times;</button>
       </div>
     </div>
   </div>
@@ -186,7 +161,6 @@ export default {
     CompactCollegeStats
   },
   setup() {
-    // 响应式数据
     const currentTime = ref('')
     const userInfo = ref({})
     const targets = ref(null)
@@ -194,15 +168,13 @@ export default {
     const collegeStats = ref(null)
     const error = ref('')
     
-    // 加载状态
     const targetsLoading = ref(false)
     const schoolStatsLoading = ref(false)
     const collegeStatsLoading = ref(false)
     
-    // 交互状态
-    const activeTab = ref('college') // 默认显示院系统计
+    const activeTab = ref('college')
     const isCompactMode = ref(true)
-    const targetsCollapsed = ref(false)
+    const targetsCollapsed = ref(true)
     const editingTargets = ref(false)
     const editTargets = ref({
       weeklyTarget: 0,
@@ -210,14 +182,12 @@ export default {
       totalTarget: 0
     })
     
-    // 指标配置
     const targetItems = [
       { key: 'weeklyTarget', label: '周指标' },
       { key: 'monthlyTarget', label: '月指标' },
       { key: 'totalTarget', label: '总指标' }
     ]
 
-    // 计算属性
     const hasPermission = computed(() => isSchoolAdmin() || isDepartmentAdmin())
     const userRoleText = computed(() => {
       if (isSchoolAdmin()) return '校级管理员'
@@ -229,12 +199,10 @@ export default {
       targetsLoading.value || schoolStatsLoading.value || collegeStatsLoading.value
     )
     
-    // 初始化时设置默认标签页
     if (isSchoolAdmin()) {
       activeTab.value = 'school'
     }
 
-    // 时间更新
     let timeInterval = null
     const updateTime = () => {
       const now = new Date()
@@ -248,7 +216,6 @@ export default {
       })
     }
 
-    // 获取用户信息
     const fetchUserInfo = async () => {
       try {
         userInfo.value = await authService.getCurrentUser() || {}
@@ -257,7 +224,6 @@ export default {
       }
     }
 
-    // 获取学校统计数据
     const fetchSchoolStatistics = async () => {
       if (!isSchoolAdmin()) return
       
@@ -281,7 +247,6 @@ export default {
       }
     }
 
-    // 获取院系统计数据
     const fetchCollegeStatistics = async () => {
       collegeStatsLoading.value = true
       try {
@@ -305,80 +270,37 @@ export default {
       }
     }
 
-    // 更新指标
-    const handleUpdateTargets = async (newTargets) => {
-      targetsLoading.value = true
-      try {
-        await api.peStatistics.setTargets(newTargets)
-        targets.value = newTargets
-        
-        // 更新指标后刷新统计数据
-        if (isSchoolAdmin()) {
-          await fetchSchoolStatistics()
-        }
-        await fetchCollegeStatistics()
-        
-        error.value = ''
-      } catch (err) {
-        error.value = err.message || '设置指标失败'
-        console.error('设置指标失败:', err)
-      } finally {
-        targetsLoading.value = false
-      }
-    }
-
-    // 重试加载
-    const retryLoad = async () => {
-      error.value = ''
-      await Promise.all([
-        fetchUserInfo(),
-        isSchoolAdmin() ? fetchSchoolStatistics() : Promise.resolve(),
-        fetchCollegeStatistics()
-      ])
-    }
-    
-    // 新增交互方法
-    const toggleTargetsPanel = () => {
-      targetsCollapsed.value = !targetsCollapsed.value
-    }
-    
     const toggleEditTargets = () => {
       if (editingTargets.value) {
-        // 取消编辑，恢复原值
         if (targets.value) {
           editTargets.value = { ...targets.value }
         }
         editingTargets.value = false
       } else {
-        // 开始编辑
         if (targets.value) {
           editTargets.value = { ...targets.value }
         } else {
-          editTargets.value = {
-            weeklyTarget: 10,
-            monthlyTarget: 40,
-            totalTarget: 100
-          }
+          editTargets.value = { weeklyTarget: 10, monthlyTarget: 40, totalTarget: 100 }
         }
         editingTargets.value = true
       }
     }
     
     const saveTargets = async () => {
+      targetsLoading.value = true
       try {
         await api.peStatistics.setTargets(editTargets.value)
         targets.value = { ...editTargets.value }
         editingTargets.value = false
         
-        // 刷新统计数据
-        if (isSchoolAdmin()) {
-          await fetchSchoolStatistics()
-        }
+        if (isSchoolAdmin()) await fetchSchoolStatistics()
         await fetchCollegeStatistics()
         
         error.value = ''
       } catch (err) {
         error.value = err.message || '设置指标失败'
+      } finally {
+        targetsLoading.value = false
       }
     }
     
@@ -387,10 +309,6 @@ export default {
         isSchoolAdmin() ? fetchSchoolStatistics() : Promise.resolve(),
         fetchCollegeStatistics()
       ])
-    }
-    
-    const toggleCompactMode = () => {
-      isCompactMode.value = !isCompactMode.value
     }
     
     const getOverviewData = () => {
@@ -409,7 +327,15 @@ export default {
       }
     }
 
-    // 初始化
+    const retryLoad = async () => {
+      error.value = ''
+      await Promise.all([
+        fetchUserInfo(),
+        isSchoolAdmin() ? fetchSchoolStatistics() : Promise.resolve(),
+        fetchCollegeStatistics()
+      ])
+    }
+
     const initialize = async () => {
       if (!hasPermission.value) return
 
@@ -423,14 +349,10 @@ export default {
       ])
     }
 
-    onMounted(() => {
-      initialize()
-    })
+    onMounted(() => { initialize() })
 
     onUnmounted(() => {
-      if (timeInterval) {
-        clearInterval(timeInterval)
-      }
+      if (timeInterval) clearInterval(timeInterval)
     })
 
     return {
@@ -453,11 +375,9 @@ export default {
       editingTargets,
       editTargets,
       targetItems,
-      toggleTargetsPanel,
       toggleEditTargets,
       saveTargets,
       refreshAllData,
-      toggleCompactMode,
       getOverviewData,
       fetchSchoolStatistics,
       fetchCollegeStatistics,
@@ -470,48 +390,73 @@ export default {
 <style scoped>
 .statistics-dashboard {
   min-height: 100vh;
-  background: var(--bg-body);
-  color: var(--text-primary);
-  font-family: var(--font-family);
+  background: #f5f5f5;
+  color: #000000d9;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-/* 顶部标题栏 */
+/* 顶部栏 */
 .dashboard-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 24px;
   background: #ffffff;
-  border-bottom: 1px solid var(--border-light);
-  height: var(--header-height);
-  box-shadow: var(--shadow-sm);
+  border-bottom: 1px solid #e8e8e8;
+  height: 52px;
   position: sticky;
   top: 0;
   z-index: 100;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  color: #595959;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.back-btn:hover { border-color: #1677ff; color: #1677ff; }
+.back-btn svg { width: 16px; height: 16px; }
+
 .dashboard-title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   margin: 0;
   color: #000000d9;
 }
 
-.header-info {
+.header-right {
   display: flex;
   align-items: center;
-  gap: 16px;
-}
-
-.current-time {
-  font-size: 14px;
-  font-weight: 500;
-  color: #1677ff;
-}
-
-.user-info {
+  gap: 10px;
   font-size: 13px;
-  color: #434343;
+}
+
+.header-time { color: #1677ff; font-weight: 500; font-variant-numeric: tabular-nums; }
+.header-divider { color: #d9d9d9; }
+.header-user { color: #434343; font-weight: 500; }
+
+.header-role {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: #e6f4ff;
+  color: #1677ff;
   font-weight: 500;
 }
 
@@ -523,268 +468,264 @@ export default {
   height: 60vh;
 }
 
-.permission-message {
+.permission-box {
   text-align: center;
-  padding: 48px 40px;
+  padding: 40px;
   background: white;
   border-radius: 8px;
-  border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-card);
-  max-width: 400px;
+  border: 1px solid #f0f0f0;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+  max-width: 360px;
 }
 
-.warning-icon {
-  font-size: 40px;
-  display: block;
-  margin-bottom: 16px;
-  color: #faad14;
+.permission-box svg { display: block; margin: 0 auto 16px; }
+.permission-box h2 { font-size: 18px; margin: 0 0 8px 0; color: #000000d9; font-weight: 500; }
+.permission-box p { font-size: 14px; color: #00000073; margin: 0; }
+
+/* 主体 */
+.dashboard-body {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 24px 40px;
 }
 
-.permission-message h2 {
-  font-size: 20px;
-  margin: 0 0 10px 0;
-  color: #000000d9;
-  font-weight: 500;
-}
-
-.permission-message p {
-  font-size: 14px;
-  color: #00000073;
-  margin: 0;
-}
-
-/* 主要内容区域 */
-.dashboard-content {
-  padding: 20px 24px;
-  height: calc(100vh - var(--header-height));
-  overflow: hidden;
-}
-
-/* 紧凑型网格布局 */
-.compact-grid {
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 16px;
-  height: 100%;
-}
-
-/* 左侧面板 */
-.left-panel {
+/* 概览指标行 */
+.overview-row {
   display: flex;
-  flex-direction: column;
   gap: 12px;
-  overflow-y: auto;
+  margin-bottom: 16px;
+  align-items: stretch;
 }
 
-/* 卡片样式 */
-.compact-card {
+.metric-card {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
   background: #ffffff;
   border-radius: 8px;
-  border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-card);
+  border: 1px solid #f0f0f0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.metric-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.metric-icon svg { width: 20px; height: 20px; }
+
+.metric-icon.blue { background: #e6f4ff; color: #1677ff; }
+.metric-icon.green { background: #f6ffed; color: #52c41a; }
+.metric-icon.orange { background: #fff7e6; color: #fa8c16; }
+
+.metric-value { font-size: 22px; font-weight: 700; color: #000000d9; line-height: 1.2; }
+.metric-label { font-size: 12px; color: #00000073; margin-top: 2px; font-weight: 500; }
+
+.refresh-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 16px;
+  background: #ffffff;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  color: #434343;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+.refresh-btn:hover:not(:disabled) { border-color: #1677ff; color: #1677ff; }
+.refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.refresh-btn svg { width: 16px; height: 16px; }
+
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.spinning { animation: spin 1s linear infinite; }
+
+/* 指标行 */
+.targets-row { margin-bottom: 16px; }
+
+.targets-card {
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   overflow: hidden;
 }
 
-.card-header {
-  padding: 12px 16px;
-  background: #fafafa;
-  border-bottom: 1px solid var(--border-light);
+.targets-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.card-header.collapsible {
+  padding: 12px 20px;
   cursor: pointer;
   transition: background 0.15s;
   user-select: none;
 }
 
-.card-header.collapsible:hover {
-  background: #f0f0f0;
-}
+.targets-header:hover { background: #fafafa; }
 
-.card-header h3 {
+.targets-header h3 {
   margin: 0;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   color: #000000d9;
+}
+
+.targets-header-right {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 
-.toggle-icon {
+.target-preview {
+  display: flex;
+  gap: 12px;
+}
+
+.target-badge {
+  font-size: 12px;
+  color: #595959;
+  padding: 3px 10px;
+  background: #fafafa;
+  border-radius: 12px;
+  border: 1px solid #f0f0f0;
+}
+
+.target-badge strong { color: #52c41a; font-weight: 600; }
+
+.collapse-icon {
+  width: 16px;
+  height: 16px;
+  color: #bfbfbf;
   transition: transform 0.2s;
-  font-size: 11px;
-  color: #00000073;
 }
 
-.toggle-icon.rotated {
-  transform: rotate(180deg);
+.collapse-icon.rotated { transform: rotate(180deg); }
+
+.targets-body {
+  padding: 16px 20px;
+  border-top: 1px solid #f0f0f0;
+  background: #fafafa;
 }
 
-.card-content {
-  padding: 14px 16px;
-}
-
-/* 指标设置 */
-.targets-mini-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 8px;
+.targets-grid {
+  display: flex;
+  gap: 16px;
   margin-bottom: 12px;
 }
 
-.target-mini-item {
+.target-item {
+  flex: 1;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 10px;
-  background: #fafafa;
-  border-radius: 4px;
-  border: 1px solid var(--border-light);
+  padding: 10px 14px;
+  background: #ffffff;
+  border-radius: 6px;
+  border: 1px solid #f0f0f0;
 }
 
-.target-mini-label { font-size: 13px; color: #00000073; }
+.target-label { font-size: 13px; color: #595959; }
+.target-value { font-size: 15px; font-weight: 600; color: #52c41a; }
 
-.target-mini-value {
-  font-size: 14px;
-  font-weight: 600;
-  color: #52c41a;
-}
-
-.target-mini-input {
-  width: 72px;
-  background: white;
-  border: 1px solid var(--border-color);
+.target-input {
+  width: 80px;
+  border: 1px solid #d9d9d9;
   border-radius: 4px;
-  padding: 3px 8px;
-  color: #000000d9;
+  padding: 4px 8px;
   font-size: 13px;
-  font-family: inherit;
+  color: #000000d9;
   outline: none;
+  text-align: right;
+  font-family: inherit;
 }
 
-.target-mini-input:focus {
-  border-color: #1677ff;
-  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.2);
-}
+.target-input:focus { border-color: #1677ff; box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.2); }
 
 .targets-actions { display: flex; gap: 8px; }
 
-.btn-mini {
-  padding: 4px 10px;
-  font-size: 12px;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
-  background: white;
-  color: #000000d9;
-  font-family: inherit;
-}
-
-.btn-mini:hover:not(:disabled) { border-color: #1677ff; color: #1677ff; }
-.btn-mini.primary { background: #1677ff; border-color: #1677ff; color: white; }
-.btn-mini.primary:hover:not(:disabled) { background: #4096ff; border-color: #4096ff; }
-.btn-mini:disabled { opacity: 0.5; cursor: not-allowed; }
-
-/* 概览统计 */
-.overview-stats { display: grid; grid-template-columns: 1fr; gap: 8px; }
-
-.stat-mini {
-  text-align: center;
-  padding: 10px;
-  background: #fafafa;
-  border-radius: 6px;
-  border: 1px solid var(--border-light);
-}
-
-.stat-mini-value {
-  font-size: 18px;
-  font-weight: 700;
-  color: #1677ff;
-  margin-bottom: 3px;
-}
-
-.stat-mini-label { font-size: 12px; color: #595959; font-weight: 500; }
-
-/* 快速操作 */
-.action-btn {
-  width: 100%;
-  padding: 8px 12px;
-  margin-bottom: 6px;
-  background: white;
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  color: #000000d9;
-  cursor: pointer;
-  transition: border-color 0.15s, color 0.15s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+.btn-sm {
+  padding: 5px 14px;
   font-size: 13px;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: #ffffff;
+  color: #434343;
   font-family: inherit;
 }
 
-.action-btn:hover:not(:disabled) { border-color: #1677ff; color: #1677ff; }
-.action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-/* 右侧主要内容区域 */
-.main-content-area {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: hidden;
-}
+.btn-sm:hover:not(:disabled) { border-color: #1677ff; color: #1677ff; }
+.btn-sm.primary { background: #1677ff; border-color: #1677ff; color: #ffffff; }
+.btn-sm.primary:hover:not(:disabled) { background: #4096ff; border-color: #4096ff; }
+.btn-sm:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* 标签页 */
-.tab-navigation {
+.tab-bar {
   display: flex;
   background: #ffffff;
-  border-radius: 6px;
-  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
   padding: 4px;
-  margin-bottom: 12px;
-  gap: 2px;
+  margin-bottom: 16px;
+  gap: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .tab-item {
   flex: 1;
-  padding: 7px 12px;
+  padding: 8px 16px;
   text-align: center;
   cursor: pointer;
-  border-radius: 4px;
-  transition: background 0.15s, color 0.15s;
-  color: #434343;
+  border-radius: 6px;
+  transition: all 0.15s;
+  color: #595959;
   font-weight: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  font-size: 13px;
+  font-size: 14px;
   user-select: none;
 }
 
-.tab-item:hover { background: #f5f5f5; color: #000000d9; }
-.tab-item.active { background: #1677ff; color: #ffffff; }
+.tab-item:hover { background: #f5f5f5; color: #262626; }
+
+.tab-item.active {
+  background: #1677ff;
+  color: #ffffff;
+  box-shadow: 0 2px 4px rgba(22, 119, 255, 0.3);
+}
 
 /* 标签页内容 */
-.tab-content { flex: 1; overflow: hidden; }
-.tab-panel { height: 100%; overflow-y: auto; }
+.tab-content {
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+  padding: 20px;
+  min-height: 400px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.tab-panel { height: 100%; }
 
 /* 错误提示 */
 .error-toast {
   position: fixed;
-  top: calc(var(--header-height) + 16px);
+  top: 68px;
   right: 20px;
   background: #fff2f0;
   border: 1px solid #ffccc7;
-  color: #ff4d4f;
+  color: #cf1322;
   padding: 10px 14px;
-  border-radius: 6px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -792,38 +733,50 @@ export default {
   transition: transform 0.2s ease;
   z-index: 1000;
   max-width: 400px;
-  box-shadow: var(--shadow-md);
-  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-size: 13px;
 }
 
 .error-toast.show { transform: translateX(0); }
-.error-toast .error-icon { font-size: 14px; flex-shrink: 0; }
 
-.error-toast .close-btn {
+.error-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: #ff4d4f;
+  color: white;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.close-btn {
   background: none;
   border: none;
-  color: #ff4d4f;
-  font-size: 16px;
+  color: #cf1322;
+  font-size: 18px;
   cursor: pointer;
   padding: 0;
   margin-left: auto;
   line-height: 1;
+  opacity: 0.6;
 }
+
+.close-btn:hover { opacity: 1; }
 
 /* 响应式 */
-@media (max-width: 1200px) {
-  .compact-grid { grid-template-columns: 240px 1fr; }
-}
-
 @media (max-width: 768px) {
   .dashboard-header { padding: 0 16px; }
-  .header-info { gap: 8px; }
-  .user-info { display: none; }
-  .dashboard-content { padding: 12px 16px; height: calc(100vh - var(--header-height)); }
-  .compact-grid { grid-template-columns: 1fr; grid-template-rows: auto 1fr; gap: 12px; }
-  .left-panel { order: 2; flex-direction: row; overflow-x: auto; overflow-y: visible; }
-  .left-panel > div { min-width: 200px; flex-shrink: 0; }
-  .main-content-area { order: 1; }
+  .header-time, .header-divider { display: none; }
+  .dashboard-body { padding: 12px 16px 32px; }
+  .overview-row { flex-direction: column; }
+  .metric-card { padding: 12px 16px; }
+  .targets-grid { flex-direction: column; }
+  .target-preview { display: none; }
+  .tab-content { padding: 14px; }
   .error-toast { right: 10px; left: 10px; max-width: none; }
 }
 </style>

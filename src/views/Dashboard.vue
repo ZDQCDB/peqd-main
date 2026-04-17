@@ -19,6 +19,7 @@
         </div>
         
         <div class="header-right">
+          <span v-if="userSchool" class="school-badge">{{ userSchool }}</span>
           <div class="user-section">
             <span class="user-name-text">{{ username }}</span>
             <div class="user-avatar">
@@ -55,7 +56,7 @@
         <section class="hero-section">
           <div class="hero-inner">
             <div class="hero-text">
-              <h2 class="hero-title">欢迎使用，{{ username }}</h2>
+              <h2 class="hero-title">欢迎{{ userSchool ? ' ' + userSchool + ' ' : '' }}{{ roleDisplayName }}{{ username ? ' ' + username : '' }}</h2>
               <p class="hero-subtitle">校园体育教学与管理平台，请从下方功能模块开始使用</p>
             </div>
             <div class="hero-stats">
@@ -328,6 +329,7 @@ export default {
     return {
       username: '',
       userRole: '',
+      userSchool: '',
       isAdmin: false,
       canAccessAdminManagement: false,
       currentUserRole: '',
@@ -335,16 +337,24 @@ export default {
       isSuperAdminStatus: false,
       isSchoolAdminStatus: false,
       localUserType: '',
-      showDebugPanel: false // 控制调试面板显示
+      showDebugPanel: false
     }
   },
   computed: {
-    // 检查是否可以访问统计功能 (校级管理员和院级管理员)
     canAccessStatistics() {
       return isSchoolAdmin() || isDepartmentAdmin()
     },
     canAccessListening() {
       return isTeacher() || isSchoolAdmin() || isDepartmentAdmin() || isSuperAdmin()
+    },
+    roleDisplayName() {
+      const roleMap = {
+        'super_admin': '超级管理员',
+        'school_admin': '校级管理员',
+        'department_admin': '院级管理员',
+        'teacher': '老师'
+      }
+      return roleMap[this.userRole] || ''
     }
   },
   async mounted() {
@@ -352,8 +362,8 @@ export default {
     if (user) {
       this.username = user.realName || user.username
       this.userRole = user.userType
-      this.isAdmin = isSuperAdmin() // 使用权限管理器而不是硬编码
-      // 校级管理员、院级管理员和超级管理员都能访问管理员管理
+      this.userSchool = user.school || ''
+      this.isAdmin = isSuperAdmin()
       this.canAccessAdminManagement = isSuperAdmin() || isSchoolAdmin() || isDepartmentAdmin()
     } else {
       this.username = '用户'
@@ -470,6 +480,20 @@ export default {
 .header-right {
   display: flex;
   align-items: center;
+  gap: 12px;
+}
+
+.school-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  background: #e6f4ff;
+  color: #1677ff;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  border: 1px solid #91caff;
 }
 
 .user-section {

@@ -20,19 +20,19 @@
         </div>
         
         <div class="header-actions">
-          <button v-if="isSuperAdminRole" class="action-btn import-btn" @click="openImportDialog">
+          <button v-if="isSuperAdminRole || isSchoolAdminRole" class="action-btn import-btn" @click="openImportDialog">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             导入名单
           </button>
-          <button v-if="isSuperAdminRole" class="action-btn stats-btn" @click="openSchoolStatsDialog">
+          <button v-if="isSuperAdminRole || isSchoolAdminRole" class="action-btn stats-btn" @click="openSchoolStatsDialog">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M18 20V10M12 20V4M6 20v-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             预导入统计
           </button>
-          <button v-if="isSuperAdminRole" class="action-btn school-account-btn" @click="$router.push('/admin/school-accounts')" title="按预导入学校可视化开户">
+          <button v-if="isSuperAdminRole || isSchoolAdminRole" class="action-btn school-account-btn" @click="$router.push('/admin/school-accounts')" title="按预导入学校可视化开户">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <rect x="3" y="3" width="7" height="9" rx="1" stroke="currentColor" stroke-width="2"/>
               <rect x="14" y="3" width="7" height="5" rx="1" stroke="currentColor" stroke-width="2"/>
@@ -893,18 +893,18 @@
 
     <!-- checkuser 数据导入弹窗（仅超管可见） -->
     <el-dialog
-      v-if="isSuperAdminRole"
+      v-if="isSuperAdminRole || isSchoolAdminRole"
       v-model="showImportDialog"
       title="导入 checkuser 数据"
-      width="560px"
+      width="640px"
       :close-on-click-modal="false"
     >
       <el-tabs v-model="importTab">
         <el-tab-pane label="学生数据" name="student">
           <div class="import-section">
             <p class="import-tip">
-              Excel 列顺序：<strong>学校 / 学院 / 班级 / 学号 / 姓名</strong><br/>
-              以学号为唯一键，重复学号自动跳过。
+              Excel 列顺序：<strong>{{ isSchoolAdminRole ? '学校 / 学院 / 班级 / 学号 / 姓名（学校列自动填充为本校）' : '学校 / 学院 / 班级 / 学号 / 姓名' }}</strong><br/>
+              导入前会自动检测重复记录，您可以选择覆盖或跳过。
             </p>
             <div class="import-actions">
               <el-button size="small" @click="downloadTemplate('student')">⬇ 下载学生模板</el-button>
@@ -929,8 +929,8 @@
         <el-tab-pane label="教师数据" name="teacher">
           <div class="import-section">
             <p class="import-tip">
-              Excel 列顺序：<strong>学校 / 学院 / 工号 / 姓名</strong><br/>
-              以工号为唯一键，重复工号自动跳过。
+              Excel 列顺序：<strong>{{ isSchoolAdminRole ? '学校 / 学院 / 工号 / 姓名（学校列自动填充为本校）' : '学校 / 学院 / 工号 / 姓名' }}</strong><br/>
+              导入前会自动检测重复记录，您可以选择覆盖或跳过。
             </p>
             <div class="import-actions">
               <el-button size="small" @click="downloadTemplate('teacher')">⬇ 下载教师模板</el-button>
@@ -955,7 +955,7 @@
 
       <div v-if="importResult" class="import-result">
         <el-alert
-          :title="`导入完成：共 ${importResult.total} 行，新增 ${importResult.inserted} 条，跳过重复 ${importResult.skipped} 条`"
+          :title="importResultTitle"
           :type="importResult.errors?.length ? 'warning' : 'success'"
           show-icon :closable="false"
         />
@@ -966,6 +966,41 @@
 
       <template #footer>
         <el-button @click="closeImportDialog">关闭</el-button>
+      </template>
+    </el-dialog>
+
+    <!-- 查重确认对话框 -->
+    <el-dialog
+      v-model="showDuplicateDialog"
+      title="发现重复记录"
+      width="700px"
+      :close-on-click-modal="false"
+    >
+      <div style="margin-bottom:12px;">
+        <el-alert
+          :title="`共发现 ${duplicateRecords.length} 条重复记录，新增 ${newRecordCount} 条`"
+          type="warning" show-icon :closable="false"
+        />
+      </div>
+      <div style="margin-bottom:12px;display:flex;gap:8px;">
+        <el-button size="small" type="primary" @click="selectAllDuplicates(true)">全部覆盖</el-button>
+        <el-button size="small" @click="selectAllDuplicates(false)">全部跳过</el-button>
+      </div>
+      <el-table :data="duplicateRecords" max-height="360" size="small" border>
+        <el-table-column label="操作" width="80" align="center">
+          <template #default="{ row }">
+            <el-checkbox v-model="row.override" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="studentId" :label="duplicateType === 'student' ? '学号' : '工号'" width="130" />
+        <el-table-column prop="name" label="新姓名" width="100" />
+        <el-table-column prop="existingName" label="已有姓名" width="100" />
+        <el-table-column prop="college" label="新学院" min-width="120" />
+        <el-table-column prop="existingCollege" label="已有学院" min-width="120" />
+      </el-table>
+      <template #footer>
+        <el-button @click="showDuplicateDialog = false">取消</el-button>
+        <el-button type="primary" :loading="importLoading" @click="confirmImportWithDuplicates">确认导入</el-button>
       </template>
     </el-dialog>
 
@@ -1022,6 +1057,12 @@ export default {
       teacherFile: null,
       importLoading: false,
       importResult: null,
+      // 查重确认
+      showDuplicateDialog: false,
+      duplicateRecords: [],
+      newRecordCount: 0,
+      duplicateType: 'student',
+      pendingImportFile: null,
       // 学校预导入统计
       showSchoolStatsDialog: false,
       schoolStats: [],
@@ -1064,6 +1105,15 @@ export default {
 
     isSchoolAdminRole() {
       return isSchoolAdmin()
+    },
+
+    importResultTitle() {
+      if (!this.importResult) return ''
+      const r = this.importResult
+      const parts = [`共 ${r.total} 行，新增 ${r.inserted} 条`]
+      if (r.updated > 0) parts.push(`覆盖更新 ${r.updated} 条`)
+      parts.push(`跳过 ${r.skipped} 条`)
+      return '导入完成：' + parts.join('，')
     },
 
     canManageStudent() {
@@ -1737,8 +1787,52 @@ export default {
       this.importResult = null
       try {
         const res = type === 'student'
-          ? await api.checkUserImport.importStudents(file)
-          : await api.checkUserImport.importTeachers(file)
+          ? await api.checkUserImport.previewImportStudents(file)
+          : await api.checkUserImport.previewImportTeachers(file)
+        if (res.code === 200) {
+          const data = res.data
+          if (data.duplicateCount > 0) {
+            this.duplicateType = type
+            this.pendingImportFile = file
+            this.newRecordCount = data.newCount
+            this.duplicateRecords = data.duplicates.map(d => ({
+              ...d,
+              studentId: d.studentId || d.teacherId,
+              override: false
+            }))
+            this.showDuplicateDialog = true
+          } else {
+            await this.executeConfirmImport(type, file, [])
+          }
+        } else {
+          this.$message?.error(res.message || '导入预检失败')
+        }
+      } catch (e) {
+        this.$message?.error('导入失败：' + (e.message || e))
+      } finally {
+        this.importLoading = false
+      }
+    },
+
+    selectAllDuplicates(override) {
+      this.duplicateRecords.forEach(r => { r.override = override })
+    },
+
+    async confirmImportWithDuplicates() {
+      const overrideIds = this.duplicateRecords
+        .filter(r => r.override)
+        .map(r => r.studentId)
+      await this.executeConfirmImport(this.duplicateType, this.pendingImportFile, overrideIds)
+      this.showDuplicateDialog = false
+    },
+
+    async executeConfirmImport(type, file, overrideIds) {
+      this.importLoading = true
+      this.importResult = null
+      try {
+        const res = type === 'student'
+          ? await api.checkUserImport.confirmImportStudents(file, overrideIds)
+          : await api.checkUserImport.confirmImportTeachers(file, overrideIds)
         if (res.code === 200) {
           this.importResult = res.data
         } else {
