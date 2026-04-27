@@ -41,6 +41,8 @@ import SportsEquipment from '@/views/SportsEquipment/SportsEquipment.vue'
 import EquipmentSharing from '@/views/SportsEquipment/EquipmentSharing.vue'
 import Statistics from '@/views/Statistics.vue'
 
+const CompanyLanding = () => import('@/views/CompanyLanding.vue')
+
 const routes = [
   {
     path: '/',
@@ -55,6 +57,11 @@ const routes = [
     path: '/register',
     name: 'Register',
     component: Register
+  },
+  {
+    path: '/company',
+    name: 'CompanyLanding',
+    component: CompanyLanding
   },
   {
     path: '/dashboard',

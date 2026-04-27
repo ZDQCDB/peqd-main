@@ -1,0 +1,224 @@
+<template>
+  <div class="company-landing">
+    <div class="wrap">
+      <header>
+        <p class="domain-badge">官方站点 · xintichuang.com</p>
+        <h1>青岛新体创体育产业集团有限公司</h1>
+        <p class="tagline">专注体育领域产品与服务 · PE 校园项目</p>
+      </header>
+
+      <section class="intro" aria-labelledby="about-heading">
+        <h2 id="about-heading">公司简介</h2>
+        <div class="landing-card">
+          <p>
+            青岛新体创体育产业集团有限公司致力于体育相关产品的研发与推广，业务涵盖校园与机构场景下的体育解决方案。
+          </p>
+          <p>
+            公司重点开展 <strong>PE 校园项目</strong> 等体育教育与服务，助力学校与合作伙伴落实体育教学与活动需求。
+          </p>
+        </div>
+      </section>
+
+      <section aria-labelledby="contact-heading">
+        <h2 id="contact-heading">联系方式</h2>
+        <div class="landing-card">
+          <ul class="contact-list">
+            <li>
+              <strong>公司</strong>
+              <span>青岛新体创体育产业集团有限公司</span>
+            </li>
+            <li>
+              <strong>地址</strong>
+              <span>山东省青岛市黄岛区前湾港路579号山东科技大学科技园内综合服务楼101室</span>
+            </li>
+            <li>
+              <strong>手机</strong>
+              <span><a href="tel:+8615315510691">153 1551 0691</a></span>
+            </li>
+            <li>
+              <strong>邮箱</strong>
+              <span><a href="mailto:lgz7162@163.com">lgz7162@163.com</a></span>
+            </li>
+            <li>
+              <strong>域名</strong>
+              <span><a href="https://xintichuang.com/" rel="noopener noreferrer" target="_blank">xintichuang.com</a></span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <footer>
+        <p>© {{ year }} 青岛新体创体育产业集团有限公司 · xintichuang.com</p>
+      </footer>
+    </div>
+  </div>
+</template>
+
+<script>
+const PAGE_TITLE = '青岛新体创体育产业集团有限公司 | xintichuang.com'
+
+export default {
+  name: 'CompanyLanding',
+  data() {
+    return {
+      year: new Date().getFullYear(),
+      previousTitle: ''
+    }
+  },
+  mounted() {
+    this.previousTitle = typeof document !== 'undefined' ? document.title : ''
+    document.title = PAGE_TITLE
+  },
+  beforeUnmount() {
+    if (typeof document !== 'undefined') {
+      document.title = this.previousTitle || 'campus-sports-management'
+    }
+  }
+}
+</script>
+
+<style scoped>
+.company-landing {
+  --bg: #0c1424;
+  --bg-soft: #121c32;
+  --accent: #2dd4bf;
+  --accent-dim: rgba(45, 212, 191, 0.15);
+  --text: #e8edf5;
+  --muted: #94a3b8;
+  --border: rgba(148, 163, 184, 0.2);
+  --radius: 14px;
+  --font: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+
+  min-height: 100vh;
+  font-family: var(--font);
+  background: radial-gradient(ellipse 120% 80% at 50% -20%, #1a2f4a 0%, var(--bg) 55%);
+  color: var(--text);
+  line-height: 1.65;
+  scroll-behavior: smooth;
+}
+
+.company-landing :deep(a) {
+  color: var(--accent);
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.company-landing :deep(a:hover) {
+  opacity: 0.85;
+  text-decoration: underline;
+}
+
+.wrap {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+}
+
+header {
+  text-align: center;
+  padding: 2rem 0 2.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.domain-badge {
+  display: inline-block;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 1rem;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--accent-dim);
+}
+
+h1 {
+  font-size: clamp(1.5rem, 4.5vw, 2.15rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.35;
+  margin-bottom: 0.5rem;
+}
+
+.tagline {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+section {
+  margin-top: 2.25rem;
+}
+
+h2 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+h2::before {
+  content: '';
+  width: 4px;
+  height: 1em;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+.landing-card {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.35rem 1.5rem;
+}
+
+.intro .landing-card p + p {
+  margin-top: 0.85rem;
+}
+
+.contact-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.contact-list li {
+  display: flex;
+  gap: 0.65rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.98rem;
+}
+
+.contact-list li:last-child {
+  border-bottom: none;
+}
+
+.contact-list strong {
+  flex: 0 0 4.5rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+@media (max-width: 520px) {
+  .contact-list li {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .contact-list strong {
+    flex: none;
+  }
+}
+</style>
