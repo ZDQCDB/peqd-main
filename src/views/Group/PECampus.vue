@@ -5,7 +5,7 @@
     </div>
 
     <div class="info-banner">
-      <div class="banner-icon">🏆</div>
+      <div class="banner-icon"></div>
       <div class="banner-text">
         <h3>校园体育赛事管理</h3>
         <p>管理校内体育比赛的报名、赛程安排和成绩录入。比赛成绩可在"PE成绩管理"中查看。</p>
@@ -14,19 +14,19 @@
 
     <div class="action-grid">
       <div class="action-card" @click="$router.push('/training')">
-        <div class="card-icon">📊</div>
+        <div class="card-icon"></div>
         <h3>比赛成绩查询</h3>
         <p>查看已录入的比赛成绩和排名</p>
         <span class="card-link">前往查看 →</span>
       </div>
       <div class="action-card">
-        <div class="card-icon">📋</div>
+        <div class="card-icon"></div>
         <h3>赛事报名管理</h3>
         <p>管理学生比赛报名信息</p>
         <span class="status-tag">即将上线</span>
       </div>
       <div class="action-card">
-        <div class="card-icon">📅</div>
+        <div class="card-icon"></div>
         <h3>赛程安排</h3>
         <p>制定和发布比赛赛程</p>
         <span class="status-tag">即将上线</span>

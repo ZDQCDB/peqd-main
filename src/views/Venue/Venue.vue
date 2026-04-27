@@ -8,7 +8,7 @@
     <div class="container">
       <div class="module-nav">
         <div class="nav-card" @click="$router.push('/venue/management')">
-          <div class="nav-icon">🏢</div>
+          <div class="nav-icon"></div>
           <h3>校方场馆设置</h3>
           <p>场馆管理和配置</p>
         </div>

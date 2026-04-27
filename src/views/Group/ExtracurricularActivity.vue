@@ -5,7 +5,7 @@
     </div>
 
     <div class="info-banner">
-      <div class="banner-icon">🎯</div>
+      <div class="banner-icon"></div>
       <div class="banner-text">
         <h3>课外体育活动管理</h3>
         <p>PE活动的创建、审核和管理功能已在"PE活动"模块中实现。学生通过 App 报名参加活动并获取积分。</p>
@@ -14,25 +14,25 @@
 
     <div class="action-grid">
       <div class="action-card" @click="$router.push('/pe-activities')">
-        <div class="card-icon">🎪</div>
+        <div class="card-icon"></div>
         <h3>PE活动管理</h3>
         <p>创建、审核和管理PE体育活动</p>
         <span class="card-link">前往管理 →</span>
       </div>
       <div class="action-card" @click="$router.push('/morning-exercise')">
-        <div class="card-icon">🌅</div>
+        <div class="card-icon"></div>
         <h3>早操管理</h3>
         <p>管理早操签到和积分发放</p>
         <span class="card-link">前往管理 →</span>
       </div>
       <div class="action-card" @click="$router.push('/group/sunshine-run')">
-        <div class="card-icon">🏃</div>
+        <div class="card-icon"></div>
         <h3>阳光跑统计</h3>
         <p>查看学生阳光跑记录和统计大屏</p>
         <span class="card-link">前往查看 →</span>
       </div>
       <div class="action-card" @click="$router.push('/group/homework')">
-        <div class="card-icon">💪</div>
+        <div class="card-icon"></div>
         <h3>课后作业统计</h3>
         <p>查看学生课后运动作业完成情况和班级排名</p>
         <span class="card-link">前往查看 →</span>

@@ -70,7 +70,7 @@
         <!-- 校级管理员：院系排名 -->
         <div v-if="isSchoolAdminRole" class="chart-card rank-card">
           <div class="card-header">
-            <h3>🏫 院系排名</h3>
+            <h3>院系排名</h3>
             <span class="subtitle">按总完成次数</span>
           </div>
           <div class="ranking-list">
@@ -94,7 +94,7 @@
         <!-- 班级排名（校级：全校班级；院级：本院班级） -->
         <div class="chart-card rank-card">
           <div class="card-header">
-            <h3>{{ isDeptAdminRole ? '🏆 本院班级排名' : '🏆 全校班级排名' }}</h3>
+            <h3>{{ isDeptAdminRole ? '本院班级排名' : '全校班级排名' }}</h3>
             <span class="subtitle">按总完成次数</span>
           </div>
           <div class="ranking-list">
@@ -212,7 +212,7 @@ const isSchoolAdminRole = computed(() =>
   permissionManager.hasAnyRole(['school_admin', 'super_admin'])
 )
 const isDeptAdminRole = computed(() =>
-  permissionManager.hasRole('department_admin')
+  permissionManager.hasRole('department_admin') || permissionManager.hasRole('counselor')
 )
 
 // ── 颜色 / 标签 ──────────────────────────────────────────────────────────────
@@ -245,13 +245,13 @@ const topStats = computed(() => {
   const p = periodLabel.value
   const isFiltered = periodFilter.value !== 'all'
   return [
-    { label: p + '提交次数', value: o.totalRecords ?? 0, unit: '次', icon: '📋', accent: '#1677ff' },
-    { label: '参与学生数',   value: o.totalStudents ?? 0, unit: '人', icon: '👥', accent: '#52c41a' },
-    { label: p + '完成次数', value: o.totalReps ?? 0,    unit: '次', icon: '💪', accent: '#fa8c16' },
+    { label: p + '提交次数', value: o.totalRecords ?? 0, unit: '次', icon: '', accent: '#1677ff' },
+    { label: '参与学生数',   value: o.totalStudents ?? 0, unit: '人', icon: '', accent: '#52c41a' },
+    { label: p + '完成次数', value: o.totalReps ?? 0,    unit: '次', icon: '', accent: '#fa8c16' },
     ...(!isFiltered ? [
-      { label: '今日提交',     value: o.todayRecords ?? 0, unit: '次', icon: '📅', accent: '#722ed1' },
-      { label: '今日参与',     value: o.todayStudents ?? 0,unit: '人', icon: '🔥', accent: '#eb2f96' },
-      { label: '本周提交',     value: o.weekRecords ?? 0,  unit: '次', icon: '📈', accent: '#13c2c2' },
+      { label: '今日提交',     value: o.todayRecords ?? 0, unit: '次', icon: '', accent: '#722ed1' },
+      { label: '今日参与',     value: o.todayStudents ?? 0,unit: '人', icon: '', accent: '#eb2f96' },
+      { label: '本周提交',     value: o.weekRecords ?? 0,  unit: '次', icon: '', accent: '#13c2c2' },
     ] : []),
   ]
 })

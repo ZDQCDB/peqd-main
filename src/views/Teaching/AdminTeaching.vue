@@ -38,7 +38,7 @@
         </div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon">👨‍🏫</div>
+        <div class="stat-icon"></div>
         <div class="stat-content">
           <h3>{{ statistics.totalTeachers }}</h3>
           <p>教师总数</p>
@@ -80,7 +80,7 @@
       </div>
       
       <div v-else-if="filteredCourses.length === 0" class="empty-state">
-        <div class="empty-icon">📭</div>
+        <div class="empty-icon"></div>
         <p>暂无课程数据</p>
       </div>
       
@@ -826,10 +826,10 @@ export default {
 
 /* 图标样式 */
 .icon-refresh::before {
-  content: '🔄';
+  content: '';
 }
 
 .icon-search::before {
-  content: '🔍';
+  content: '';
 }
 </style>

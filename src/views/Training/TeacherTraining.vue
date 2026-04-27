@@ -7,13 +7,13 @@
       </div>
       <div class="header-right">
         <button class="btn btn-outline" @click="activeView = 'profiles'" :class="{ active: activeView === 'profiles' }">
-          📊 学生档案
+          学生档案
         </button>
         <button class="btn btn-outline" @click="activeView = 'tasks'" :class="{ active: activeView === 'tasks' }">
-          📋 训练任务
+          训练任务
         </button>
         <button class="btn btn-primary" @click="showCreateForm = true" v-if="activeView === 'tasks'">
-          ➕ 布置训练任务
+          布置训练任务
         </button>
       </div>
     </div>
@@ -32,7 +32,7 @@
 
       <!-- 班级体能概览 -->
       <div v-if="classOverview" class="class-overview">
-        <h3>📊 {{ classOverview.className }} 体能概览</h3>
+        <h3>{{ classOverview.className }} 体能概览</h3>
         <div class="overview-cards">
           <div class="overview-card">
             <div class="ov-number">{{ classOverview.totalStudents }}</div>
@@ -136,9 +136,9 @@
             <div class="task-type" :class="task.trainingType">{{ getTypeLabel(task.trainingType) }}</div>
           </div>
           <div class="task-meta">
-            <span>📅 {{ task.startDate }} ~ {{ task.endDate }}</span>
-            <span>📊 {{ getDifficultyLabel(task.difficulty) }}</span>
-            <span>👥 {{ task.targetClasses?.join(', ') }}</span>
+            <span>{{ task.startDate }} ~ {{ task.endDate }}</span>
+            <span>{{ getDifficultyLabel(task.difficulty) }}</span>
+            <span>{{ task.targetClasses?.join(', ') }}</span>
           </div>
           <div class="task-description">{{ task.description }}</div>
           <div class="task-progress">
@@ -150,7 +150,7 @@
               <div class="progress-fill" :style="{ width: task.completionRate + '%' }"></div>
             </div>
           </div>
-          <div v-if="task.aiReference" class="ai-badge">🤖 AI参考</div>
+          <div v-if="task.aiReference" class="ai-badge">AI参考</div>
           <div class="task-actions">
             <button class="btn btn-small btn-outline" @click="viewTaskDetail(task)">查看详情</button>
             <button class="btn btn-small btn-danger" @click="deleteTask(task)">删除</button>
@@ -229,11 +229,11 @@
           <div class="form-group">
             <label>
               <input type="checkbox" v-model="newTask.useAiReference" />
-              🤖 获取AI训练建议（基于学生体能档案）
+              获取AI训练建议（基于学生体能档案）
             </label>
           </div>
           <div v-if="aiSuggestion" class="ai-suggestion-box">
-            <h4>🤖 AI训练建议</h4>
+            <h4>AI训练建议</h4>
             <pre>{{ aiSuggestion }}</pre>
           </div>
           <button v-if="newTask.useAiReference && newTask.targetClasses.length > 0 && !aiSuggestion"
@@ -272,7 +272,7 @@
             </div>
           </div>
           <div class="detail-section" v-if="selectedProfile.ticeData">
-            <h4>📋 体测数据</h4>
+            <h4>体测数据</h4>
             <div class="detail-grid">
               <div><span class="label">肺活量：</span>{{ selectedProfile.ticeData.vitalCapacity || '-' }} ml</div>
               <div><span class="label">坐位体前屈：</span>{{ selectedProfile.ticeData.sitAndReach || '-' }} cm</div>
@@ -287,7 +287,7 @@
             </div>
           </div>
           <div class="detail-section">
-            <h4>🏃 阳光跑数据</h4>
+            <h4>阳光跑数据</h4>
             <div class="detail-grid">
               <div><span class="label">跑步次数：</span>{{ selectedProfile.runData?.totalCount || 0 }} 次</div>
               <div><span class="label">总距离：</span>{{ formatDistance(selectedProfile.runData?.totalDistance) }}</div>
@@ -296,7 +296,7 @@
             </div>
           </div>
           <div class="detail-section">
-            <h4>📝 课后作业</h4>
+            <h4>课后作业</h4>
             <div class="detail-grid">
               <div><span class="label">完成次数：</span>{{ selectedProfile.homeworkData?.totalCount || 0 }} 次</div>
               <div><span class="label">深蹲最佳：</span>{{ selectedProfile.homeworkData?.squatBest || '-' }} 个</div>
@@ -307,7 +307,7 @@
             </div>
           </div>
           <div class="detail-section" v-if="selectedProfile.aiRecommendation">
-            <h4>🤖 AI训练建议</h4>
+            <h4>AI训练建议</h4>
             <div class="ai-recommendation">
               <div v-if="selectedProfile.aiStrengths?.length" class="rec-section">
                 <strong>优势：</strong>
@@ -320,7 +320,7 @@
               <pre class="rec-text">{{ selectedProfile.aiRecommendation }}</pre>
             </div>
             <button class="btn btn-outline btn-sm" @click="reAnalyze(selectedProfile.userId)" :disabled="analyzing">
-              {{ analyzing ? '分析中...' : '🔄 重新分析' }}
+              {{ analyzing ? '分析中...' : '重新分析' }}
             </button>
           </div>
         </div>

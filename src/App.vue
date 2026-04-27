@@ -246,50 +246,79 @@ body {
   min-height: 24px;
 }
 
-/* ===== 表单系统 ===== */
+/* ===== 表单系统（全局统一） ===== */
 .form-group {
   margin-bottom: var(--spacing-md);
 }
 
-.form-label {
+.form-label,
+label {
   display: block;
   margin-bottom: 6px;
   font-weight: var(--font-weight-normal);
   color: var(--text-primary);
-  font-size: 14px;
+  font-size: 13px;
 }
 
-.form-input {
+.form-input,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+input[type="number"],
+input[type="date"],
+input[type="search"],
+input[type="url"],
+select,
+textarea {
   width: 100%;
-  padding: 8px 12px;
+  padding: 6px 11px;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
-  font-size: 14px;
+  font-size: 13px;
   font-family: var(--font-family);
-  transition: all var(--transition-fast);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
   background-color: var(--bg-primary);
   color: var(--text-primary);
   line-height: 1.5715;
   outline: none;
+  height: 32px;
 }
 
-.form-input:hover {
+textarea {
+  height: auto;
+  min-height: 60px;
+  resize: vertical;
+}
+
+select {
+  appearance: auto;
+}
+
+input:hover,
+select:hover,
+textarea:hover {
   border-color: var(--primary-hover);
 }
 
-.form-input:focus {
+input:focus,
+select:focus,
+textarea:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.2);
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.1);
 }
 
-.form-input:disabled {
+input:disabled,
+select:disabled,
+textarea:disabled {
   background-color: var(--bg-tertiary);
   color: var(--text-disabled);
   cursor: not-allowed;
   border-color: var(--border-color);
 }
 
-.form-input::placeholder {
+input::placeholder,
+textarea::placeholder {
   color: var(--text-tertiary);
 }
 

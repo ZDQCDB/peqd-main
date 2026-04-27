@@ -135,11 +135,11 @@
       </div>
 
       <div v-if="loading" class="loading-state">
-        <p>🔄 加载中...</p>
+        <p>加载中...</p>
       </div>
 
       <div v-if="!loading && venues.length === 0" class="empty-state">
-        <p>🏟️ 暂无场馆数据，点击"添加场馆"开始管理</p>
+        <p>暂无场馆数据，点击"添加场馆"开始管理</p>
       </div>
     </div>
 
@@ -155,7 +155,7 @@
       </div>
 
       <div v-if="schedule.length === 0" class="empty-state" style="margin:0">
-        <p>📅 该日期暂无预约</p>
+        <p>该日期暂无预约</p>
       </div>
 
       <div v-else class="applications-list">

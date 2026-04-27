@@ -61,12 +61,12 @@
             <div class="venue-name">{{ venue.name }}</div>
             <div class="venue-meta">
               <span class="tag">{{ getTypeLabel(venue.type) }}</span>
-              <span v-if="venue.location" class="venue-loc">📍 {{ venue.location }}</span>
+              <span v-if="venue.location" class="venue-loc">{{ venue.location }}</span>
             </div>
             <div class="venue-meta2">
-              <span>👥 {{ venue.capacity }} 人</span>
-              <span v-if="venue.price !== undefined">💰 {{ venue.price > 0 ? venue.price + ' 元/时' : '免费' }}</span>
-              <span v-if="venue.open_time">🕐 {{ venue.open_time }}</span>
+              <span>{{ venue.capacity }} 人</span>
+              <span v-if="venue.price !== undefined">{{ venue.price > 0 ? venue.price + ' 元/时' : '免费' }}</span>
+              <span v-if="venue.open_time">{{ venue.open_time }}</span>
             </div>
           </div>
           <div class="venue-status-badge" :class="venue.status">
@@ -151,7 +151,7 @@
 
           <!-- 已预约时间段提示 -->
           <div v-if="venueSchedule.length > 0" class="occupied-hint">
-            <div class="occupied-title">⚠️ 该日已占用时间段</div>
+            <div class="occupied-title">该日已占用时间段</div>
             <div v-for="s in occupiedSlots" :key="s.id" class="occupied-slot">
               {{ formatTime(s.start_time) }} – {{ formatTime(s.end_time) }}
               <span class="occ-status" :class="s.status">{{ getReservationStatusLabel(s.status) }}</span>
@@ -351,8 +351,8 @@ export default {
       return map[type] || type
     },
     getTypeIcon(type) {
-      const map = { basketball: '🏀', football: '⚽', tennis: '🎾', badminton: '🏸', gym: '🏋️', swimming: '🏊', pingpong: '🏓' }
-      return map[type] || '🏟️'
+      const map = { basketball: '', football: '', tennis: '', badminton: '', gym: '', swimming: '', pingpong: '' }
+      return map[type] || ''
     },
     getStatusLabel(status) {
       const map = { available: '可预约', maintenance: '维护中', closed: '关闭' }

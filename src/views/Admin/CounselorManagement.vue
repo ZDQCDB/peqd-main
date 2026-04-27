@@ -4,35 +4,29 @@
       <template #header>
         <div class="card-header">
           <span class="page-title">辅导员班级管理</span>
+          <el-button size="small" @click="$router.push('/admin')">返回管理员管理</el-button>
         </div>
       </template>
 
       <el-table :data="counselors" v-loading="loading" stripe border>
         <el-table-column prop="name" label="姓名" min-width="120" />
         <el-table-column prop="username" label="用户名" min-width="140" />
-        <el-table-column label="已分配班级数" min-width="120" align="center">
+        <el-table-column label="管辖班级" min-width="240">
           <template #default="{ row }">
-            <el-tag type="info" effect="plain">{{ row.classCount ?? '-' }}</el-tag>
+            <template v-if="row._classes && row._classes.length">
+              <el-tag v-for="c in row._classes" :key="c" size="small" class="class-tag">{{ c }}</el-tag>
+            </template>
+            <span v-else class="no-class-hint">未分配</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="220" align="center">
+        <el-table-column label="操作" width="240" align="center">
           <template #default="{ row }">
-            <el-button size="small" type="primary" link @click="viewClasses(row)">查看班级</el-button>
-            <el-button size="small" type="success" link @click="openAssignDialog(row)">分配班级</el-button>
+            <el-button size="small" type="primary" link @click="openAssignDialog(row)">分配班级</el-button>
+            <el-button size="small" type="danger" link @click="confirmRemoveAll(row)" :disabled="!row._classes || !row._classes.length">清除分配</el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
-
-    <!-- 查看已分配班级 -->
-    <el-dialog v-model="viewDialogVisible" title="已分配班级" width="500px" destroy-on-close>
-      <div v-loading="viewLoading">
-        <el-empty v-if="!viewClasses_.length" description="暂无已分配班级" />
-        <div v-else class="class-tags">
-          <el-tag v-for="cls in viewClasses_" :key="cls" size="large" class="class-tag">{{ cls }}</el-tag>
-        </div>
-      </div>
-    </el-dialog>
 
     <!-- 分配班级 -->
     <el-dialog v-model="assignDialogVisible" title="分配班级" width="520px" destroy-on-close>
@@ -40,12 +34,18 @@
         <el-form-item label="辅导员">
           <span>{{ assignTarget.name }} ({{ assignTarget.username }})</span>
         </el-form-item>
+        <el-form-item label="当前班级">
+          <div v-if="assignTarget._classes && assignTarget._classes.length" class="class-tags">
+            <el-tag v-for="c in assignTarget._classes" :key="c" size="small">{{ c }}</el-tag>
+          </div>
+          <span v-else class="no-class-hint">暂无</span>
+        </el-form-item>
         <el-form-item label="选择班级">
           <el-select
             v-model="selectedClasses"
             multiple
             filterable
-            placeholder="请选择班级"
+            placeholder="请选择要分配的班级"
             style="width: 100%"
             :loading="classListLoading"
           >
@@ -77,10 +77,6 @@ export default {
       loading: false,
       counselors: [],
       userInfo: null,
-
-      viewDialogVisible: false,
-      viewLoading: false,
-      viewClasses_: [],
 
       assignDialogVisible: false,
       assignTarget: {},
@@ -115,29 +111,24 @@ export default {
         const school = this.userInfo?.school || ''
         const res = await api.counselor.listCounselors({ school })
         const list = res?.code === 200 ? res.data : (Array.isArray(res) ? res : [])
-        this.counselors = Array.isArray(list) ? list : []
+        const counselors = Array.isArray(list) ? list : []
+
+        for (const c of counselors) {
+          try {
+            const cr = await api.counselor.getClassesByCounselor(c.id)
+            const data = cr?.code === 200 ? cr.data : (Array.isArray(cr) ? cr : [])
+            c._classes = (Array.isArray(data) ? data : []).map(r => r.class_name || r)
+          } catch {
+            c._classes = []
+          }
+        }
+        this.counselors = counselors
       } catch (e) {
         console.error('加载辅导员列表失败:', e)
-        this.$message.error('加载辅导员列表失败：' + (e.message || '网络错误'))
+        this.$message.error('加载辅导员列表失败')
         this.counselors = []
       } finally {
         this.loading = false
-      }
-    },
-
-    async viewClasses(row) {
-      this.viewDialogVisible = true
-      this.viewLoading = true
-      this.viewClasses_ = []
-      try {
-        const res = await api.counselor.getClassesByCounselor(row.id)
-        const data = res?.code === 200 ? res.data : (Array.isArray(res) ? res : [])
-        this.viewClasses_ = Array.isArray(data) ? data : []
-      } catch (e) {
-        console.error('加载辅导员班级失败:', e)
-        this.$message.error('加载班级列表失败')
-      } finally {
-        this.viewLoading = false
       }
     },
 
@@ -152,10 +143,10 @@ export default {
       this.classListLoading = true
       try {
         const school = this.userInfo?.school || ''
-        const college = this.userInfo?.department || this.userInfo?.college || ''
+        const college = this.userInfo?.departmentName || this.userInfo?.department || this.userInfo?.college || ''
         const res = await api.peManagement.getClasses(school, college)
         const data = res?.code === 200 ? res.data : (Array.isArray(res) ? res : [])
-        this.availableClasses = Array.isArray(data) ? data : []
+        this.availableClasses = (Array.isArray(data) ? data : []).map(c => typeof c === 'string' ? c : (c.name || c.className || ''))
       } catch (e) {
         console.error('加载班级列表失败:', e)
         this.$message.error('加载可选班级失败')
@@ -176,7 +167,7 @@ export default {
           counselorId: this.assignTarget.id,
           classNames: this.selectedClasses,
           school: this.userInfo?.school || '',
-          departmentName: this.userInfo?.department || this.userInfo?.college || ''
+          departmentName: this.userInfo?.departmentName || this.userInfo?.department || this.userInfo?.college || ''
         }
         const res = await api.counselor.assignClasses(payload)
         if (res?.code === 200) {
@@ -192,6 +183,25 @@ export default {
       } finally {
         this.assigning = false
       }
+    },
+
+    async confirmRemoveAll(row) {
+      try {
+        await this.$confirm(`确定清除 ${row.name} 的全部班级分配？`, '提示', {
+          type: 'warning',
+          confirmButtonText: '确定',
+          cancelButtonText: '取消'
+        })
+        const res = await api.counselor.removeAllClasses(row.id)
+        if (res?.code === 200) {
+          this.$message.success('已清除全部班级分配')
+          await this.loadCounselors()
+        } else {
+          this.$message.error(res?.message || '操作失败')
+        }
+      } catch {
+        // cancelled
+      }
     }
   }
 }
@@ -205,6 +215,7 @@ export default {
 .card-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 
 .page-title {
@@ -216,10 +227,15 @@ export default {
 .class-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
 }
 
 .class-tag {
-  font-size: 14px;
+  font-size: 13px;
+}
+
+.no-class-hint {
+  color: #999;
+  font-size: 13px;
 }
 </style>

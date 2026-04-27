@@ -4,13 +4,13 @@
       <h2>教师教学管理</h2>
       <div class="header-actions">
         <button class="btn btn-outline" :class="{ active: activeTab === 'courses' }" @click="activeTab = 'courses'">
-          📅 我的课程
+          我的课程
         </button>
         <button class="btn btn-outline" :class="{ active: activeTab === 'attendance' }" @click="activeTab = 'attendance'">
-          ✅ 签到记录
+          签到记录
         </button>
         <button class="btn btn-outline" :class="{ active: activeTab === 'stats' }" @click="activeTab = 'stats'">
-          📊 统计概览
+          统计概览
         </button>
       </div>
     </div>
@@ -39,9 +39,9 @@
             <div class="course-status" :class="course.status">{{ getStatusLabel(course.status) }}</div>
           </div>
           <div class="course-info">
-            <span>📍 {{ course.location || '未指定' }}</span>
-            <span>🕐 {{ course.timeSlot || '-' }}</span>
-            <span>👥 {{ course.studentCount || 0 }}人</span>
+            <span>{{ course.location || '未指定' }}</span>
+            <span>{{ course.timeSlot || '-' }}</span>
+            <span>{{ course.studentCount || 0 }}人</span>
           </div>
           <div class="course-teacher" v-if="course.teacherName">
             教师：{{ course.teacherName }}

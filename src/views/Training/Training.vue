@@ -8,13 +8,13 @@
     <div class="container">
       <div class="module-nav">
         <div class="nav-card" @click="$router.push('/training/teacher')">
-          <div class="nav-icon">👨‍🏫</div>
+          <div class="nav-icon"></div>
           <h3>教师端</h3>
           <p>训练计划制定和管理</p>
         </div>
         
         <div class="nav-card" @click="$router.push('/training/student')">
-          <div class="nav-icon">👨‍🎓</div>
+          <div class="nav-icon"></div>
           <h3>学生端</h3>
           <p>训练计划完成情况</p>
         </div>

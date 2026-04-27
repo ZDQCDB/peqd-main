@@ -156,7 +156,7 @@
       <div class="content-header">
         <h3>听课记录管理</h3>
         <div v-if="!isAdminUser" class="permission-notice">
-          <span class="notice-text">📋 您只能查看自己作为听课者的听课记录</span>
+          <span class="notice-text">您只能查看自己作为听课者的听课记录</span>
         </div>
         <div class="filters">
           <input 
@@ -210,34 +210,34 @@
               <td>
                 <div class="file-status">
                   <span v-if="obs.evaluation_file" class="status-badge file-uploaded">
-                    📄 已提交评价
+                    已提交评价
                   </span>
                   <span v-if="obs.video_file" class="status-badge video-uploaded">
-                    🎥 已提交视频
+                    已提交视频
                   </span>
                   <span v-if="!obs.evaluation_file && !obs.video_file" class="status-badge no-files">
-                    ⏳ 待提交
+                    待提交
                   </span>
                 </div>
               </td>
               <td>
                 <div class="action-buttons">
                   <button class="btn btn-info btn-small" @click="viewObservation(obs)">
-                    👁️ 查看
+                    查看
                   </button>
                   <button 
                     v-if="canEditObservation(obs)"
                     class="btn btn-warning btn-small" 
                     @click="uploadFiles(obs)"
                   >
-                    📤 上传文件
+                    上传文件
                   </button>
                   <button 
                     v-if="obs.video_file"
                     class="btn btn-success btn-small" 
                     @click="playVideo(obs)"
                   >
-                    🎥 播放视频
+                    播放视频
                   </button>
                 </div>
               </td>
@@ -281,7 +281,7 @@
       <div class="content-header">
         <h3>听课模板管理</h3>
         <button class="btn btn-primary" @click="uploadTemplate">
-          📤 上传新模板
+          上传新模板
         </button>
       </div>
 
@@ -298,20 +298,20 @@
           </div>
           <div class="file-actions">
             <button class="btn btn-info btn-small" @click="downloadTemplate(template)">
-              📥 下载
+              下载
             </button>
             <button 
               v-if="!template.is_default"
               class="btn btn-warning btn-small" 
               @click="setDefaultTemplate(template)"
             >
-              ⭐ 设为默认
+              设为默认
             </button>
             <button 
               class="btn btn-danger btn-small" 
               @click="deleteTemplate(template)"
             >
-              🗑️ 删除
+              删除
             </button>
           </div>
         </div>
@@ -422,7 +422,7 @@
               <i :class="getFileIcon(currentObservation.evaluation_file.type)"></i>
               <span>{{ currentObservation.evaluation_file.name }}</span>
               <button class="btn btn-info btn-small" @click="downloadFile(currentObservation.evaluation_file)">
-                📥 下载
+                下载
               </button>
             </div>
           </div>
@@ -454,7 +454,7 @@
             <div class="template-download">
               <h4>1. 下载听课评价模板</h4>
               <button class="btn btn-info" @click="downloadEvaluationTemplate">
-                📥 下载模板
+                下载模板
               </button>
               <p class="help-text">请先下载模板，填写完成后上传评价文件</p>
             </div>
@@ -469,7 +469,7 @@
                 style="display: none"
               />
               <div class="upload-area" @click="$refs.evaluationFileInput.click()">
-                <div class="upload-icon">📄</div>
+                <div class="upload-icon"></div>
                 <p>点击选择评价文件</p>
                 <p class="upload-hint">支持Excel、PDF、Word格式，最大50MB</p>
               </div>
@@ -485,7 +485,7 @@
                 style="display: none"
               />
               <div class="upload-area" @click="$refs.videoFileInput.click()">
-                <div class="upload-icon">🎥</div>
+                <div class="upload-icon"></div>
                 <p>点击选择视频文件</p>
                 <p class="upload-hint">支持MP4、AVI、MOV等格式，最大500MB</p>
               </div>

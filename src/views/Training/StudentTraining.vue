@@ -21,8 +21,8 @@
         <h3>{{ currentTask.title }}</h3>
         <div class="overview-meta">
           <span class="badge" :class="currentTask.trainingType">{{ getTypeLabel(currentTask.trainingType) }}</span>
-          <span>📅 {{ currentTask.startDate }} ~ {{ currentTask.endDate }}</span>
-          <span>👥 {{ currentTask.targetClasses?.join(', ') }}</span>
+          <span>{{ currentTask.startDate }} ~ {{ currentTask.endDate }}</span>
+          <span>{{ currentTask.targetClasses?.join(', ') }}</span>
         </div>
         <p v-if="currentTask.description" class="overview-desc">{{ currentTask.description }}</p>
       </div>
@@ -91,7 +91,7 @@
 
     <!-- 未选择任务 -->
     <div v-if="!currentTask" class="empty-state">
-      <div class="empty-icon">📋</div>
+      <div class="empty-icon"></div>
       <p>请选择一个训练任务查看学生完成情况</p>
     </div>
   </div>

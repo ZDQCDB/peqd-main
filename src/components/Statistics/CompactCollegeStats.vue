@@ -6,7 +6,7 @@
     </div>
 
     <div v-else-if="!data" class="no-data">
-      <i class="no-data-icon">📊</i>
+      <i class="no-data-icon"></i>
       <p>暂无统计数据</p>
     </div>
 
@@ -15,26 +15,26 @@
       <div class="stats-card overview">
         <div class="card-header">
           <h3>{{ data.college || '院系信息' }}</h3>
-          <button @click="$emit('refresh')" class="refresh-btn-mini" :disabled="loading">🔄</button>
+          <button @click="$emit('refresh')" class="refresh-btn-mini" :disabled="loading">刷新</button>
         </div>
         <div class="card-content">
           <div class="overview-grid">
             <div class="overview-item">
-              <div class="overview-icon">🏛️</div>
+              <div class="overview-icon"></div>
               <div class="overview-info">
                 <div class="overview-value">{{ data.college }}</div>
                 <div class="overview-label">当前院系</div>
               </div>
             </div>
             <div class="overview-item">
-              <div class="overview-icon">👥</div>
+              <div class="overview-icon"></div>
               <div class="overview-info">
                 <div class="overview-value">{{ data.totalStudents }}人</div>
                 <div class="overview-label">学生总数</div>
               </div>
             </div>
             <div class="overview-item">
-              <div class="overview-icon">📈</div>
+              <div class="overview-icon"></div>
               <div class="overview-info">
                 <div class="overview-value">{{ getAverageCompliance() }}%</div>
                 <div class="overview-label">平均达标率</div>
@@ -53,12 +53,12 @@
               @click="complianceView = 'bars'" 
               :class="{ active: complianceView === 'bars' }"
               class="toggle-btn"
-            >📊</button>
+            >图表</button>
             <button 
               @click="complianceView = 'circles'" 
               :class="{ active: complianceView === 'circles' }"
               class="toggle-btn"
-            >⭕</button>
+            >环形</button>
           </div>
         </div>
         <div class="card-content">
@@ -303,9 +303,9 @@ export default {
     // 获取排名图标
     const getRankIcon = (rank) => {
       switch (rank) {
-        case 1: return '🥇'
-        case 2: return '🥈'
-        case 3: return '🥉'
+        case 1: return '金'
+        case 2: return '银'
+        case 3: return '铜'
         default: return ''
       }
     }

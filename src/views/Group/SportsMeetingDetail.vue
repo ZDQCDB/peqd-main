@@ -63,7 +63,7 @@
     <div v-if="meeting" class="main-area">
       <!-- ═══ 流程引导横幅 ═══ -->
       <div v-if="guidanceTip" class="guidance-banner" @click="guidanceTip.action && guidanceTip.action()">
-        <span class="guidance-icon">💡</span>
+        <span class="guidance-icon"></span>
         <span class="guidance-text">{{ guidanceTip.text }}</span>
         <span v-if="guidanceTip.actionLabel" class="guidance-action">{{ guidanceTip.actionLabel }} →</span>
       </div>
@@ -99,7 +99,7 @@
               </div>
 
               <div v-if="events.length === 0" class="empty-state-card">
-                <div class="empty-icon">📋</div>
+                <div class="empty-icon"></div>
                 <p>暂无比赛项目</p>
                 <div class="empty-actions">
                   <button class="btn-primary" @click="showEventDialog = true; editingEvent = null; eventForm = getEmptyEventForm()">手动添加项目</button>
@@ -289,7 +289,7 @@
               </div>
 
               <div v-if="!selectedResultEvent" class="empty-state-card small">
-                <div class="empty-icon">🏃</div>
+                <div class="empty-icon"></div>
                 <p>请从上方选择一个比赛项目来录入或查看成绩</p>
               </div>
 
@@ -348,12 +348,12 @@
             <div v-else-if="activeTab === 'rankings'" class="tab-pane">
               <div v-if="loadingStates.rankings" class="loading-placeholder"><div class="spinner-ring"></div><p>加载排名...</p></div>
               <div v-else-if="rankings.length === 0" class="empty-state-card small">
-                <div class="empty-icon">🏆</div>
+                <div class="empty-icon"></div>
                 <p>暂无团体积分数据，请先在"成绩管理"中录入成绩并计算排名</p>
               </div>
               <table v-else class="data-table rankings-table">
                 <thead><tr>
-                  <th>排名</th><th>代表队</th><th>🥇 金牌</th><th>🥈 银牌</th><th>🥉 铜牌</th><th>奖牌总数</th><th>总积分</th>
+                  <th>排名</th><th>代表队</th><th>金牌</th><th>银牌</th><th>铜牌</th><th>奖牌总数</th><th>总积分</th>
                 </tr></thead>
                 <tbody>
                   <tr v-for="r in rankings" :key="r.department" :class="rankClass(r.rank)" class="row-animate" :style="{ animationDelay: (r.rank - 1) * 60 + 'ms' }">

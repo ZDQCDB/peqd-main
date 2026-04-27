@@ -320,12 +320,18 @@ export default {
     pageHeaderTitle() {
       return this.isSchoolLevel ? '早操出勤统计' : '早操管理'
     },
+    isCounselorRole() {
+      return isCounselor()
+    },
     dashboardNotice() {
       if (this.dashboardData && this.dashboardData.notice) {
         return this.dashboardData.notice
       }
       if (this.isSchoolLevel) {
         return '早操活动仅院级管理员可发布与维护；校级可查看本校早操出勤统计。\n说明：院系统计、班级统计均仅基于所选日期范围内已发布的早操场次；无场次的学院不会出现在表中，并非权限限制。'
+      }
+      if (this.isCounselorRole) {
+        return '以下仅显示您管辖班级的出勤统计。如需调整管辖班级，请联系院级管理员。'
       }
       return '以下为本院班级出勤统计（仅统计所选日期范围内已发布的早操场次）；院系统计仅校级管理员可见。'
     },

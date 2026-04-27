@@ -2,12 +2,12 @@
   <div class="school-statistics">
     <div class="panel-header">
       <h2 class="panel-title">
-        <i class="icon">🏫</i>
+        <i class="icon"></i>
         全校统计数据
       </h2>
       <div class="panel-actions">
         <button @click="$emit('refresh')" class="refresh-btn" :disabled="loading">
-          <i class="refresh-icon">🔄</i>
+          <i class="refresh-icon"></i>
           {{ loading ? '刷新中...' : '刷新' }}
         </button>
       </div>
@@ -19,7 +19,7 @@
     </div>
 
     <div v-else-if="!data" class="no-data">
-      <i class="no-data-icon">📊</i>
+      <i class="no-data-icon"></i>
       <p>暂无统计数据</p>
     </div>
 
@@ -27,7 +27,7 @@
       <!-- 学校概览 -->
       <div class="school-overview">
         <div class="overview-card">
-          <div class="overview-icon">🏛️</div>
+          <div class="overview-icon"></div>
           <div class="overview-info">
             <h3>{{ data.school }}</h3>
             <p>学生总数: {{ data.totalStudents }}人</p>
@@ -164,9 +164,9 @@ export default {
     // 获取排名图标
     const getRankIcon = (rank) => {
       switch (rank) {
-        case 1: return '🥇'
-        case 2: return '🥈'
-        case 3: return '🥉'
+        case 1: return '金'
+        case 2: return '银'
+        case 3: return '铜'
         default: return ''
       }
     }

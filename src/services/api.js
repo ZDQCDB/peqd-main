@@ -528,6 +528,7 @@ export const api = {
 
   counselor: {
     assignClasses: (data) => apiClient.post('/counselor/assign-classes', data),
+    removeAllClasses: (counselorId) => apiClient.delete(`/counselor/${counselorId}/classes`),
     getMyClasses: () => apiClient.get('/counselor/my-classes'),
     getClassesByCounselor: (id) => apiClient.get(`/counselor/${id}/classes`),
     listCounselors: (params) => apiClient.get('/counselor/list', { params })

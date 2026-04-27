@@ -101,12 +101,12 @@
 
       <!-- 加载状态 -->
       <div v-if="loading" class="loading-state">
-        <p>🔄 加载中...</p>
+        <p>加载中...</p>
       </div>
 
       <!-- 空状态 -->
       <div v-if="!loading && equipmentItems.length === 0" class="empty-state">
-        <p>📦 暂无器材数据</p>
+        <p>暂无器材数据</p>
       </div>
     </div>
 
@@ -143,13 +143,13 @@
               class="btn btn-success" 
               @click="approveApplication(app.id, 'approved')"
             >
-              ✅ 同意
+              同意
             </button>
             <button 
               class="btn btn-danger" 
               @click="approveApplication(app.id, 'rejected')"
             >
-              ❌ 拒绝
+              拒绝
             </button>
           </div>
         </div>

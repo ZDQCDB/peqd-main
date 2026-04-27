@@ -2,7 +2,7 @@
   <div class="targets-panel">
     <div class="panel-header">
       <h2 class="panel-title">
-        <i class="icon">🎯</i>
+        <i class="icon"></i>
         PE积分指标设置
       </h2>
       <div class="panel-actions">
@@ -24,7 +24,7 @@
       <div class="targets-grid">
         <!-- 周指标 -->
         <div class="target-card">
-          <div class="target-icon weekly">📅</div>
+          <div class="target-icon weekly"></div>
           <div class="target-info">
             <h3>周积分指标</h3>
             <div class="target-value">
@@ -46,7 +46,7 @@
 
         <!-- 月指标 -->
         <div class="target-card">
-          <div class="target-icon monthly">📊</div>
+          <div class="target-icon monthly"></div>
           <div class="target-info">
             <h3>月积分指标</h3>
             <div class="target-value">
@@ -68,7 +68,7 @@
 
         <!-- 总指标 -->
         <div class="target-card">
-          <div class="target-icon total">🏆</div>
+          <div class="target-icon total"></div>
           <div class="target-info">
             <h3>总积分指标</h3>
             <div class="target-value">
@@ -91,12 +91,12 @@
 
       <!-- 提示信息 -->
       <div v-if="!targets" class="no-targets">
-        <i class="warning-icon">⚠</i>
+        <i class="warning-icon"></i>
         <p>尚未设置PE积分指标，请点击编辑按钮进行设置</p>
       </div>
 
       <div v-if="isEditing" class="edit-tips">
-        <p>💡 提示：设置的指标将作为全校学生PE积分达标的标准</p>
+        <p>提示：设置的指标将作为全校学生PE积分达标的标准</p>
       </div>
     </div>
   </div>

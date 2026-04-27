@@ -72,7 +72,7 @@
         </div>
         
         <div v-if="course.attendanceStatus === 'pending'" class="no-attendance">
-          <div class="no-attendance-icon">⏰</div>
+          <div class="no-attendance-icon"></div>
           <p>教师尚未签到</p>
           <small>预计上课时间：{{ formatCourseTime(course) }}</small>
         </div>
@@ -126,7 +126,7 @@
         </div>
         
         <div v-else-if="attendancePhotos.length === 0" class="no-photos">
-          <div class="no-photos-icon">📷</div>
+          <div class="no-photos-icon"></div>
           <p>暂无签到照片</p>
         </div>
         
@@ -982,7 +982,7 @@ export default {
 
 /* 图标样式 */
 .icon-refresh::before {
-  content: '🔄';
+  content: '';
 }
 
 /* 响应式 */

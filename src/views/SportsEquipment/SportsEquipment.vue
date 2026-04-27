@@ -8,13 +8,13 @@
     <div class="container">
       <div class="module-nav">
         <div class="nav-card" @click="$router.push('/sports-equipment/sharing')">
-          <div class="nav-icon">🤝</div>
+          <div class="nav-icon"></div>
           <h3>运动装备共享</h3>
           <p>装备共享和交换</p>
         </div>
         
         <div class="nav-card" @click="goToYouzanMall">
-          <div class="nav-icon">🛒</div>
+          <div class="nav-icon"></div>
           <h3>运动装备商城</h3>
           <p>装备购买和销售</p>
         </div>

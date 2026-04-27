@@ -6,7 +6,7 @@
     </div>
 
     <div v-else-if="!data" class="no-data">
-      <i class="no-data-icon">📊</i>
+      <i class="no-data-icon"></i>
       <p>暂无统计数据</p>
     </div>
 
@@ -15,12 +15,12 @@
       <div class="stats-card compliance-overview">
         <div class="card-header">
           <h3>整体达标率</h3>
-          <button @click="$emit('refresh')" class="refresh-btn-mini" :disabled="loading">🔄</button>
+          <button @click="$emit('refresh')" class="refresh-btn-mini" :disabled="loading">刷新</button>
         </div>
         <div class="card-content">
           <div class="compliance-grid-compact">
             <div class="compliance-item weekly">
-              <div class="compliance-icon">📅</div>
+              <div class="compliance-icon"></div>
               <div class="compliance-info">
                 <div class="compliance-label">周达标率</div>
                 <div class="compliance-value">{{ formatRate(data.overallCompliance?.weeklyComplianceRate) }}%</div>
@@ -31,7 +31,7 @@
             </div>
 
             <div class="compliance-item monthly">
-              <div class="compliance-icon">📊</div>
+              <div class="compliance-icon"></div>
               <div class="compliance-info">
                 <div class="compliance-label">月达标率</div>
                 <div class="compliance-value">{{ formatRate(data.overallCompliance?.monthlyComplianceRate) }}%</div>
@@ -42,7 +42,7 @@
             </div>
 
             <div class="compliance-item total">
-              <div class="compliance-icon">🏆</div>
+              <div class="compliance-icon"></div>
               <div class="compliance-info">
                 <div class="compliance-label">总达标率</div>
                 <div class="compliance-value">{{ formatRate(data.overallCompliance?.totalComplianceRate) }}%</div>
@@ -64,12 +64,12 @@
               @click="viewMode = 'table'" 
               :class="{ active: viewMode === 'table' }"
               class="toggle-btn"
-            >📋</button>
+            >表格</button>
             <button 
               @click="viewMode = 'chart'" 
               :class="{ active: viewMode === 'chart' }"
               class="toggle-btn"
-            >📊</button>
+            >图表</button>
           </div>
         </div>
         <div class="card-content">
@@ -178,9 +178,9 @@ export default {
     // 获取排名图标
     const getRankIcon = (rank) => {
       switch (rank) {
-        case 1: return '🥇'
-        case 2: return '🥈'
-        case 3: return '🥉'
+        case 1: return '金'
+        case 2: return '银'
+        case 3: return '铜'
         default: return ''
       }
     }

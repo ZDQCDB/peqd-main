@@ -122,6 +122,7 @@
             <label>角色
               <select v-model="newTeacher.userType">
                 <option value="teacher">教师</option>
+                <option value="counselor">辅导员</option>
                 <option value="department_admin">院级管理员</option>
                 <option value="school_admin">校级管理员</option>
               </select>
@@ -142,6 +143,7 @@
         <label>角色
           <select v-model="activateForm.userType">
             <option value="teacher">教师</option>
+            <option value="counselor">辅导员</option>
             <option value="department_admin">院级管理员</option>
             <option value="school_admin">校级管理员</option>
           </select>
@@ -245,6 +247,7 @@ export default {
     roleLabel (t) {
       const map = {
         teacher: '教师',
+        counselor: '辅导员',
         department_admin: '院级管理员',
         school_admin: '校级管理员'
       }

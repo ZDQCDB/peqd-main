@@ -138,21 +138,21 @@
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon">📁</div>
+            <div class="stat-icon"></div>
             <div class="stat-info">
               <h4>上传文件</h4>
               <p>{{ userStats.uploadCount }}个</p>
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon">💬</div>
+            <div class="stat-icon"></div>
             <div class="stat-info">
               <h4>反馈记录</h4>
               <p>{{ userStats.feedbackCount }}条</p>
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon">⭐</div>
+            <div class="stat-icon"></div>
             <div class="stat-info">
               <h4>平均评分</h4>
               <p>{{ userStats.averageScore }}/10</p>
@@ -303,7 +303,7 @@
                 <img :src="previewAvatar" alt="预览" class="preview-img" />
               </div>
               <div v-else class="upload-placeholder">
-                <div class="upload-icon">📷</div>
+                <div class="upload-icon"></div>
                 <p>点击选择头像图片</p>
                 <p class="upload-hint">支持JPG、PNG格式，大小不超过2MB</p>
               </div>

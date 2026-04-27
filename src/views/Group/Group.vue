@@ -19,7 +19,7 @@
         <div class="header-actions">
           <div class="activity-stats">
             <div class="stat-item">
-              <span class="stat-number">7</span>
+              <span class="stat-number">9</span>
               <span class="stat-label">功能模块</span>
             </div>
             <div class="stat-divider"></div>
@@ -115,6 +115,59 @@
                 <div class="card-features">
                   <span class="feature-tag">完成统计</span>
                   <span class="feature-tag">班级排名</span>
+                </div>
+              </div>
+              <div class="card-footer">
+                <span class="action-text">进入模块</span>
+                <div class="action-arrow">→</div>
+              </div>
+            </div>
+
+            <div class="activity-card animate-slide-up" @click="$router.push('/group/homework-assignment')" style="animation-delay: 0.35s" v-if="isTeacherOrAdmin">
+              <div class="card-header">
+                <div class="activity-icon homework-assign">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <line x1="12" y1="18" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="9" y1="15" x2="15" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div class="card-status">
+                  <span class="status-badge active">运行中</span>
+                </div>
+              </div>
+              <div class="card-content">
+                <h3 class="card-title">课后作业发布</h3>
+                <p class="card-description">教师发布课后运动作业、选择班级项目、查看提交情况</p>
+                <div class="card-features">
+                  <span class="feature-tag">作业发布</span>
+                  <span class="feature-tag">提交管理</span>
+                </div>
+              </div>
+              <div class="card-footer">
+                <span class="action-text">进入模块</span>
+                <div class="action-arrow">→</div>
+              </div>
+            </div>
+
+            <div class="activity-card animate-slide-up" @click="$router.push('/group/homework-completion-dashboard')" style="animation-delay: 0.38s" v-if="isSchoolAdmin">
+              <div class="card-header">
+                <div class="activity-icon homework-track">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 20V10M12 20V4M6 20v-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div class="card-status">
+                  <span class="status-badge admin">管理端</span>
+                </div>
+              </div>
+              <div class="card-content">
+                <h3 class="card-title">作业完成追踪</h3>
+                <p class="card-description">全校作业完成率大屏、教师班级维度追踪、导出报表</p>
+                <div class="card-features">
+                  <span class="feature-tag">完成追踪</span>
+                  <span class="feature-tag">数据大屏</span>
                 </div>
               </div>
               <div class="card-footer">
@@ -243,14 +296,19 @@ import authService from '@/services/authService'
 export default {
   name: 'Group',
   data() {
-    return { isSchoolAdmin: false }
+    return {
+      isSchoolAdmin: false,
+      isTeacherOrAdmin: false
+    }
   },
   async mounted() {
     try {
       const user = await authService.getCurrentUser()
       this.isSchoolAdmin = user && (user.userType === 'school_admin' || user.userType === 'super_admin')
+      this.isTeacherOrAdmin = user && ['teacher', 'department_admin', 'school_admin', 'super_admin', 'counselor'].includes(user.userType)
     } catch (e) {
       this.isSchoolAdmin = false
+      this.isTeacherOrAdmin = false
     }
   }
 }
@@ -463,6 +521,8 @@ export default {
 .activity-icon.activity        { background: #f0f5ff; color: #2f54eb; }
 .activity-icon.race-results    { background: #fff2e8; color: #d4380d; }
 .activity-icon.sports-meeting  { background: #f9f0ff; color: #722ed1; }
+.activity-icon.homework-assign { background: #e6fffb; color: #08979c; }
+.activity-icon.homework-track  { background: #fcffe6; color: #7cb305; }
 
 .activity-icon svg { width: 22px; height: 22px; }
 

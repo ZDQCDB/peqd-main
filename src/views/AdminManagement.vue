@@ -48,6 +48,14 @@
             </svg>
             人脸库导入
           </button>
+          <button class="action-btn counselor-btn" @click="$router.push('/admin/counselor-management')" title="为辅导员分配管辖班级">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+              <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            辅导员班级管理
+          </button>
           <button class="action-btn secondary" @click="exportUserData">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -168,7 +176,11 @@
           <div class="notice-role-rows">
             <div class="notice-role-item">
               <span class="role-tag teacher-tag">教师</span>
-              <span>教师用户注册后初始身份为教师，可通过列表中的 <strong>「提升权限」</strong> 按钮将其提权为院级管理员或校级管理员</span>
+              <span>教师用户注册后初始身份为教师，可通过列表中的 <strong>「提升权限」</strong> 按钮将其提权为辅导员、院级管理员或校级管理员</span>
+            </div>
+            <div class="notice-role-item">
+              <span class="role-tag counselor-tag">辅导员</span>
+              <span>辅导员介于教师与院管之间，由院管或校管指定，拥有所辖班级的数据查看权限和早操发布权限</span>
             </div>
             <div class="notice-role-item">
               <span class="role-tag student-tag">学生</span>
@@ -201,6 +213,7 @@
                   <option value="">全部类型</option>
                   <option value="student" v-if="canManageStudent">学生</option>
                   <option value="teacher">教师</option>
+                  <option value="counselor" v-if="canManageDepartmentAdmin">辅导员</option>
                   <option value="department_admin" v-if="canManageDepartmentAdmin">院级管理员</option>
                   <option value="school_admin" v-if="canManageSchoolAdmin">校级管理员</option>
                 </select>
@@ -444,6 +457,7 @@
                   <option value="">请选择类型</option>
                   <option value="student" v-if="canManageStudent">学生</option>
                   <option value="teacher">教师</option>
+                  <option value="counselor" v-if="canManageDepartmentAdmin">辅导员</option>
                   <option value="department_admin" v-if="canManageDepartmentAdmin">院级管理员</option>
                   <option value="school_admin" v-if="canManageSchoolAdmin">校级管理员</option>
                 </select>
@@ -878,9 +892,9 @@
 
           <div v-if="faceImportResult" class="face-result">
             <div class="face-result-summary" :class="faceImportResult.fail_count > 0 ? 'result-warn' : 'result-ok'">
-              <span>✅ 导入成功 <strong>{{ faceImportResult.success_count }}</strong> 张</span>
-              <span v-if="faceImportResult.skip_count > 0"> &nbsp;⏭ 跳过 <strong>{{ faceImportResult.skip_count }}</strong> 个</span>
-              <span v-if="faceImportResult.fail_count > 0"> &nbsp;❌ 失败 <strong>{{ faceImportResult.fail_count }}</strong> 个</span>
+              <span>导入成功 <strong>{{ faceImportResult.success_count }}</strong> 张</span>
+              <span v-if="faceImportResult.skip_count > 0"> &nbsp;跳过 <strong>{{ faceImportResult.skip_count }}</strong> 个</span>
+              <span v-if="faceImportResult.fail_count > 0"> &nbsp;失败 <strong>{{ faceImportResult.fail_count }}</strong> 个</span>
             </div>
             <div v-if="faceImportResult.failed && faceImportResult.failed.length" class="face-result-errors">
               <p style="font-size:12px;color:#ff4d4f;margin:0 0 4px">失败详情：</p>
@@ -1223,11 +1237,9 @@ export default {
         // 超级管理员可以看到所有用户
         return users
       } else if (isSchoolAdmin()) {
-        // 校级管理员可以看到学生、教师、院级管理员
-        return users.filter(user => ['student', 'teacher', 'department_admin'].includes(user.userType))
+        return users.filter(user => ['student', 'teacher', 'counselor', 'department_admin'].includes(user.userType))
       } else if (isDepartmentAdmin()) {
-        // 院级管理员只能看到学生和教师
-        return users.filter(user => ['student', 'teacher'].includes(user.userType))
+        return users.filter(user => ['student', 'teacher', 'counselor'].includes(user.userType))
       }
       return []
     },
@@ -1481,27 +1493,23 @@ export default {
     },
 
     canPromoteUser(user) {
-      // 超级管理员可以提升校级管理员，校级管理员可以提升院级管理员
-      // 学生不能提权为教师
       if (isSuperAdmin()) {
-        return ['teacher', 'department_admin'].includes(user.userType)
+        return ['teacher', 'counselor', 'department_admin'].includes(user.userType)
       } else if (isSchoolAdmin()) {
-        return user.userType === 'teacher'
+        return ['teacher', 'counselor'].includes(user.userType)
       } else if (isDepartmentAdmin()) {
-        return false // 院级管理员不能提升任何用户的权限
+        return false
       }
       return false
     },
 
     canDemoteUser(user) {
-      // 超级管理员可以降低校级和院级管理员，校级管理员可以降低院级管理员
-      // 教师不能降权为学生
       if (isSuperAdmin()) {
-        return ['school_admin', 'department_admin'].includes(user.userType)
+        return ['school_admin', 'department_admin', 'counselor'].includes(user.userType)
       } else if (isSchoolAdmin()) {
-        return user.userType === 'department_admin'
+        return ['department_admin', 'counselor'].includes(user.userType)
       } else if (isDepartmentAdmin()) {
-        return false // 院级管理员不能降低任何用户的权限
+        return false
       }
       return false
     },
@@ -1509,13 +1517,15 @@ export default {
     getPromoteRole(currentRole) {
       if (isSuperAdmin()) {
         const roleHierarchy = {
-          'teacher': 'department_admin',
+          'teacher': 'counselor',
+          'counselor': 'department_admin',
           'department_admin': 'school_admin'
         }
         return roleHierarchy[currentRole]
       } else if (isSchoolAdmin()) {
         const roleHierarchy = {
-          'teacher': 'department_admin'
+          'teacher': 'counselor',
+          'counselor': 'department_admin'
         }
         return roleHierarchy[currentRole]
       }
@@ -1526,12 +1536,14 @@ export default {
       if (isSuperAdmin()) {
         const roleHierarchy = {
           'school_admin': 'department_admin',
-          'department_admin': 'teacher'
+          'department_admin': 'counselor',
+          'counselor': 'teacher'
         }
         return roleHierarchy[currentRole]
       } else if (isSchoolAdmin()) {
         const roleHierarchy = {
-          'department_admin': 'teacher'
+          'department_admin': 'counselor',
+          'counselor': 'teacher'
         }
         return roleHierarchy[currentRole]
       }
@@ -1872,6 +1884,7 @@ export default {
       const roleMap = {
         'student': '学生',
         'teacher': '教师',
+        'counselor': '辅导员',
         'department_admin': '院级管理员',
         'school_admin': '校级管理员',
         'super_admin': '超级管理员'
@@ -2184,6 +2197,7 @@ export default {
 /* 角色徽章 */
 .role-badge.student   { background: #f6ffed; color: #52c41a; border-color: #b7eb8f; }
 .role-badge.teacher   { background: #fff7e6; color: #fa8c16; border-color: #ffd591; }
+.role-badge.counselor        { background: #e6fffb; color: #08979c; border-color: #87e8de; }
 .role-badge.department_admin { background: #e6f4ff; color: #1677ff; border-color: #91caff; }
 .role-badge.school_admin     { background: #fafafa; color: #8c8c8c; border-color: #d9d9d9; }
 .role-badge.super_admin      { background: #fff2f0; color: #ff4d4f; border-color: #ffccc7; }
@@ -2473,6 +2487,13 @@ export default {
 }
 .action-btn.face-btn:hover { background: #ffd6e7; }
 
+.action-btn.counselor-btn {
+  background: #fffbe6;
+  color: #ad8b00;
+  border: 1px solid #ffe58f;
+}
+.action-btn.counselor-btn:hover { background: #fff1b8; }
+
 /* 统计弹窗 */
 .stat-badge {
   display: inline-block;
@@ -2675,6 +2696,7 @@ export default {
 }
 
 .teacher-tag { background: #fff7e6; color: #d46b08; border-color: #ffd591; }
+.counselor-tag { background: #e6fffb; color: #08979c; border-color: #87e8de; }
 .student-tag { background: #f6ffed; color: #389e0d; border-color: #b7eb8f; }
 
 .import-section { padding: 8px 0; }

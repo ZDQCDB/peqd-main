@@ -340,6 +340,12 @@ export default {
             this.selectedSchool = res.data.school || ''
             this.viewLevel = 'college'
             this.loadColleges()
+          } else if (ut === 'counselor') {
+            this.startLevel = 'class'
+            this.selectedSchool = res.data.school || ''
+            this.selectedCollege = res.data.departmentName || ''
+            this.viewLevel = 'class'
+            this.loadClasses()
           } else if (ut === 'department_admin') {
             this.startLevel = 'class'
             this.selectedSchool = res.data.school || ''

@@ -5,7 +5,7 @@
     </div>
 
     <div class="info-banner">
-      <div class="banner-icon">📚</div>
+      <div class="banner-icon"></div>
       <div class="banner-text">
         <h3>学生端功能说明</h3>
         <p>以下功能主要通过 PE校园 App（Android/iOS）使用，管理端提供数据查看和管理功能。</p>
@@ -14,42 +14,42 @@
 
     <div class="function-grid">
       <div class="function-card">
-        <div class="card-icon">✅</div>
+        <div class="card-icon"></div>
         <h3>签到签退</h3>
         <p>学生通过 App 扫描二维码完成课堂签到和签退，管理员可在教学管理中查看签到记录。</p>
         <button class="btn btn-link" @click="$router.push('/teaching')">查看签到管理 →</button>
       </div>
 
       <div class="function-card">
-        <div class="card-icon">💪</div>
+        <div class="card-icon"></div>
         <h3>训练任务</h3>
         <p>学生在 App 中查看教师发布的训练任务，完成后提交进度。管理员可在训练模块查看完成情况。</p>
         <button class="btn btn-link" @click="$router.push('/training')">查看训练管理 →</button>
       </div>
 
       <div class="function-card">
-        <div class="card-icon">📝</div>
+        <div class="card-icon"></div>
         <h3>课后作业</h3>
         <p>学生通过 App 完成运动打卡（深蹲、仰卧起坐、俯卧撑等），系统自动计数和评分。</p>
         <span class="status-tag">App端功能</span>
       </div>
 
       <div class="function-card">
-        <div class="card-icon">🏃</div>
+        <div class="card-icon"></div>
         <h3>阳光跑</h3>
         <p>学生通过 App 进行 GPS 跑步记录，系统自动计算距离、配速和积分。</p>
         <span class="status-tag">App端功能</span>
       </div>
 
       <div class="function-card">
-        <div class="card-icon">📊</div>
+        <div class="card-icon"></div>
         <h3>体能档案</h3>
         <p>学生的体测数据、运动记录、AI分析报告汇总在体能档案中，教师可查看和分析。</p>
         <button class="btn btn-link" @click="$router.push('/training')">查看学生档案 →</button>
       </div>
 
       <div class="function-card">
-        <div class="card-icon">🏆</div>
+        <div class="card-icon"></div>
         <h3>PE积分</h3>
         <p>学生通过参加活动、早操、阳光跑等获取积分，积分可在商城兑换物品。</p>
         <span class="status-tag">App端功能</span>

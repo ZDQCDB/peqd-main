@@ -8,21 +8,21 @@
     <div class="content">
       <div class="card-grid">
         <div class="action-card" @click="redirectToTice">
-          <div class="card-icon">🏃</div>
+          <div class="card-icon"></div>
           <h3>体创易测平台</h3>
           <p>前往体测数据录入和管理平台</p>
           <span class="card-link">点击跳转 →</span>
         </div>
 
         <div class="action-card" @click="viewStudentProfiles">
-          <div class="card-icon">📊</div>
+          <div class="card-icon"></div>
           <h3>学生体能档案</h3>
           <p>查看学生体测数据和AI分析报告</p>
           <span class="card-link">查看档案 →</span>
         </div>
 
         <div class="action-card" @click="$router.push('/training')">
-          <div class="card-icon">💪</div>
+          <div class="card-icon"></div>
           <h3>训练任务管理</h3>
           <p>基于体测数据发布个性化训练任务</p>
           <span class="card-link">进入管理 →</span>
@@ -30,7 +30,7 @@
       </div>
 
       <div class="info-section">
-        <h3>📋 体测项目说明</h3>
+        <h3>体测项目说明</h3>
         <div class="test-items">
           <div class="test-item"><span class="item-name">肺活量</span><span class="item-unit">ml</span></div>
           <div class="test-item"><span class="item-name">50米跑</span><span class="item-unit">秒</span></div>

@@ -150,9 +150,10 @@ export default {
     const savingDistance = ref(false)
     const sunshineRunDistance = ref(1600)
     const isDeptAdmin = computed(() => permissionManager.hasRole('department_admin'))
+    const isCounselor = computed(() => permissionManager.hasRole('counselor'))
     const isSchoolAdmin = computed(() => permissionManager.hasRole('school_admin'))
     const isSuperAdmin = computed(() => permissionManager.hasRole('super_admin'))
-    const viewMode = ref(permissionManager.hasRole('department_admin') ? 'college' : 'school')
+    const viewMode = ref((permissionManager.hasRole('department_admin') || permissionManager.hasRole('counselor')) ? 'college' : 'school')
     const statsData = ref(null)
     const searchText = ref('')
     const periodFilter = ref('all')
@@ -205,10 +206,10 @@ export default {
       if (!statsData.value) return []
       const { overall, totalStudents } = statsData.value
       return [
-        { label: '总学生数', value: totalStudents || 0, unit: '人', icon: '🎓', accent: '#667eea' },
-        { label: '总跑步次数', value: overall?.totalRuns || 0, unit: '次', icon: '🏃', accent: '#f5576c' },
-        { label: '人均跑步距离', value: toKm(overall?.avgDistancePerStudent || 0), unit: 'km', icon: '📏', accent: '#4facfe' },
-        { label: '人均跑步时长', value: toHours(overall?.avgDurationPerStudent || 0), unit: 'h', icon: '⏱', accent: '#43e97b' }
+        { label: '总学生数', value: totalStudents || 0, unit: '人', icon: '', accent: '#667eea' },
+        { label: '总跑步次数', value: overall?.totalRuns || 0, unit: '次', icon: '', accent: '#f5576c' },
+        { label: '人均跑步距离', value: toKm(overall?.avgDistancePerStudent || 0), unit: 'km', icon: '', accent: '#4facfe' },
+        { label: '人均跑步时长', value: toHours(overall?.avgDurationPerStudent || 0), unit: 'h', icon: '', accent: '#43e97b' }
       ]
     })
 

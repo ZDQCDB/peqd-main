@@ -5,7 +5,7 @@
     </div>
 
     <div class="info-banner">
-      <div class="banner-icon">🏐</div>
+      <div class="banner-icon"></div>
       <div class="banner-text">
         <h3>器材借用管理</h3>
         <p>学生通过 PE校园 App 申请借用体育器材，管理员在此审核和管理借用记录。</p>
@@ -14,19 +14,19 @@
 
     <div class="action-grid">
       <div class="action-card" @click="$router.push('/equipment')">
-        <div class="card-icon">📦</div>
+        <div class="card-icon"></div>
         <h3>器材库管理</h3>
         <p>管理体育器材库存、入库和出库</p>
         <span class="card-link">前往管理 →</span>
       </div>
       <div class="action-card">
-        <div class="card-icon">📋</div>
+        <div class="card-icon"></div>
         <h3>借用申请审核</h3>
         <p>审核学生的器材借用申请</p>
         <span class="card-link">前往审核 →</span>
       </div>
       <div class="action-card">
-        <div class="card-icon">📊</div>
+        <div class="card-icon"></div>
         <h3>借用统计</h3>
         <p>查看器材借用频率和损耗统计</p>
         <span class="status-tag">即将上线</span>

@@ -108,9 +108,9 @@ const totalSubmissions = computed(() => dashboardData.value?.totalSubmissions ??
 const avgCompletionRate = computed(() => dashboardData.value?.avgCompletionRate ?? 0)
 
 const statsCards = computed(() => [
-  { label: '总作业数', value: totalAssignments.value, unit: '个', icon: '📋', bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
-  { label: '总提交数', value: totalSubmissions.value, unit: '次', icon: '✅', bg: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' },
-  { label: '平均完成率', value: avgCompletionRate.value, unit: '%', icon: '📊', bg: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' }
+  { label: '总作业数', value: totalAssignments.value, unit: '个', icon: '', bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
+  { label: '总提交数', value: totalSubmissions.value, unit: '次', icon: '', bg: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' },
+  { label: '平均完成率', value: avgCompletionRate.value, unit: '%', icon: '', bg: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' }
 ])
 
 const tableData = computed(() => dashboardData.value?.details || dashboardData.value?.records || [])
