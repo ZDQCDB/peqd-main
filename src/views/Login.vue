@@ -62,15 +62,21 @@
 
         <form class="login-form" @submit.prevent="handleLogin">
           <div class="form-group">
-            <label class="form-label">用户名</label>
-            <input
-              type="text"
-              class="form-input"
-              v-model="loginForm.username"
-              placeholder="请输入用户名"
-              autocomplete="username"
-              required
-            />
+            <label class="form-label">选择学校</label>
+            <select class="form-input" v-model="loginForm.school" @change="onSchoolChange" required>
+              <option value="">请选择学校</option>
+              <option v-for="s in schools" :key="s" :value="s">{{ s }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">选择用户</label>
+            <select class="form-input" v-model="loginForm.username" @change="onUserChange" :disabled="!loginForm.school || loadingUsers" required>
+              <option value="">{{ loadingUsers ? '加载中...' : '请选择用户' }}</option>
+              <option v-for="u in schoolUsers" :key="u.username" :value="u.username">
+                {{ u.realName }} - {{ userTypeLabel(u.userType) }}
+              </option>
+            </select>
           </div>
 
           <div class="form-group">
@@ -83,38 +89,6 @@
               autocomplete="current-password"
               required
             />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">用户类型</label>
-            <select class="form-input" v-model="loginForm.userType" required>
-              <option value="">请选择用户类型</option>
-              <option value="student">学生</option>
-              <option value="teacher">教师</option>
-              <option value="department_admin">院级管理员</option>
-              <option value="school_admin">校级管理员</option>
-              <option value="super_admin">超级管理员</option>
-            </select>
-          </div>
-
-          <div v-if="showCaptcha" class="form-group">
-            <label class="form-label">验证码</label>
-            <div class="captcha-row">
-              <input
-                type="text"
-                class="form-input"
-                v-model="loginForm.captcha"
-                placeholder="请输入验证码"
-                required
-              />
-              <img
-                :src="captchaImage"
-                @click="refreshCaptcha"
-                class="captcha-img"
-                alt="验证码"
-                title="点击刷新"
-              />
-            </div>
           </div>
 
           <div class="form-row-check">
@@ -148,27 +122,68 @@ export default {
   data() {
     return {
       loginForm: {
+        school: '',
         username: '',
         password: '',
         userType: '',
-        rememberMe: false,
-        captcha: '',
-        captchaToken: ''
+        rememberMe: false
       },
       loading: false,
-      showCaptcha: false,
-      captchaImage: '',
-      loginAttempts: 0
+      loadingUsers: false,
+      schools: [],
+      schoolUsers: []
     }
   },
+  async created() {
+    await this.loadSchools()
+  },
   methods: {
+    userTypeLabel(type) {
+      const map = {
+        teacher: '教师',
+        department_admin: '院级管理员',
+        school_admin: '校级管理员',
+        super_admin: '超级管理员',
+        counselor: '辅导员'
+      }
+      return map[type] || type
+    },
+    async loadSchools() {
+      try {
+        const result = await authService.getSchools()
+        if (result.code === 200) {
+          this.schools = result.data
+        }
+      } catch (e) {
+        console.error('加载学校列表失败:', e)
+      }
+    },
+    async onSchoolChange() {
+      this.loginForm.username = ''
+      this.loginForm.userType = ''
+      this.schoolUsers = []
+      if (!this.loginForm.school) return
+      this.loadingUsers = true
+      try {
+        const result = await authService.getUsersBySchool(this.loginForm.school)
+        if (result.code === 200) {
+          this.schoolUsers = result.data
+        }
+      } catch (e) {
+        console.error('加载用户列表失败:', e)
+      } finally {
+        this.loadingUsers = false
+      }
+    },
+    onUserChange() {
+      const selected = this.schoolUsers.find(u => u.username === this.loginForm.username)
+      if (selected) {
+        this.loginForm.userType = selected.userType
+      }
+    },
     async handleLogin() {
       if (!this.loginForm.username || !this.loginForm.password || !this.loginForm.userType) {
         alert('请填写所有必填项')
-        return
-      }
-      if (this.showCaptcha && !this.loginForm.captcha) {
-        alert('请输入验证码')
         return
       }
       this.loading = true
@@ -179,47 +194,19 @@ export default {
           userType: this.loginForm.userType,
           rememberMe: this.loginForm.rememberMe
         }
-        if (this.showCaptcha) {
-          loginData.captcha = this.loginForm.captcha
-          loginData.captchaToken = this.loginForm.captchaToken
-        }
         const result = await authService.login(loginData)
         if (result.code === 200) {
           alert('登录成功！')
           this.$router.push('/dashboard')
         } else {
           alert(result.message)
-          this.handleLoginFailure()
         }
       } catch (error) {
         console.error('登录失败:', error)
         alert('登录失败，请重试')
-        this.handleLoginFailure()
       } finally {
         this.loading = false
       }
-    },
-    handleLoginFailure() {
-      this.loginAttempts++
-      if (this.loginAttempts >= 3) {
-        this.showCaptcha = true
-        this.getCaptcha()
-      }
-    },
-    async getCaptcha() {
-      try {
-        const response = await fetch('/security/captcha')
-        const result = await response.json()
-        if (result.code === 200) {
-          this.captchaImage = result.data.captchaImage
-          this.loginForm.captchaToken = result.data.captchaToken
-        }
-      } catch (error) {
-        console.error('获取验证码失败:', error)
-      }
-    },
-    refreshCaptcha() {
-      this.getCaptcha()
     }
   }
 }
@@ -371,30 +358,6 @@ export default {
 
 .login-form .form-input {
   height: 40px;
-}
-
-.captcha-row {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-.captcha-row .form-input {
-  flex: 1;
-}
-
-.captcha-img {
-  width: 110px;
-  height: 40px;
-  border: 1px solid #d9d9d9;
-  border-radius: 4px;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: border-color 0.15s;
-}
-
-.captcha-img:hover {
-  border-color: #1677ff;
 }
 
 .form-row-check {

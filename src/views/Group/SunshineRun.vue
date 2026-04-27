@@ -4,6 +4,12 @@
     <div class="dashboard-header">
       <h1>校园阳光跑数据大屏</h1>
       <div class="header-actions">
+        <template v-if="isSchoolAdmin || isSuperAdmin">
+          <el-input-number v-model="sunshineRunDistance" :min="500" :max="10000" :step="100" size="small" style="width:140px;margin-right:4px" />
+          <span style="font-size:12px;color:#999;margin-right:8px">米</span>
+          <el-button size="small" type="warning" @click="saveSunshineDistance" :loading="savingDistance">设置达标距离</el-button>
+          <el-divider direction="vertical" />
+        </template>
         <el-radio-group v-model="periodFilter" size="small" @change="refreshData" style="margin-right:8px">
           <el-radio-button label="all">全部</el-radio-button>
           <el-radio-button label="today">今天</el-radio-button>
@@ -141,12 +147,41 @@ export default {
   setup() {
     const loading = ref(false)
     const exporting = ref(false)
+    const savingDistance = ref(false)
+    const sunshineRunDistance = ref(1600)
     const isDeptAdmin = computed(() => permissionManager.hasRole('department_admin'))
+    const isSchoolAdmin = computed(() => permissionManager.hasRole('school_admin'))
+    const isSuperAdmin = computed(() => permissionManager.hasRole('super_admin'))
     const viewMode = ref(permissionManager.hasRole('department_admin') ? 'college' : 'school')
     const statsData = ref(null)
     const searchText = ref('')
     const periodFilter = ref('all')
     const exportDisabled = computed(() => periodFilter.value === 'all' || periodFilter.value === 'four_months')
+
+    const loadSunshineDistance = async () => {
+      try {
+        const userStr = localStorage.getItem('userInfo')
+        const school = userStr ? JSON.parse(userStr).school : null
+        if (!school) return
+        const res = await api.schoolSettings.get(school)
+        if (res.code === 200 && res.data) {
+          sunshineRunDistance.value = res.data.sunshineRunDistance || 1600
+        }
+      } catch (e) { /* use default */ }
+    }
+
+    const saveSunshineDistance = async () => {
+      savingDistance.value = true
+      try {
+        const school = JSON.parse(localStorage.getItem('userInfo') || '{}').school
+        await api.schoolSettings.updateSunshineRunDistance({ school, distance: sunshineRunDistance.value })
+        alert('达标距离设置成功')
+      } catch (e) {
+        alert('设置失败')
+      } finally {
+        savingDistance.value = false
+      }
+    }
 
     const toKm = (meters) => {
       if (meters == null || meters === 0) return '0'
@@ -367,6 +402,7 @@ export default {
 
     onMounted(() => {
       fetchData()
+      loadSunshineDistance()
       window.addEventListener('resize', handleResize)
     })
 
@@ -377,9 +413,9 @@ export default {
     })
 
     return {
-      loading, exporting, exportDisabled, isDeptAdmin, viewMode, periodFilter, topStats, rankings, filteredTableData, searchText,
-      barChart, radarChart,
-      handleViewModeChange, refreshData, exportExcel, toKm, toHours,
+      loading, exporting, exportDisabled, isDeptAdmin, isSchoolAdmin, isSuperAdmin, viewMode, periodFilter, topStats, rankings, filteredTableData, searchText,
+      barChart, radarChart, sunshineRunDistance, savingDistance,
+      handleViewModeChange, refreshData, exportExcel, toKm, toHours, saveSunshineDistance,
       getRankClass, getRankColor, getProgressWidth, selectRanking, tableRowClassName,
       Refresh, Loading
     }

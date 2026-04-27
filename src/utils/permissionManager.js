@@ -99,6 +99,10 @@ class PermissionManager {
   isSchoolAdmin() {
     return this.userRole === 'school_admin'
   }
+
+  isCounselor() {
+    return this.userRole === 'counselor'
+  }
 }
 
 // 创建全局实例
@@ -113,6 +117,7 @@ export const isStudent = () => permissionManager.isStudent()
 export const isTeacher = () => permissionManager.isTeacher()
 export const isDepartmentAdmin = () => permissionManager.isDepartmentAdmin()
 export const isSchoolAdmin = () => permissionManager.isSchoolAdmin()
+export const isCounselor = () => permissionManager.isCounselor()
 export const getCurrentRole = () => permissionManager.getCurrentRole()
 
 export default permissionManager 

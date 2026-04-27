@@ -49,6 +49,12 @@
       </div>
     </header>
 
+    <!-- 角色切换提示条 -->
+    <div v-if="isImpersonating" class="impersonate-banner">
+      <span>正在以 <strong>{{ impersonatingName }}</strong> 的身份操作</span>
+      <button class="impersonate-exit-btn" @click="exitImpersonation">退出切换</button>
+    </div>
+
     <!-- 主要内容区域 -->
     <main class="main-content">
       <div class="content-container">
@@ -337,7 +343,9 @@ export default {
       isSuperAdminStatus: false,
       isSchoolAdminStatus: false,
       localUserType: '',
-      showDebugPanel: false
+      showDebugPanel: false,
+      isImpersonating: localStorage.getItem('isImpersonating') === 'true',
+      impersonatingName: localStorage.getItem('impersonatingName') || ''
     }
   },
   computed: {
@@ -352,7 +360,8 @@ export default {
         'super_admin': '超级管理员',
         'school_admin': '校级管理员',
         'department_admin': '院级管理员',
-        'teacher': '老师'
+        'teacher': '老师',
+        'counselor': '辅导员'
       }
       return roleMap[this.userRole] || ''
     }
@@ -371,6 +380,12 @@ export default {
     await this.refreshPermissionStatus()
   },
   methods: {
+    exitImpersonation() {
+      authService.exitImpersonation()
+      this.isImpersonating = false
+      this.$router.push('/dashboard')
+      window.location.reload()
+    },
     navigateTo(path) {
       this.$router.push(path)
     },
@@ -865,5 +880,29 @@ export default {
   .hero-stats { gap: 16px; }
   .debug-panel { bottom: 16px; right: 16px; left: 16px; max-width: none; }
   .debug-toggle { bottom: 16px; right: 16px; }
+}
+
+.impersonate-banner {
+  background: #722ed1;
+  color: #fff;
+  text-align: center;
+  padding: 8px 16px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 1001;
+}
+.impersonate-exit-btn {
+  background: #fff;
+  color: #722ed1;
+  border: none;
+  padding: 4px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
 }
 </style> 

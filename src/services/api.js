@@ -490,6 +490,49 @@ export const api = {
     exportSunshineRun: (params) => apiClient.get('/pe/admin/statistics/sunshine-run/export', { params, responseType: 'blob', timeout: 60000 })
   },
 
+  schoolSettings: {
+    get: (school) => apiClient.get('/pe/school-settings', { params: { school } }),
+    updateSunshineRunDistance: (data) => apiClient.put('/pe/school-settings/sunshine-run-distance', data),
+  },
+
+  peSchedules: {
+    import: (file, semester) => {
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('semester', semester)
+      return apiClient.post('/pe/schedules/import', formData, { headers: { 'Content-Type': 'multipart/form-data' }, timeout: 60000 })
+    },
+    list: (params) => apiClient.get('/pe/schedules', { params }),
+    delete: (id) => apiClient.delete(`/pe/schedules/${id}`)
+  },
+
+  tempClasses: {
+    list: (params) => apiClient.get('/pe/temp-classes', { params }),
+    getEnrollments: (classId) => apiClient.get(`/pe/temp-classes/${classId}/enrollments`)
+  },
+
+  classSelectionWindow: {
+    get: (params) => apiClient.get('/pe/class-selection/window', { params }),
+    create: (data) => apiClient.post('/pe/class-selection/window', data),
+    update: (id, data) => apiClient.put(`/pe/class-selection/window/${id}`, data)
+  },
+
+  homeworkAssignments: {
+    create: (data) => apiClient.post('/pe/homework-assignments', data),
+    list: (params) => apiClient.get('/pe/homework-assignments', { params }),
+    getCompletions: (id) => apiClient.get(`/pe/homework-assignments/${id}/completions`),
+    update: (id, data) => apiClient.put(`/pe/homework-assignments/${id}`, data),
+    delete: (id) => apiClient.delete(`/pe/homework-assignments/${id}`),
+    getCompletionDashboard: (params) => apiClient.get('/pe/homework-assignments/completion-dashboard', { params })
+  },
+
+  counselor: {
+    assignClasses: (data) => apiClient.post('/counselor/assign-classes', data),
+    getMyClasses: () => apiClient.get('/counselor/my-classes'),
+    getClassesByCounselor: (id) => apiClient.get(`/counselor/${id}/classes`),
+    listCounselors: (params) => apiClient.get('/counselor/list', { params })
+  },
+
   // 训练管理API
   training: {
     // 体能档案

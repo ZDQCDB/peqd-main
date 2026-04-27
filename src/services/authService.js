@@ -407,6 +407,91 @@ class AuthService {
 
 
 
+  // 获取学校列表
+  async getSchools() {
+    try {
+      const response = await apiClient.get('/auth/schools')
+      return response.data
+    } catch (error) {
+      console.error('获取学校列表失败:', error)
+      return { code: error.response?.status || 500, message: '获取学校列表失败', data: [] }
+    }
+  }
+
+  // 根据学校获取用户列表
+  async getUsersBySchool(school) {
+    try {
+      const response = await apiClient.get('/auth/users-by-school', { params: { school } })
+      return response.data
+    } catch (error) {
+      console.error('获取用户列表失败:', error)
+      return { code: error.response?.status || 500, message: '获取用户列表失败', data: [] }
+    }
+  }
+
+  // 超管角色切换
+  async impersonate(targetUserId) {
+    try {
+      const response = await apiClient.post('/auth/impersonate', { targetUserId })
+      if (response.data.code === 200) {
+        const { user, token, expiresAt } = response.data.data
+        const originalToken = localStorage.getItem('userToken')
+        const originalUserType = localStorage.getItem('userType')
+        const originalUsername = localStorage.getItem('username')
+        const originalUserId = localStorage.getItem('userId')
+
+        localStorage.setItem('originalToken', originalToken)
+        localStorage.setItem('originalUserType', originalUserType)
+        localStorage.setItem('originalUsername', originalUsername)
+        localStorage.setItem('originalUserId', originalUserId)
+
+        localStorage.setItem('userToken', token)
+        localStorage.setItem('userType', user.userType)
+        localStorage.setItem('username', user.username)
+        localStorage.setItem('userId', user.id)
+        localStorage.setItem('tokenExpires', expiresAt)
+        localStorage.setItem('isImpersonating', 'true')
+        localStorage.setItem('impersonatingName', user.realName)
+
+        this.currentUser = user
+        permissionManager.init(user.userType)
+      }
+      return response.data
+    } catch (error) {
+      console.error('角色切换失败:', error)
+      return { code: error.response?.status || 500, message: '角色切换失败', data: null }
+    }
+  }
+
+  // 退出角色切换
+  exitImpersonation() {
+    const originalToken = localStorage.getItem('originalToken')
+    const originalUserType = localStorage.getItem('originalUserType')
+    const originalUsername = localStorage.getItem('originalUsername')
+    const originalUserId = localStorage.getItem('originalUserId')
+
+    if (originalToken) {
+      localStorage.setItem('userToken', originalToken)
+      localStorage.setItem('userType', originalUserType)
+      localStorage.setItem('username', originalUsername)
+      localStorage.setItem('userId', originalUserId)
+
+      localStorage.removeItem('originalToken')
+      localStorage.removeItem('originalUserType')
+      localStorage.removeItem('originalUsername')
+      localStorage.removeItem('originalUserId')
+      localStorage.removeItem('isImpersonating')
+      localStorage.removeItem('impersonatingName')
+
+      this.currentUser = {
+        id: originalUserId,
+        username: originalUsername,
+        userType: originalUserType
+      }
+      permissionManager.init(originalUserType)
+    }
+  }
+
   // 刷新Token
   async refreshToken() {
     try {

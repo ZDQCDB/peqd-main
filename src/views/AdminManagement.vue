@@ -347,6 +347,14 @@
                   >
                     启用
                   </button>
+                  <button
+                    v-if="isSuperAdminRole && (user.userType === 'teacher' || user.userType === 'department_admin' || user.userType === 'school_admin' || user.userType === 'counselor')"
+                    class="btn btn-small"
+                    style="background:#722ed1;color:#fff"
+                    @click="impersonateUser(user)"
+                  >
+                    以此角色进入
+                  </button>
                   <button 
                     class="btn btn-warning btn-small"
                     @click="showResetPasswordModal(user)"
@@ -1142,6 +1150,21 @@ export default {
   },
 
   methods: {
+    async impersonateUser(user) {
+      if (!confirm(`确定要以 ${user.realName}（${this.getRoleText(user.userType)}）的身份进入平台吗？`)) return
+      try {
+        const result = await authService.impersonate(user.id)
+        if (result.code === 200) {
+          alert(`已切换为 ${user.realName} 的身份`)
+          this.$router.push('/dashboard')
+          window.location.reload()
+        } else {
+          alert(result.message || '切换失败')
+        }
+      } catch (e) {
+        alert('角色切换失败')
+      }
+    },
     async checkPermissions() {
       const user = await authService.getCurrentUser()
       if (!user) {

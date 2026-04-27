@@ -254,7 +254,8 @@ import api from '@/services/api'
 import permissionManager, {
   isDepartmentAdmin,
   isSchoolAdmin,
-  isSuperAdmin
+  isSuperAdmin,
+  isCounselor
 } from '@/utils/permissionManager'
 
 export default {
@@ -314,7 +315,7 @@ export default {
       return isSchoolAdmin() || isSuperAdmin()
     },
     isDeptAdmin() {
-      return isDepartmentAdmin()
+      return isDepartmentAdmin() || isCounselor()
     },
     pageHeaderTitle() {
       return this.isSchoolLevel ? '早操出勤统计' : '早操管理'
