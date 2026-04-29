@@ -260,17 +260,18 @@ label {
   font-size: 13px;
 }
 
+/* 勿作用于 Element Plus 内部控件，否则会与组件自带边框叠加呈「双框」 */
 .form-input,
-input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="tel"],
-input[type="number"],
-input[type="date"],
-input[type="search"],
-input[type="url"],
-select,
-textarea {
+input[type="text"]:not(.el-input__inner):not(.el-range-input),
+input[type="email"]:not(.el-input__inner),
+input[type="password"]:not(.el-input__inner),
+input[type="tel"]:not(.el-input__inner),
+input[type="number"]:not(.el-input__inner),
+input[type="date"]:not(.el-input__inner),
+input[type="search"]:not(.el-input__inner),
+input[type="url"]:not(.el-input__inner),
+select:not(.el-select__input):not(.el-input__inner),
+textarea:not(.el-textarea__inner) {
   width: 100%;
   padding: 6px 11px;
   border: 1px solid var(--border-color);
@@ -285,40 +286,54 @@ textarea {
   height: 32px;
 }
 
-textarea {
+textarea:not(.el-textarea__inner) {
   height: auto;
   min-height: 60px;
   resize: vertical;
 }
 
-select {
+select:not(.el-select__input) {
   appearance: auto;
 }
 
-input:hover,
-select:hover,
-textarea:hover {
+input[type="text"]:not(.el-input__inner):hover,
+input[type="email"]:not(.el-input__inner):hover,
+input[type="password"]:not(.el-input__inner):hover,
+input[type="tel"]:not(.el-input__inner):hover,
+input[type="number"]:not(.el-input__inner):hover,
+input[type="date"]:not(.el-input__inner):hover,
+input[type="search"]:not(.el-input__inner):hover,
+input[type="url"]:not(.el-input__inner):hover,
+select:not(.el-select__input):hover,
+textarea:not(.el-textarea__inner):hover {
   border-color: var(--primary-hover);
 }
 
-input:focus,
-select:focus,
-textarea:focus {
+input[type="text"]:not(.el-input__inner):focus,
+input[type="email"]:not(.el-input__inner):focus,
+input[type="password"]:not(.el-input__inner):focus,
+input[type="tel"]:not(.el-input__inner):focus,
+input[type="number"]:not(.el-input__inner):focus,
+input[type="date"]:not(.el-input__inner):focus,
+input[type="search"]:not(.el-input__inner):focus,
+input[type="url"]:not(.el-input__inner):focus,
+select:not(.el-select__input):focus,
+textarea:not(.el-textarea__inner):focus {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.1);
 }
 
-input:disabled,
+input:disabled:not(.el-input__inner),
 select:disabled,
-textarea:disabled {
+textarea:disabled:not(.el-textarea__inner) {
   background-color: var(--bg-tertiary);
   color: var(--text-disabled);
   cursor: not-allowed;
   border-color: var(--border-color);
 }
 
-input::placeholder,
-textarea::placeholder {
+input:not(.el-input__inner)::placeholder,
+textarea:not(.el-textarea__inner)::placeholder {
   color: var(--text-tertiary);
 }
 

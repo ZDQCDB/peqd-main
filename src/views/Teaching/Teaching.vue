@@ -12,18 +12,6 @@
           <h3>教师端</h3>
           <p>教学周历、教学教案、签到签退、演示视频、课后作业</p>
         </div>
-        
-        <div class="nav-card" @click="$router.push('/teaching/student')">
-          <div class="nav-icon">学</div>
-          <h3>学生端</h3>
-          <p>签到签退、学习内容、视频学习、作业上交</p>
-        </div>
-        
-        <div class="nav-card" @click="$router.push('/teaching/admin')">
-          <div class="nav-icon">管</div>
-          <h3>管理员端</h3>
-          <p>教师签到管理、课程监督、签到统计、拍照记录查看</p>
-        </div>
 
         <div class="nav-card" v-if="showScheduleCards" @click="$router.push('/teaching/schedule-import')">
           <div class="nav-icon">表</div>

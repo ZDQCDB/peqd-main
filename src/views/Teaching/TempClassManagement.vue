@@ -2,7 +2,6 @@
   <div class="temp-class-management">
     <div class="page-header">
       <div class="header-left">
-        <el-button @click="$router.push('/teaching')">← 返回教学模块</el-button>
         <h1>临时班级管理</h1>
       </div>
       <div class="header-right">

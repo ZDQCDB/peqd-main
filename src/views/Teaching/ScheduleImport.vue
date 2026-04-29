@@ -2,7 +2,6 @@
   <div class="schedule-import">
     <div class="page-header">
       <div class="header-left">
-        <el-button @click="$router.push('/teaching')">← 返回教学模块</el-button>
         <h1>课表导入</h1>
       </div>
     </div>
@@ -22,18 +21,27 @@
           />
         </el-form-item>
         <el-form-item label="Excel 文件">
-          <el-upload
-            ref="uploadRef"
-            :auto-upload="false"
-            :limit="1"
-            :on-change="handleFileChange"
-            :on-remove="handleFileRemove"
-            accept=".xlsx,.xls"
-          >
-            <template #trigger>
-              <el-button type="primary" plain>选择文件</el-button>
-            </template>
-          </el-upload>
+          <div class="upload-row">
+            <el-upload
+              ref="uploadRef"
+              :auto-upload="false"
+              :limit="1"
+              :on-change="handleFileChange"
+              :on-remove="handleFileRemove"
+              accept=".xlsx,.xls"
+            >
+              <template #trigger>
+                <el-button type="primary" plain>选择文件</el-button>
+              </template>
+            </el-upload>
+            <a
+              class="template-link"
+              href="/assets/templates/课表导入模板.xlsx"
+              download="课表导入模板.xlsx"
+            >
+              下载导入模板
+            </a>
+          </div>
         </el-form-item>
         <el-form-item>
           <el-button
@@ -252,6 +260,23 @@ export default {
   align-items: flex-start;
   flex-wrap: wrap;
   gap: 12px;
+}
+
+.upload-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.template-link {
+  font-size: 14px;
+  color: var(--el-color-primary);
+  text-decoration: none;
+}
+
+.template-link:hover {
+  text-decoration: underline;
 }
 
 .table-section {

@@ -3,7 +3,6 @@
     <!-- 顶部标题栏 -->
     <div class="dashboard-header">
       <div class="header-left">
-        <el-button :icon="ArrowLeft" text @click="$router.back()">返回</el-button>
         <h1>课后作业数据大屏</h1>
         <el-tag v-if="isSchoolAdminRole" type="warning" size="small" effect="plain">校级管理员</el-tag>
         <el-tag v-else-if="isDeptAdminRole" type="success" size="small" effect="plain">院级管理员</el-tag>
@@ -188,7 +187,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
-import { ArrowLeft, Refresh, Loading } from '@element-plus/icons-vue'
+import { Refresh, Loading } from '@element-plus/icons-vue'
 import * as echarts from 'echarts'
 import api from '@/services/api'
 import permissionManager from '@/utils/permissionManager'

@@ -8,8 +8,6 @@ import AdminManagement from '@/views/AdminManagement.vue'
 import SchoolAccountManagement from '@/views/SchoolAccountManagement.vue'
 
 import TeacherTeaching from '@/views/Teaching/TeacherTeaching.vue'
-import StudentTeaching from '@/views/Teaching/StudentTeaching.vue'
-import AdminTeaching from '@/views/Teaching/AdminTeaching.vue'
 import CourseDetail from '@/views/Teaching/CourseDetail.vue'
 import ScheduleImport from '@/views/Teaching/ScheduleImport.vue'
 import ClassSelectionWindow from '@/views/Teaching/ClassSelectionWindow.vue'
@@ -76,14 +74,13 @@ const routes = [
       { path: 'profile', name: 'UserProfile', component: UserProfile },
 
       // Teaching
+      { path: 'teaching/student', redirect: '/teaching/teacher' },
+      {
+        path: 'teaching/admin', redirect: '/teaching/teacher',
+      },
       {
         path: 'teaching/teacher', name: 'TeacherTeaching', component: TeacherTeaching,
         meta: { roles: ['teacher', 'counselor', 'department_admin', 'school_admin', 'super_admin'] }
-      },
-      { path: 'teaching/student', name: 'StudentTeaching', component: StudentTeaching },
-      {
-        path: 'teaching/admin', name: 'AdminTeaching', component: AdminTeaching,
-        meta: { roles: ['super_admin', 'school_admin', 'department_admin', 'counselor'] }
       },
       {
         path: 'teaching/course/:id', name: 'CourseDetail', component: CourseDetail,

@@ -1,8 +1,5 @@
 <template>
   <div class="completion-dashboard">
-    <el-button :icon="ArrowLeft" text @click="$router.back()" class="back-btn">返回</el-button>
-
-    <!-- Filter bar -->
     <div class="filter-bar">
       <h1 class="page-title">课后作业完成情况</h1>
       <div class="filter-controls">
@@ -72,7 +69,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
-import { ArrowLeft, Refresh } from '@element-plus/icons-vue'
+import { Refresh } from '@element-plus/icons-vue'
 import * as echarts from 'echarts'
 import api from '@/services/api'
 import permissionManager from '@/utils/permissionManager'
@@ -203,10 +200,6 @@ onUnmounted(() => {
   padding: 20px;
   background: #f5f7fa;
   min-height: 100vh;
-}
-
-.back-btn {
-  margin-bottom: 12px;
 }
 
 /* Filter bar */

@@ -122,8 +122,6 @@ export default {
         {
           key: 'teaching', label: '教学管理', roles: ['teacher', 'school_admin', 'super_admin'], children: [
             { key: 't-teacher', label: '教师端', path: '/teaching/teacher', roles: ['teacher', 'super_admin'] },
-            { key: 't-student', label: '学生端', path: '/teaching/student', roles: ['teacher', 'super_admin'] },
-            { key: 't-admin', label: '教学管理端', path: '/teaching/admin', roles: ['teacher', 'super_admin'] },
             { key: 't-schedule', label: '课表导入', path: '/teaching/schedule-import', roles: SCHOOL_UP },
             { key: 't-window', label: '选课窗口', path: '/teaching/class-selection-window', roles: SCHOOL_UP },
             { key: 't-temp', label: '临时班级', path: '/teaching/temp-class-management', roles: [...SCHOOL_UP, 'teacher'] },

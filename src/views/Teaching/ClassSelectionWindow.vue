@@ -2,7 +2,6 @@
   <div class="class-selection-window">
     <div class="page-header">
       <div class="header-left">
-        <el-button @click="$router.push('/teaching')">← 返回教学模块</el-button>
         <h1>选课时间窗口管理</h1>
       </div>
     </div>

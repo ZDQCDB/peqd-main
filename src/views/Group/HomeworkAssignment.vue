@@ -1,7 +1,5 @@
 <template>
   <div class="homework-assignment">
-    <el-button :icon="ArrowLeft" text @click="$router.back()" class="back-btn">返回</el-button>
-
     <!-- 发布课后作业 -->
     <el-card class="publish-card" shadow="hover">
       <template #header>
@@ -196,7 +194,7 @@
 </template>
 
 <script>
-import { ArrowLeft, EditPen, List, Refresh, Check } from '@element-plus/icons-vue'
+import { EditPen, List, Refresh, Check } from '@element-plus/icons-vue'
 import api from '@/services/api'
 
 const EXERCISE_TYPES = [
@@ -216,7 +214,6 @@ export default {
   components: {},
   data() {
     return {
-      ArrowLeft,
       EditPen,
       List,
       Refresh,
@@ -395,10 +392,6 @@ export default {
   padding: 20px;
   background: #f5f7fa;
   min-height: 100vh;
-}
-
-.back-btn {
-  margin-bottom: 16px;
 }
 
 /* Cards */

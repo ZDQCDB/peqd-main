@@ -2,9 +2,6 @@
   <div class="course-detail">
     <div class="page-header">
       <div class="header-left">
-        <button class="btn btn-secondary" @click="$router.push('/teaching/admin')">
-          ← 返回课程列表
-        </button>
         <h1>课程详情</h1>
       </div>
       <div class="header-right">

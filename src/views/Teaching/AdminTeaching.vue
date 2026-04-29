@@ -2,9 +2,6 @@
   <div class="admin-teaching">
     <div class="page-header">
       <div class="header-left">
-        <button class="btn btn-secondary" @click="$router.push('/teaching')">
-          ← 返回教学模块
-        </button>
         <h1>教师签到管理</h1>
       </div>
       <div class="header-right">
