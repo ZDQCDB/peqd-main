@@ -100,9 +100,31 @@ const school = computed(() => {
   } catch { return '' }
 })
 
-const totalAssignments = computed(() => dashboardData.value?.totalAssignments ?? 0)
-const totalSubmissions = computed(() => dashboardData.value?.totalSubmissions ?? 0)
-const avgCompletionRate = computed(() => dashboardData.value?.avgCompletionRate ?? 0)
+const dashboardRows = computed(() => {
+  if (Array.isArray(dashboardData.value)) return dashboardData.value
+  return dashboardData.value?.details || dashboardData.value?.records || []
+})
+
+const totalAssignments = computed(() => {
+  if (Array.isArray(dashboardData.value)) return dashboardRows.value.length
+  return dashboardData.value?.totalAssignments ?? 0
+})
+
+const totalSubmissions = computed(() => {
+  if (Array.isArray(dashboardData.value)) {
+    return dashboardRows.value.reduce((sum, row) => sum + (Number(row.submittedCount) || 0), 0)
+  }
+  return dashboardData.value?.totalSubmissions ?? 0
+})
+
+const avgCompletionRate = computed(() => {
+  if (Array.isArray(dashboardData.value)) {
+    if (!dashboardRows.value.length) return 0
+    const total = dashboardRows.value.reduce((sum, row) => sum + (Number(row.completionRate) || 0), 0)
+    return Math.round((total / dashboardRows.value.length) * 100) / 100
+  }
+  return dashboardData.value?.avgCompletionRate ?? 0
+})
 
 const statsCards = computed(() => [
   { label: '总作业数', value: totalAssignments.value, unit: '个', icon: '', bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
@@ -110,7 +132,7 @@ const statsCards = computed(() => [
   { label: '平均完成率', value: avgCompletionRate.value, unit: '%', icon: '', bg: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' }
 ])
 
-const tableData = computed(() => dashboardData.value?.details || dashboardData.value?.records || [])
+const tableData = computed(() => dashboardRows.value)
 
 const filteredTableData = computed(() => {
   if (!searchText.value) return tableData.value

@@ -118,10 +118,25 @@ export default {
     clearInterval(this.remainingTimer)
   },
   methods: {
+    getCurrentSchool() {
+      try {
+        const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}')
+        return userInfo.school || userInfo.schoolName || ''
+      } catch {
+        return ''
+      }
+    },
+
     async loadCurrentWindow() {
       try {
         this.loadingStatus = true
-        const res = await api.classSelectionWindow.get()
+        const params = {
+          school: this.getCurrentSchool()
+        }
+        if (this.form.semester) {
+          params.semester = this.form.semester
+        }
+        const res = await api.classSelectionWindow.get(params)
         const data = res.data || res
         if (data && data.id) {
           this.currentWindow = data
@@ -179,7 +194,10 @@ export default {
 
       try {
         this.saving = true
-        const payload = { ...this.form }
+        const payload = {
+          ...this.form,
+          school: this.getCurrentSchool()
+        }
         if (this.currentWindow && this.currentWindow.id) {
           await api.classSelectionWindow.update(this.currentWindow.id, payload)
           ElMessage.success('更新成功')

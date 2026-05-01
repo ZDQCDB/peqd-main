@@ -21,14 +21,13 @@
             <el-select
               v-model="form.tempClassId"
               placeholder="请选择临时班级"
-              filterable
               :loading="tempClassLoading"
               style="width: 100%"
             >
               <el-option
                 v-for="cls in tempClasses"
                 :key="cls.id"
-                :label="cls.name"
+                :label="cls.className"
                 :value="cls.id"
               />
             </el-select>
@@ -335,11 +334,11 @@ export default {
       try {
         const res = await api.homeworkAssignments.getCompletions(row.id)
         const data = res?.data || res || {}
-        this.completions = data.records || data.completions || []
+        this.completions = Array.isArray(data) ? data : (data.records || data.completions || [])
         this.completionStats = {
-          totalStudents: data.totalStudents ?? this.completions.length,
-          completedCount: data.completedCount ?? this.completions.filter(c => c.completed).length,
-          completionRate: data.completionRate ?? (
+          totalStudents: (Array.isArray(data) ? null : data.totalStudents) ?? this.completions.length,
+          completedCount: (Array.isArray(data) ? null : data.completedCount) ?? this.completions.filter(c => c.completed).length,
+          completionRate: (Array.isArray(data) ? null : data.completionRate) ?? (
             this.completions.length
               ? Math.round(this.completions.filter(c => c.completed).length / this.completions.length * 100)
               : 0

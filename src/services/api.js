@@ -496,12 +496,8 @@ export const api = {
   },
 
   peSchedules: {
-    import: (file, semester) => {
-      const formData = new FormData()
-      formData.append('file', file)
-      formData.append('semester', semester)
-      return apiClient.post('/pe/schedules/import', formData, { headers: { 'Content-Type': 'multipart/form-data' }, timeout: 60000 })
-    },
+    preCheck: (teacherNames) => apiClient.post('/pe/schedules/pre-check-json', { teacherNames }),
+    import: (rows, semester) => apiClient.post('/pe/schedules/import-json', { rows, semester }),
     list: (params) => apiClient.get('/pe/schedules', { params }),
     delete: (id) => apiClient.delete(`/pe/schedules/${id}`)
   },

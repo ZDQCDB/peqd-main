@@ -84,6 +84,7 @@ class AuthService {
         localStorage.setItem('username', user.username)
         localStorage.setItem('userId', user.id)
         localStorage.setItem('tokenExpires', expiresAt)
+        localStorage.setItem('userInfo', JSON.stringify(user))
         
         // 设置当前用户
         this.currentUser = user
@@ -137,6 +138,7 @@ class AuthService {
       localStorage.removeItem('username')
       localStorage.removeItem('userId')
       localStorage.removeItem('tokenExpires')
+      localStorage.removeItem('userInfo')
       
       // 清除当前用户
       this.currentUser = null
@@ -208,6 +210,7 @@ class AuthService {
       const response = await apiClient.get('/user/profile')
       if (response.data.code === 200) {
         this.currentUser = response.data.data
+        localStorage.setItem('userInfo', JSON.stringify(this.currentUser))
         
         // 初始化权限管理器
         permissionManager.init(this.currentUser.userType)
@@ -450,6 +453,7 @@ class AuthService {
         localStorage.setItem('username', user.username)
         localStorage.setItem('userId', user.id)
         localStorage.setItem('tokenExpires', expiresAt)
+        localStorage.setItem('userInfo', JSON.stringify(user))
         localStorage.setItem('isImpersonating', 'true')
         localStorage.setItem('impersonatingName', user.realName)
 
@@ -482,6 +486,7 @@ class AuthService {
       localStorage.removeItem('originalUserId')
       localStorage.removeItem('isImpersonating')
       localStorage.removeItem('impersonatingName')
+      localStorage.removeItem('userInfo')
 
       this.currentUser = {
         id: originalUserId,
