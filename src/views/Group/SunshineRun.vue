@@ -5,9 +5,7 @@
       <h1>校园阳光跑数据大屏</h1>
       <div class="header-actions">
         <template v-if="isSchoolAdmin || isSuperAdmin">
-          <el-input-number v-model="sunshineRunDistance" :min="500" :max="10000" :step="100" size="small" style="width:140px;margin-right:4px" />
-          <span style="font-size:12px;color:#999;margin-right:8px">米</span>
-          <el-button size="small" type="warning" @click="saveSunshineDistance" :loading="savingDistance">设置达标距离</el-button>
+          <el-button size="small" type="warning" @click="showRunSettingsDialog = true">阳光跑指标设置</el-button>
           <el-divider direction="vertical" />
         </template>
         <el-radio-group v-model="periodFilter" size="small" @change="refreshData" style="margin-right:8px">
@@ -130,6 +128,41 @@
         </el-table>
       </div>
     </div>
+
+    <!-- 阳光跑指标设置弹窗 -->
+    <el-dialog v-model="showRunSettingsDialog" title="阳光跑指标设置" width="600px" :close-on-click-modal="false">
+      <el-form label-width="140px" style="padding: 0 20px;">
+        <el-divider content-position="left">男生指标</el-divider>
+        <el-form-item label="达标距离(米)">
+          <el-input-number v-model="runSettings.distanceMale" :min="500" :max="10000" :step="100" style="width:200px" />
+        </el-form-item>
+        <el-form-item label="最低配速(分/公里)">
+          <el-input-number v-model="runSettings.paceMinMale" :min="1" :max="15" :step="0.5" :precision="1" style="width:200px" />
+          <span style="margin-left:8px;color:#999;font-size:12px">值越小跑得越快，此为最快限速</span>
+        </el-form-item>
+        <el-form-item label="最高配速(分/公里)">
+          <el-input-number v-model="runSettings.paceMaxMale" :min="1" :max="15" :step="0.5" :precision="1" style="width:200px" />
+          <span style="margin-left:8px;color:#999;font-size:12px">值越大跑得越慢，此为最慢限速</span>
+        </el-form-item>
+
+        <el-divider content-position="left">女生指标</el-divider>
+        <el-form-item label="达标距离(米)">
+          <el-input-number v-model="runSettings.distanceFemale" :min="500" :max="10000" :step="100" style="width:200px" />
+        </el-form-item>
+        <el-form-item label="最低配速(分/公里)">
+          <el-input-number v-model="runSettings.paceMinFemale" :min="1" :max="15" :step="0.5" :precision="1" style="width:200px" />
+          <span style="margin-left:8px;color:#999;font-size:12px">值越小跑得越快，此为最快限速</span>
+        </el-form-item>
+        <el-form-item label="最高配速(分/公里)">
+          <el-input-number v-model="runSettings.paceMaxFemale" :min="1" :max="15" :step="0.5" :precision="1" style="width:200px" />
+          <span style="margin-left:8px;color:#999;font-size:12px">值越大跑得越慢，此为最慢限速</span>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="showRunSettingsDialog = false">取消</el-button>
+        <el-button type="primary" :loading="savingDistance" @click="saveRunSettings">保存设置</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -149,6 +182,15 @@ export default {
     const exporting = ref(false)
     const savingDistance = ref(false)
     const sunshineRunDistance = ref(1600)
+    const showRunSettingsDialog = ref(false)
+    const runSettings = ref({
+      distanceMale: 1600,
+      distanceFemale: 1600,
+      paceMinMale: 3.0,
+      paceMaxMale: 7.0,
+      paceMinFemale: 3.5,
+      paceMaxFemale: 8.0,
+    })
     const isDeptAdmin = computed(() => permissionManager.hasRole('department_admin'))
     const isCounselor = computed(() => permissionManager.hasRole('counselor'))
     const isSchoolAdmin = computed(() => permissionManager.hasRole('school_admin'))
@@ -167,8 +209,32 @@ export default {
         const res = await api.schoolSettings.get(school)
         if (res.code === 200 && res.data) {
           sunshineRunDistance.value = res.data.sunshineRunDistance || 1600
+          if (res.data.sunshineRunDistanceMale) runSettings.value.distanceMale = res.data.sunshineRunDistanceMale
+          if (res.data.sunshineRunDistanceFemale) runSettings.value.distanceFemale = res.data.sunshineRunDistanceFemale
+          if (res.data.sunshineRunPaceMinMale) runSettings.value.paceMinMale = res.data.sunshineRunPaceMinMale
+          if (res.data.sunshineRunPaceMaxMale) runSettings.value.paceMaxMale = res.data.sunshineRunPaceMaxMale
+          if (res.data.sunshineRunPaceMinFemale) runSettings.value.paceMinFemale = res.data.sunshineRunPaceMinFemale
+          if (res.data.sunshineRunPaceMaxFemale) runSettings.value.paceMaxFemale = res.data.sunshineRunPaceMaxFemale
         }
       } catch (e) { /* use default */ }
+    }
+
+    const saveRunSettings = async () => {
+      savingDistance.value = true
+      try {
+        const school = JSON.parse(localStorage.getItem('userInfo') || '{}').school
+        await api.schoolSettings.updateSunshineRunSettings({
+          school,
+          ...runSettings.value
+        })
+        sunshineRunDistance.value = Math.max(runSettings.value.distanceMale, runSettings.value.distanceFemale)
+        showRunSettingsDialog.value = false
+        alert('阳光跑指标设置成功')
+      } catch (e) {
+        alert('设置失败：' + (e.message || '未知错误'))
+      } finally {
+        savingDistance.value = false
+      }
     }
 
     const saveSunshineDistance = async () => {
@@ -416,6 +482,7 @@ export default {
     return {
       loading, exporting, exportDisabled, isDeptAdmin, isSchoolAdmin, isSuperAdmin, viewMode, periodFilter, topStats, rankings, filteredTableData, searchText,
       barChart, radarChart, sunshineRunDistance, savingDistance,
+      showRunSettingsDialog, runSettings, saveRunSettings,
       handleViewModeChange, refreshData, exportExcel, toKm, toHours, saveSunshineDistance,
       getRankClass, getRankColor, getProgressWidth, selectRanking, tableRowClassName,
       Refresh, Loading

@@ -493,6 +493,7 @@ export const api = {
   schoolSettings: {
     get: (school) => apiClient.get('/pe/school-settings', { params: { school } }),
     updateSunshineRunDistance: (data) => apiClient.put('/pe/school-settings/sunshine-run-distance', data),
+    updateSunshineRunSettings: (data) => apiClient.put('/pe/school-settings/sunshine-run-settings', data),
   },
 
   peSchedules: {

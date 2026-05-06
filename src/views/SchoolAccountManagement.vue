@@ -9,12 +9,17 @@
           返回管理员管理
         </button>
         <div class="page-info">
-          <h1 class="page-title">学校开户</h1>
-          <p class="page-subtitle">以 checkuser 预导入库中的学校为范围，为教师开户或新建学校</p>
+          <h1 class="page-title">用户管理</h1>
+          <p class="page-subtitle">管理学校教师账户，为教师创建账号或新建学校</p>
         </div>
-        <button v-if="isSuperAdminRole" type="button" class="action-btn create-school-top" @click="showNewSchool = true">
-          ＋ 新建学校（校管）
-        </button>
+        <div class="header-actions-right">
+          <button type="button" class="action-btn help-btn" @click="showHelpDialog = true">
+            使用说明
+          </button>
+          <button v-if="isSuperAdminRole" type="button" class="action-btn create-school-top" @click="showNewSchool = true">
+            ＋ 新建学校
+          </button>
+        </div>
       </div>
     </header>
 
@@ -32,22 +37,22 @@
         >
           <span class="school-name">{{ item.school }}</span>
           <div class="school-stats">
-            <span>预导入学生 <strong>{{ item.studentCount }}</strong></span>
-            <span>预导入教师 <strong>{{ item.teacherPreimportCount }}</strong></span>
+            <span>待注册学生 <strong>{{ item.studentCount }}</strong></span>
+            <span>待激活教师 <strong>{{ item.teacherPreimportCount }}</strong></span>
             <span>已注册教师 <strong>{{ item.teacherRegisteredCount }}</strong></span>
           </div>
         </button>
-        <p v-if="modules.length === 0" class="empty-hint">暂无预导入学校。请先通过「导入名单」导入学生或教师，或使用「新建学校」。</p>
+        <p v-if="modules.length === 0" class="empty-hint">暂无学校数据。请先通过「导入名单」导入学生或教师，或使用「新建学校」创建。</p>
       </div>
 
       <section v-if="selectedSchool && detail" class="detail-panel">
         <div class="detail-header">
           <h2>{{ detail.school }}</h2>
-          <span class="pill">预导入学生 {{ detail.studentCount }} 人</span>
+          <span class="pill">待注册学生 {{ detail.studentCount }} 人</span>
           <button type="button" class="link-btn" @click="refreshDetail">刷新</button>
         </div>
 
-        <h3 class="subsection-title">预导入教师（可点击「开户」）</h3>
+        <h3 class="subsection-title">待激活教师（点击「激活账号」为教师创建登录账户）</h3>
         <div v-if="detailLoading" class="loading-inline">加载中…</div>
         <table v-else class="data-table">
           <thead>
@@ -65,8 +70,8 @@
               <td>{{ row.name }}</td>
               <td>{{ row.college || '—' }}</td>
               <td>
-                <span v-if="row.hasAccount" class="tag ok">已注册</span>
-                <span v-else class="tag muted">待开户</span>
+                <span v-if="row.hasAccount" class="tag ok">已激活</span>
+                <span v-else class="tag muted">待激活</span>
               </td>
               <td>
                 <button
@@ -75,7 +80,7 @@
                   :disabled="row.hasAccount"
                   @click="openActivateDialog(row)"
                 >
-                  开户
+                  激活账号
                 </button>
               </td>
             </tr>
@@ -112,8 +117,8 @@
         </table>
 
         <div class="add-teacher-box">
-          <h3 class="subsection-title">不在预导入表中的教师</h3>
-          <p class="hint">将同时写入 users 与 checkteacher，避免与仅注册不同步。</p>
+          <h3 class="subsection-title">手动添加教师</h3>
+          <p class="hint">直接为教师创建系统账户，无需事先导入名单。</p>
           <div class="form-grid">
             <label>工号 <input v-model="newTeacher.teacherId" type="text" placeholder="必填" /></label>
             <label>姓名 <input v-model="newTeacher.name" type="text" placeholder="必填" /></label>
@@ -129,17 +134,17 @@
             </label>
           </div>
           <button type="button" class="action-btn primary" :disabled="submitting" @click="submitNewTeacher">
-            创建并同步预导入
+            创建教师账号
           </button>
         </div>
       </section>
     </main>
 
-    <!-- 预导入行开户 -->
+    <!-- 激活教师账号 -->
     <div v-if="activateRow" class="modal-overlay" @click.self="activateRow = null">
       <div class="modal">
-        <h3>为 {{ activateRow.name }}（{{ activateRow.teacherId }}）开户</h3>
-        <label>初始密码 <input v-model="activateForm.password" type="password" /></label>
+        <h3>为 {{ activateRow.name }}（工号：{{ activateRow.teacherId }}）激活账号</h3>
+        <label>设置登录密码 <input v-model="activateForm.password" type="password" placeholder="设置初始登录密码" /></label>
         <label>角色
           <select v-model="activateForm.userType">
             <option value="teacher">教师</option>
@@ -150,7 +155,7 @@
         </label>
         <div class="modal-actions">
           <button type="button" class="action-btn secondary" @click="activateRow = null">取消</button>
-          <button type="button" class="action-btn primary" :disabled="submitting" @click="submitActivate">确认开户</button>
+          <button type="button" class="action-btn primary" :disabled="submitting" @click="submitActivate">确认激活</button>
         </div>
       </div>
     </div>
@@ -173,7 +178,7 @@
     <div v-if="showNewSchool" class="modal-overlay" @click.self="showNewSchool = false">
       <div class="modal wide">
         <h3>新建学校</h3>
-        <p class="hint">将创建该校的<strong>校级管理员</strong>账户，并把校管信息写入预导入教师表（校名在 checkuser 中尚不存在时可用）。</p>
+        <p class="hint">创建新学校并为其设置第一个<strong>校级管理员</strong>账户。校级管理员可管理该校所有教师和学生数据。</p>
         <div class="form-grid">
           <label>学校名称 <input v-model="newSchool.schoolName" type="text" placeholder="与系统将使用的学校名一致" /></label>
           <label>学院（可选）<input v-model="newSchool.college" type="text" /></label>
@@ -184,6 +189,38 @@
         <div class="modal-actions">
           <button type="button" class="action-btn secondary" @click="showNewSchool = false">取消</button>
           <button type="button" class="action-btn primary" :disabled="submitting" @click="submitNewSchool">创建</button>
+        </div>
+      </div>
+    </div>
+    <!-- 使用说明 -->
+    <div v-if="showHelpDialog" class="modal-overlay" @click.self="showHelpDialog = false">
+      <div class="modal wide">
+        <h3>用户管理使用说明</h3>
+        <div class="help-content">
+          <h4>一、整体流程</h4>
+          <ol>
+            <li><strong>导入学生/教师名单</strong>：在「导入名单」页面通过 Excel 批量导入学生和教师信息（学校、学院、班级、学号/工号、姓名、性别）</li>
+            <li><strong>激活教师账号</strong>：在本页面为已导入的教师设置登录密码，完成账号激活</li>
+            <li><strong>学生自行注册</strong>：学生使用 APP 通过姓名+学号+手机号完成注册，系统自动校验导入名单</li>
+          </ol>
+          <h4>二、功能说明</h4>
+          <ul>
+            <li><strong>学校卡片</strong>：显示每所学校的待注册学生数、待激活教师数和已注册教师数</li>
+            <li><strong>激活账号</strong>：为已导入但未激活的教师创建登录账户，需设置初始密码和角色</li>
+            <li><strong>手动添加教师</strong>：无需事先导入名单，直接为教师创建账户</li>
+            <li><strong>重置密码</strong>：可为已注册教师重新设置登录密码</li>
+            <li><strong>新建学校</strong>：（超级管理员专属）创建新学校并设置首个校级管理员</li>
+          </ul>
+          <h4>三、角色说明</h4>
+          <ul>
+            <li><strong>教师</strong>：可管理自己的课程和学生</li>
+            <li><strong>辅导员</strong>：可管理分配班级的学生数据</li>
+            <li><strong>院级管理员</strong>：可管理本学院的教师和学生</li>
+            <li><strong>校级管理员</strong>：可管理本校所有教师、学生和设置</li>
+          </ul>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="action-btn primary" @click="showHelpDialog = false">我知道了</button>
         </div>
       </div>
     </div>
@@ -199,6 +236,7 @@ export default {
   name: 'SchoolAccountManagement',
   data () {
     return {
+      showHelpDialog: false,
       modules: [],
       loading: true,
       errorMsg: '',
@@ -463,6 +501,21 @@ export default {
 .page-info { flex: 1; min-width: 200px; }
 .page-title { margin: 0; font-size: 20px; font-weight: 600; }
 .page-subtitle { margin: 4px 0 0; font-size: 13px; color: #666; }
+.header-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.help-btn {
+  padding: 8px 14px;
+  background: #e6f7ff;
+  color: #1890ff;
+  border: 1px solid #91d5ff;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.help-btn:hover { background: #bae7ff; }
 .create-school-top {
   padding: 10px 18px;
   background: #722ed1;
@@ -473,6 +526,9 @@ export default {
   font-size: 14px;
 }
 .create-school-top:hover { filter: brightness(1.05); }
+.help-content h4 { margin: 16px 0 8px; font-size: 15px; color: #333; }
+.help-content ol, .help-content ul { padding-left: 20px; margin: 8px 0; }
+.help-content li { margin: 6px 0; line-height: 1.6; font-size: 14px; color: #555; }
 
 .main-content {
   max-width: 1200px;

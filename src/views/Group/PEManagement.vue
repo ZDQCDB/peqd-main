@@ -183,6 +183,13 @@
               <el-table :data="users" v-loading="usersLoading" stripe class="modern-table" :header-cell-style="{ background: '#f8f9fa', color: '#303133', fontWeight: '600' }">
                 <el-table-column prop="name" label="姓名" width="120" />
                 <el-table-column prop="studentId" label="学号" width="140" />
+                <el-table-column prop="gender" label="性别" width="70">
+                  <template #default="{ row }">
+                    <el-tag v-if="row.gender === '男'" size="small" type="primary">男</el-tag>
+                    <el-tag v-else-if="row.gender === '女'" size="small" type="danger">女</el-tag>
+                    <span v-else style="color:#999">—</span>
+                  </template>
+                </el-table-column>
                 <el-table-column prop="phoneNumber" label="手机号" width="130" />
                 <el-table-column prop="points" label="总积分" width="100" />
                 <el-table-column prop="studyHours" label="学时" width="80" />

@@ -32,14 +32,14 @@
             </svg>
             预导入统计
           </button>
-          <button v-if="isSuperAdminRole || isSchoolAdminRole" class="action-btn school-account-btn" @click="$router.push('/admin/school-accounts')" title="按预导入学校可视化开户">
+          <button v-if="isSuperAdminRole || isSchoolAdminRole" class="action-btn school-account-btn" @click="$router.push('/admin/school-accounts')" title="管理教师账户和学校设置">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <rect x="3" y="3" width="7" height="9" rx="1" stroke="currentColor" stroke-width="2"/>
               <rect x="14" y="3" width="7" height="5" rx="1" stroke="currentColor" stroke-width="2"/>
               <rect x="14" y="12" width="7" height="9" rx="1" stroke="currentColor" stroke-width="2"/>
               <rect x="3" y="16" width="7" height="5" rx="1" stroke="currentColor" stroke-width="2"/>
             </svg>
-            学校开户
+            用户管理
           </button>
           <button v-if="isSuperAdminRole" class="action-btn face-btn" @click="openFaceImportDialog">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -805,7 +805,7 @@
     <div v-if="showSchoolStatsDialog" class="modal-overlay" @click="showSchoolStatsDialog = false">
       <div class="modal-content large-modal" @click.stop>
         <div class="modal-header">
-          <h3>checkuser 预导入名单统计</h3>
+          <h3>待注册名单统计</h3>
           <button class="close-btn" @click="showSchoolStatsDialog = false">×</button>
         </div>
         <div class="modal-body">
@@ -917,7 +917,7 @@
     <el-dialog
       v-if="isSuperAdminRole || isSchoolAdminRole"
       v-model="showImportDialog"
-      title="导入 checkuser 数据"
+      title="导入学生/教师名单"
       width="640px"
       :close-on-click-modal="false"
     >
@@ -925,8 +925,8 @@
         <el-tab-pane label="学生数据" name="student">
           <div class="import-section">
             <p class="import-tip">
-              Excel 列顺序：<strong>{{ isSchoolAdminRole ? '学校 / 学院 / 班级 / 学号 / 姓名（学校列自动填充为本校）' : '学校 / 学院 / 班级 / 学号 / 姓名' }}</strong><br/>
-              导入前会自动检测重复记录，您可以选择覆盖或跳过。
+              Excel 列顺序：<strong>{{ isSchoolAdminRole ? '学校 / 学院 / 班级 / 学号 / 姓名 / 性别（学校列自动填充为本校）' : '学校 / 学院 / 班级 / 学号 / 姓名 / 性别' }}</strong><br/>
+              性别填写"男"或"女"，可留空。导入前会自动检测重复记录，您可以选择覆盖或跳过。
             </p>
             <div class="import-actions">
               <el-button size="small" @click="downloadTemplate('student')">⬇ 下载学生模板</el-button>
