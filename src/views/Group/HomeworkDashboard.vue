@@ -15,8 +15,9 @@
           <el-radio-button label="month">最近一月</el-radio-button>
           <el-radio-button label="four_months">最近四月</el-radio-button>
         </el-radio-group>
-        <el-button v-if="isSchoolAdminRole || isDeptAdminRole" size="small" type="success" :loading="exporting" :disabled="periodFilter === 'all' || periodFilter === 'four_months'" @click="exportExcel">
-          {{ periodFilter === 'all' || periodFilter === 'four_months' ? '导出Excel（最大支持一个月）' : '导出Excel' }}
+        <el-button v-if="isSchoolAdminRole" size="small" type="primary" plain @click="openStandardsDialog">运动指标设置</el-button>
+        <el-button v-if="isSchoolAdminRole || isDeptAdminRole" size="small" type="success" :loading="exporting" :disabled="periodFilter === 'all'" @click="exportExcel">
+          {{ periodFilter === 'all' ? '导出Excel（请选择时间范围）' : '导出Excel' }}
         </el-button>
         <el-button size="small" :icon="Refresh" @click="loadAll" circle :loading="loading" />
       </div>
@@ -182,12 +183,37 @@
         </el-table>
       </div>
     </div>
+
+    <!-- 运动指标设置对话框 -->
+    <el-dialog v-model="standardsDialogVisible" title="运动指标设置" width="600px" destroy-on-close>
+      <p style="margin:0 0 12px;font-size:12px;color:#909399;">设置各运动类型的单次最低完成指标，0 表示不限制。</p>
+      <el-table :data="homeworkStandards" border size="small" v-loading="standardsLoading">
+        <el-table-column label="运动类型" width="120" align="center">
+          <template #default="{ row }">{{ typeLabel(row.exerciseType) }}</template>
+        </el-table-column>
+        <el-table-column label="男生单次最低指标" align="center">
+          <template #default="{ row }">
+            <el-input-number v-model="row.maleStandard" :min="0" :step="1" size="small" controls-position="right" style="width:100%;" />
+          </template>
+        </el-table-column>
+        <el-table-column label="女生单次最低指标" align="center">
+          <template #default="{ row }">
+            <el-input-number v-model="row.femaleStandard" :min="0" :step="1" size="small" controls-position="right" style="width:100%;" />
+          </template>
+        </el-table-column>
+      </el-table>
+      <template #footer>
+        <el-button @click="standardsDialogVisible = false">取消</el-button>
+        <el-button type="primary" :loading="standardsSaving" @click="saveHomeworkStandards">保存</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { Refresh, Loading } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
 import * as echarts from 'echarts'
 import api from '@/services/api'
 import permissionManager from '@/utils/permissionManager'
@@ -401,6 +427,65 @@ async function loadAll() {
 const handleResize = () => {
   if (resizeTimer) clearTimeout(resizeTimer)
   resizeTimer = setTimeout(() => { trendChartInstance?.resize() }, 200)
+}
+
+// ── 运动指标设置 ─────────────────────────────────────────────────────────────
+const EXERCISE_TYPES = ['SQUAT', 'SIT_UP', 'PUSH_UP', 'PULL_UP', 'JUMP_ROPE', 'JUMPING_JACK', 'HIGH_KNEES']
+
+const standardsDialogVisible = ref(false)
+const standardsLoading = ref(false)
+const standardsSaving = ref(false)
+const homeworkStandards = ref([])
+
+function buildDefaultStandards() {
+  return EXERCISE_TYPES.map(t => ({ exerciseType: t, maleStandard: 0, femaleStandard: 0 }))
+}
+
+async function openStandardsDialog() {
+  standardsDialogVisible.value = true
+  standardsLoading.value = true
+  homeworkStandards.value = buildDefaultStandards()
+  try {
+    const userStr = localStorage.getItem('userInfo')
+    const school = userStr ? JSON.parse(userStr).school : null
+    if (!school) { ElMessage.warning('无法获取学校信息'); return }
+    const res = await api.schoolSettings.getHomeworkStandards(school)
+    const list = res?.data ?? res ?? []
+    if (Array.isArray(list) && list.length) {
+      const map = {}
+      list.forEach(s => { map[s.exerciseType] = s })
+      homeworkStandards.value = EXERCISE_TYPES.map(t => ({
+        exerciseType: t,
+        maleStandard: map[t]?.maleStandard ?? 0,
+        femaleStandard: map[t]?.femaleStandard ?? 0,
+      }))
+    }
+  } catch (e) {
+    console.error('加载运动指标失败:', e)
+    ElMessage.error('加载运动指标失败')
+  } finally {
+    standardsLoading.value = false
+  }
+}
+
+async function saveHomeworkStandards() {
+  standardsSaving.value = true
+  try {
+    const userStr = localStorage.getItem('userInfo')
+    const school = userStr ? JSON.parse(userStr).school : null
+    if (!school) { ElMessage.warning('无法获取学校信息'); return }
+    await api.schoolSettings.updateHomeworkStandards({
+      school,
+      standards: homeworkStandards.value,
+    })
+    ElMessage.success('运动指标保存成功')
+    standardsDialogVisible.value = false
+  } catch (e) {
+    console.error('保存运动指标失败:', e)
+    ElMessage.error('保存运动指标失败')
+  } finally {
+    standardsSaving.value = false
+  }
 }
 
 onMounted(() => {

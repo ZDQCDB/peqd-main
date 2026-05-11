@@ -20,10 +20,23 @@
           <el-radio-button label="college">班级统计</el-radio-button>
         </el-radio-group>
         <el-button size="small" type="success" :loading="exporting" :disabled="exportDisabled" @click="exportExcel">
-          {{ exportDisabled ? '导出Excel（最大支持一个月）' : '导出Excel' }}
+          {{ exportDisabled ? '导出Excel（请选择时间范围）' : '导出Excel' }}
         </el-button>
         <el-button size="small" :icon="Refresh" @click="refreshData" circle />
       </div>
+    </div>
+
+    <div v-if="weeklyCompletion" class="weekly-completion-strip">
+      <span class="wc-title">本周阳光跑完成率</span>
+      <span class="wc-dates">（{{ weeklyCompletion.weekStartDate }}～{{ weeklyCompletion.weekEndDate }}，{{ weeklyCompletion.scopeDescription }}）</span>
+      <template v-if="weeklyCompletion.requirementConfigured">
+        <span class="wc-rate">{{ formatWeeklyRate(weeklyCompletion.completionRatePercent) }}%</span>
+        <span class="wc-sub">已达标 {{ weeklyCompletion.compliantStudents }} / {{ weeklyCompletion.totalStudents }} 人</span>
+        <span class="wc-sub">指标：每周 {{ weeklyCompletion.requiredRunsPerWeek }} 次 · 学期共 {{ weeklyCompletion.totalWeeksInPlan }} 周</span>
+      </template>
+      <template v-else>
+        <span class="wc-muted">未配置每周跑步次数指标，请在校管「阳光跑指标设置」中填写</span>
+      </template>
     </div>
 
     <div v-if="loading" class="loading-container">
@@ -62,6 +75,7 @@
               <div class="rank-badge" :class="getRankClass(index)">{{ index + 1 }}</div>
               <div class="rank-info">
                 <div class="rank-name">{{ item.groupName }}</div>
+                <div v-if="weeklyLineText(item)" class="rank-wc">{{ weeklyLineText(item) }}</div>
                 <div class="rank-bar-wrap">
                   <div class="rank-bar" :style="{ width: getProgressWidth(item.avgDistancePerStudent), background: getRankColor(index) }"></div>
                 </div>
@@ -125,6 +139,15 @@
               <el-tag size="small">{{ toHours(row.aggregate.avgDurationPerStudent) }}</el-tag>
             </template>
           </el-table-column>
+          <el-table-column :label="viewMode === 'school' ? '本院本周完成率' : '本班本周完成率'" width="130" align="center">
+            <template #default="{ row }">
+              <template v-if="weeklyCompletion?.requirementConfigured && weeklyByGroupName[row.groupName]?.completionRatePercent != null">
+                <span class="wc-cell-rate">{{ formatWeeklyRate(weeklyByGroupName[row.groupName].completionRatePercent) }}%</span>
+                <div class="wc-cell-sub">{{ weeklyByGroupName[row.groupName].compliantStudents }}/{{ weeklyByGroupName[row.groupName].totalStudents }} 人</div>
+              </template>
+              <span v-else class="wc-cell-empty">—</span>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
     </div>
@@ -156,6 +179,16 @@
         <el-form-item label="最高配速(分/公里)">
           <el-input-number v-model="runSettings.paceMaxFemale" :min="1" :max="15" :step="0.5" :precision="1" style="width:200px" />
           <span style="margin-left:8px;color:#999;font-size:12px">值越大跑得越慢，此为最慢限速</span>
+        </el-form-item>
+
+        <el-divider content-position="left">周次与频次指标</el-divider>
+        <el-form-item label="每周应跑次数">
+          <el-input-number v-model="runSettings.runsPerWeek" :min="0" :max="14" :step="1" style="width:200px" />
+          <span style="margin-left:8px;color:#999;font-size:12px">0 表示暂不考核本周完成率</span>
+        </el-form-item>
+        <el-form-item label="学期总周数">
+          <el-input-number v-model="runSettings.totalWeeks" :min="1" :max="52" :step="1" style="width:200px" />
+          <span style="margin-left:8px;color:#999;font-size:12px">供学生端展示学期长度</span>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -190,6 +223,20 @@ export default {
       paceMaxMale: 7.0,
       paceMinFemale: 3.5,
       paceMaxFemale: 8.0,
+      runsPerWeek: 3,
+      totalWeeks: 16,
+    })
+    const weeklyCompletion = ref(null)
+    const weeklyGroupsPayload = ref(null)
+
+    const weeklyByGroupName = computed(() => {
+      const rows = weeklyGroupsPayload.value?.groups
+      if (!rows?.length) return {}
+      const m = {}
+      for (const r of rows) {
+        if (r.groupName != null) m[r.groupName] = r
+      }
+      return m
     })
     const isDeptAdmin = computed(() => permissionManager.hasRole('department_admin'))
     const isCounselor = computed(() => permissionManager.hasRole('counselor'))
@@ -199,7 +246,7 @@ export default {
     const statsData = ref(null)
     const searchText = ref('')
     const periodFilter = ref('all')
-    const exportDisabled = computed(() => periodFilter.value === 'all' || periodFilter.value === 'four_months')
+    const exportDisabled = computed(() => periodFilter.value === 'all')
 
     const loadSunshineDistance = async () => {
       try {
@@ -215,6 +262,8 @@ export default {
           if (res.data.sunshineRunPaceMaxMale) runSettings.value.paceMaxMale = res.data.sunshineRunPaceMaxMale
           if (res.data.sunshineRunPaceMinFemale) runSettings.value.paceMinFemale = res.data.sunshineRunPaceMinFemale
           if (res.data.sunshineRunPaceMaxFemale) runSettings.value.paceMaxFemale = res.data.sunshineRunPaceMaxFemale
+          if (res.data.sunshineRunRunsPerWeek != null) runSettings.value.runsPerWeek = res.data.sunshineRunRunsPerWeek
+          if (res.data.sunshineRunTotalWeeks != null) runSettings.value.totalWeeks = res.data.sunshineRunTotalWeeks
         }
       } catch (e) { /* use default */ }
     }
@@ -230,6 +279,8 @@ export default {
         sunshineRunDistance.value = Math.max(runSettings.value.distanceMale, runSettings.value.distanceFemale)
         showRunSettingsDialog.value = false
         alert('阳光跑指标设置成功')
+        await fetchWeeklyCompletion()
+        await fetchWeeklyGroupCompletion()
       } catch (e) {
         alert('设置失败：' + (e.message || '未知错误'))
       } finally {
@@ -257,6 +308,43 @@ export default {
     const toHours = (seconds) => {
       if (seconds == null || seconds === 0) return '0'
       return (seconds / 3600).toFixed(2)
+    }
+
+    const formatWeeklyRate = (v) => {
+      if (v == null || Number.isNaN(v)) return '—'
+      return Number(v).toFixed(2)
+    }
+
+    const fetchWeeklyCompletion = async () => {
+      try {
+        const res = await api.peStatistics.getSunshineRunWeeklyCompletion()
+        if (res.code === 200 && res.data) {
+          weeklyCompletion.value = res.data
+        }
+      } catch (e) {
+        weeklyCompletion.value = null
+      }
+    }
+
+    const fetchWeeklyGroupCompletion = async () => {
+      try {
+        const res = await api.peStatistics.getSunshineRunWeeklyCompletionGroups({ view: viewMode.value })
+        if (res.code === 200 && res.data) {
+          weeklyGroupsPayload.value = res.data
+        } else {
+          weeklyGroupsPayload.value = null
+        }
+      } catch (e) {
+        weeklyGroupsPayload.value = null
+      }
+    }
+
+    const weeklyLineText = (item) => {
+      if (!weeklyCompletion.value?.requirementConfigured) return ''
+      const g = weeklyByGroupName.value[item.groupName]
+      if (!g || g.completionRatePercent == null) return ''
+      const scopeWord = viewMode.value === 'school' ? '本院' : '本班'
+      return `${scopeWord}本周 ${formatWeeklyRate(g.completionRatePercent)}%（${g.compliantStudents}/${g.totalStudents}人）`
     }
 
     const barChart = ref(null)
@@ -304,6 +392,7 @@ export default {
         })
         if (response.data.code === 200) {
           statsData.value = response.data.data
+          await Promise.all([fetchWeeklyCompletion(), fetchWeeklyGroupCompletion()])
           await nextTick()
           setTimeout(() => { initCharts() }, 50)
         }
@@ -337,7 +426,16 @@ export default {
         yAxis: {
           type: 'category',
           data: top8.map(i => i.groupName).reverse(),
-          axisLabel: { fontSize: 11, interval: 0 }
+          axisLabel: {
+            fontSize: 10,
+            interval: 0,
+            formatter: (name) => {
+              if (!weeklyCompletion.value?.requirementConfigured) return name
+              const wg = weeklyByGroupName.value[name]
+              if (wg == null || wg.completionRatePercent == null) return name
+              return `${name}  ${Number(wg.completionRatePercent).toFixed(1)}%`
+            }
+          }
         },
         series: [{
           name: '人均距离',
@@ -373,7 +471,13 @@ export default {
       radarChartInstance.setOption({
         tooltip: { trigger: 'item' },
         legend: {
-          data: top5.map(i => i.groupName),
+          data: top5.map(i => {
+            if (!weeklyCompletion.value?.requirementConfigured) return i.groupName
+            const wg = weeklyByGroupName.value[i.groupName]
+            if (wg == null || wg.completionRatePercent == null) return i.groupName
+            const w = viewMode.value === 'school' ? '本院' : '本班'
+            return `${i.groupName}（${w}本周${Number(wg.completionRatePercent).toFixed(1)}%）`
+          }),
           bottom: 0,
           textStyle: { fontSize: 10 },
           itemWidth: 10,
@@ -400,7 +504,13 @@ export default {
               item.aggregate.avgRunsPerStudent,
               item.aggregate.avgDurationPerStudent
             ],
-            name: item.groupName,
+            name: (() => {
+              if (!weeklyCompletion.value?.requirementConfigured) return item.groupName
+              const wg = weeklyByGroupName.value[item.groupName]
+              if (wg == null || wg.completionRatePercent == null) return item.groupName
+              const w = viewMode.value === 'school' ? '本院' : '本班'
+              return `${item.groupName}（${w}本周${Number(wg.completionRatePercent).toFixed(1)}%）`
+            })(),
             itemStyle: { color: colors[idx] },
             lineStyle: { color: colors[idx], width: 1.5 },
             areaStyle: { color: colors[idx], opacity: 0.15 },
@@ -449,7 +559,7 @@ export default {
     async function exportExcel() {
       exporting.value = true
       try {
-        const res = await api.peStatistics.exportSunshineRun({ scope: viewMode.value })
+        const res = await api.peStatistics.exportSunshineRun({ scope: viewMode.value, period: periodFilter.value })
         const blob = res instanceof Blob ? res : new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
@@ -480,11 +590,12 @@ export default {
     })
 
     return {
-      loading, exporting, exportDisabled, isDeptAdmin, isSchoolAdmin, isSuperAdmin, viewMode, periodFilter, topStats, rankings, filteredTableData, searchText,
+      loading, exporting, exportDisabled, isDeptAdmin, isSchoolAdmin, isSuperAdmin, isCounselor, viewMode, periodFilter, topStats, rankings, filteredTableData, searchText,
       barChart, radarChart, sunshineRunDistance, savingDistance,
       showRunSettingsDialog, runSettings, saveRunSettings,
       handleViewModeChange, refreshData, exportExcel, toKm, toHours, saveSunshineDistance,
       getRankClass, getRankColor, getProgressWidth, selectRanking, tableRowClassName,
+      weeklyCompletion, formatWeeklyRate, weeklyGroupsPayload, weeklyByGroupName, weeklyLineText,
       Refresh, Loading
     }
   }
@@ -520,6 +631,24 @@ export default {
   gap: 10px;
   align-items: center;
 }
+
+.weekly-completion-strip {
+  background: linear-gradient(90deg, #e8f4fc, #f0f9ff);
+  border-radius: 8px;
+  padding: 10px 16px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 12px;
+  font-size: 13px;
+  border: 1px solid #bae0ff;
+}
+.wc-title { font-weight: 600; color: #1677ff; }
+.wc-dates { color: #666; font-size: 12px; }
+.wc-rate { font-size: 18px; font-weight: 700; color: #389e0d; }
+.wc-sub { color: #666; font-size: 12px; }
+.wc-muted { color: #999; font-size: 12px; }
 
 /* 加载 */
 .loading-container {
@@ -637,7 +766,7 @@ export default {
 
 .ranking-item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   padding: 8px 6px;
   border-radius: 6px;
@@ -663,6 +792,7 @@ export default {
   background: #f0f2f5;
   color: #00000040;
   flex-shrink: 0;
+  margin-top: 2px;
 }
 .rank-badge.rank-first  { background: #ffd700; color: #fff; }
 .rank-badge.rank-second { background: #b0b0b0; color: #fff; }
@@ -675,10 +805,17 @@ export default {
 .rank-name {
   font-size: 13px;
   color: #000000d9;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.rank-wc {
+  font-size: 11px;
+  color: #389e0d;
+  margin-bottom: 4px;
+  line-height: 1.3;
+  white-space: normal;
 }
 .rank-bar-wrap {
   height: 4px;
@@ -697,12 +834,26 @@ export default {
   color: #2c3e50;
   white-space: nowrap;
   flex-shrink: 0;
+  margin-top: 2px;
 }
 .rank-dist em {
   font-style: normal;
   font-size: 10px;
   color: #00000040;
   margin-left: 1px;
+}
+
+.wc-cell-rate {
+  font-weight: 600;
+  color: #389e0d;
+}
+.wc-cell-sub {
+  font-size: 11px;
+  color: #888;
+  margin-top: 2px;
+}
+.wc-cell-empty {
+  color: #ccc;
 }
 
 /* 表格 */

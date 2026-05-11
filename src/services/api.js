@@ -487,6 +487,8 @@ export const api = {
     setTargets: (data) => apiClient.post('/pe/admin/statistics/targets', data),
     getSchoolStatistics: () => apiClient.get('/pe/admin/statistics/school'),
     getCollegeStatistics: () => apiClient.get('/pe/admin/statistics/college'),
+    getSunshineRunWeeklyCompletion: () => apiClient.get('/pe/admin/statistics/sunshine-run/weekly-completion'),
+    getSunshineRunWeeklyCompletionGroups: (params) => apiClient.get('/pe/admin/statistics/sunshine-run/weekly-completion-groups', { params }),
     exportSunshineRun: (params) => apiClient.get('/pe/admin/statistics/sunshine-run/export', { params, responseType: 'blob', timeout: 60000 })
   },
 
@@ -494,6 +496,8 @@ export const api = {
     get: (school) => apiClient.get('/pe/school-settings', { params: { school } }),
     updateSunshineRunDistance: (data) => apiClient.put('/pe/school-settings/sunshine-run-distance', data),
     updateSunshineRunSettings: (data) => apiClient.put('/pe/school-settings/sunshine-run-settings', data),
+    getHomeworkStandards: (school) => apiClient.get('/pe/school-settings/homework-standards', { params: { school } }),
+    updateHomeworkStandards: (data) => apiClient.put('/pe/school-settings/homework-standards', data),
   },
 
   peSchedules: {
