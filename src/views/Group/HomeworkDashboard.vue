@@ -16,11 +16,25 @@
           <el-radio-button label="four_months">最近四月</el-radio-button>
         </el-radio-group>
         <el-button v-if="isSchoolAdminRole" size="small" type="primary" plain @click="openStandardsDialog">运动指标设置</el-button>
+        <el-button v-if="isSchoolAdminRole" size="small" type="warning" plain @click="openSubmissionSettingsDialog">作业提交指标</el-button>
         <el-button v-if="isSchoolAdminRole || isDeptAdminRole" size="small" type="success" :loading="exporting" :disabled="periodFilter === 'all'" @click="exportExcel">
           {{ periodFilter === 'all' ? '导出Excel（请选择时间范围）' : '导出Excel' }}
         </el-button>
         <el-button size="small" :icon="Refresh" @click="loadAll" circle :loading="loading" />
       </div>
+    </div>
+
+    <div v-if="hwWeeklyOverall" class="hw-weekly-strip">
+      <span class="hw-wc-title">本周作业提交达标率</span>
+      <span class="hw-wc-dates">（{{ hwWeeklyOverall.weekStartDate }}～{{ hwWeeklyOverall.weekEndDate }}，{{ hwWeeklyOverall.scopeDescription }}）</span>
+      <template v-if="hwWeeklyOverall.requirementConfigured">
+        <span class="hw-wc-rate">{{ formatHwWeeklyRate(hwWeeklyOverall.completionRatePercent) }}%</span>
+        <span class="hw-wc-sub">已达标 {{ hwWeeklyOverall.compliantStudents }} / {{ hwWeeklyOverall.totalStudents }} 人</span>
+        <span class="hw-wc-sub">指标：每周至少 {{ hwWeeklyOverall.requiredSubmissionsPerWeek }} 次提交（全项目合计）· 学期 {{ hwWeeklyOverall.submissionSemesterWeeks }} 周</span>
+      </template>
+      <template v-else>
+        <span class="hw-wc-muted">未配置每周提交次数指标，请在校管「作业提交指标」中设置</span>
+      </template>
     </div>
 
     <div v-if="loading && !overview" class="loading-container">
@@ -78,6 +92,7 @@
               <div class="rank-badge" :class="i === 0 ? 'rank-first' : i === 1 ? 'rank-second' : i === 2 ? 'rank-third' : ''">{{ i + 1 }}</div>
               <div class="rank-info">
                 <div class="rank-name">{{ item.departmentName }}</div>
+                <div v-if="hwDeptWeeklyLine(item)" class="rank-wc">{{ hwDeptWeeklyLine(item) }}</div>
                 <div class="rank-bar-wrap">
                   <div class="rank-bar" :style="{ width: deptRankBarWidth(item.totalReps) + '%', background: getRankColor(i) }"></div>
                 </div>
@@ -103,6 +118,7 @@
               <div class="rank-info">
                 <div class="rank-name">{{ item.className }}</div>
                 <div class="rank-meta" v-if="isSchoolAdminRole && item.departmentName">{{ item.departmentName }}</div>
+                <div v-if="hwClassWeeklyLine(item)" class="rank-wc">{{ hwClassWeeklyLine(item) }}</div>
                 <div class="rank-bar-wrap">
                   <div class="rank-bar" :style="{ width: rankBarWidth(item.totalReps) + '%', background: getRankColor(i) }"></div>
                 </div>
@@ -155,6 +171,15 @@
             </template>
           </el-table-column>
           <el-table-column label="班级数" prop="classCount" width="80" align="center" />
+          <el-table-column label="本院本周提交达标率" width="140" align="center">
+            <template #default="{ row }">
+              <template v-if="hwWeeklyOverall?.requirementConfigured && hwWeeklyDeptByName[row.departmentName]?.completionRatePercent != null">
+                <span class="hw-cell-rate">{{ formatHwWeeklyRate(hwWeeklyDeptByName[row.departmentName].completionRatePercent) }}%</span>
+                <div class="hw-cell-sub">{{ hwWeeklyDeptByName[row.departmentName].compliantStudents }}/{{ hwWeeklyDeptByName[row.departmentName].totalStudents }} 人</div>
+              </template>
+              <span v-else class="hw-cell-empty">—</span>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
 
@@ -178,6 +203,15 @@
           <el-table-column label="人均完成" prop="avgReps" width="90" align="center">
             <template #default="{ row }">
               <el-tag size="small" type="info">{{ row.avgReps ?? '-' }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="本班本周提交达标率" width="140" align="center">
+            <template #default="{ row }">
+              <template v-if="hwWeeklyOverall?.requirementConfigured && hwWeeklyClassByKey[hwClassKey(row)]?.completionRatePercent != null">
+                <span class="hw-cell-rate">{{ formatHwWeeklyRate(hwWeeklyClassByKey[hwClassKey(row)].completionRatePercent) }}%</span>
+                <div class="hw-cell-sub">{{ hwWeeklyClassByKey[hwClassKey(row)].compliantStudents }}/{{ hwWeeklyClassByKey[hwClassKey(row)].totalStudents }} 人</div>
+              </template>
+              <span v-else class="hw-cell-empty">—</span>
             </template>
           </el-table-column>
         </el-table>
@@ -207,6 +241,24 @@
         <el-button type="primary" :loading="standardsSaving" @click="saveHomeworkStandards">保存</el-button>
       </template>
     </el-dialog>
+
+    <el-dialog v-model="submissionSettingsDialogVisible" title="作业提交指标" width="480px" destroy-on-close>
+      <p style="margin:0 0 12px;font-size:12px;color:#909399;">
+        自然周（周一至周日）内 <strong>homework_scores 记录条数</strong>（全运动类型合计）计为提交次数；达到阈值计为本周达标。每学期周数仅用于大屏展示；填 0 表示关闭该指标。
+      </p>
+      <el-form label-width="168px" size="small">
+        <el-form-item label="每周至少提交次数">
+          <el-input-number v-model="submissionSettingsForm.weeklySubmissionsRequired" :min="0" :step="1" controls-position="right" style="width:168px" />
+        </el-form-item>
+        <el-form-item label="学期周数（展示）">
+          <el-input-number v-model="submissionSettingsForm.submissionSemesterWeeks" :min="1" :step="1" controls-position="right" style="width:168px" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="submissionSettingsDialogVisible = false">取消</el-button>
+        <el-button type="primary" :loading="submissionSettingsSaving" @click="saveSubmissionSettings">保存</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -227,6 +279,79 @@ const trendRaw = ref([])
 const searchText = ref('')
 const deptSearchText = ref('')
 const periodFilter = ref('all')
+
+const hwWeeklyOverall = ref(null)
+const hwWeeklyDeptGroupsPayload = ref(null)
+const hwWeeklyClassGroupsPayload = ref(null)
+
+const hwWeeklyDeptByName = computed(() => {
+  const rows = hwWeeklyDeptGroupsPayload.value?.groups
+  if (!rows?.length) return {}
+  const m = {}
+  for (const r of rows) {
+    if (r.groupName != null) m[r.groupName] = r
+  }
+  return m
+})
+
+const hwWeeklyClassByKey = computed(() => {
+  const rows = hwWeeklyClassGroupsPayload.value?.groups
+  if (!rows?.length) return {}
+  const m = {}
+  for (const r of rows) {
+    m[`${r.groupName}|${r.departmentName || ''}`] = r
+  }
+  return m
+})
+
+function formatHwWeeklyRate(v) {
+  if (v == null || Number.isNaN(v)) return '—'
+  return Number(v).toFixed(2)
+}
+
+function hwClassKey(row) {
+  return `${row.className}|${row.departmentName || ''}`
+}
+
+function hwDeptWeeklyLine(item) {
+  if (!hwWeeklyOverall.value?.requirementConfigured) return ''
+  const g = hwWeeklyDeptByName.value[item.departmentName]
+  if (!g || g.completionRatePercent == null) return ''
+  return `本院本周提交 ${formatHwWeeklyRate(g.completionRatePercent)}%（${g.compliantStudents}/${g.totalStudents}人）`
+}
+
+function hwClassWeeklyLine(item) {
+  if (!hwWeeklyOverall.value?.requirementConfigured) return ''
+  const g = hwWeeklyClassByKey.value[hwClassKey(item)]
+  if (!g || g.completionRatePercent == null) return ''
+  return `本班本周提交 ${formatHwWeeklyRate(g.completionRatePercent)}%（${g.compliantStudents}/${g.totalStudents}人）`
+}
+
+async function fetchHwWeekly() {
+  hwWeeklyOverall.value = null
+  hwWeeklyDeptGroupsPayload.value = null
+  hwWeeklyClassGroupsPayload.value = null
+  try {
+    const res = await api.homeworkStats.getWeeklySubmissionCompletion()
+    if (res?.code === 200 && res.data) hwWeeklyOverall.value = res.data
+  } catch (e) {
+    console.error('本周作业提交统计加载失败', e)
+  }
+  if (isSchoolAdminRole.value) {
+    try {
+      const res = await api.homeworkStats.getWeeklySubmissionCompletionGroups({ view: 'school' })
+      if (res?.code === 200 && res.data) hwWeeklyDeptGroupsPayload.value = res.data
+    } catch (e) {
+      console.error('本院本周作业提交分组加载失败', e)
+    }
+  }
+  try {
+    const res = await api.homeworkStats.getWeeklySubmissionCompletionGroups({ view: 'college' })
+    if (res?.code === 200 && res.data) hwWeeklyClassGroupsPayload.value = res.data
+  } catch (e) {
+    console.error('本班本周作业提交分组加载失败', e)
+  }
+}
 
 const trendChartRef = ref(null)
 let trendChartInstance = null
@@ -417,6 +542,7 @@ async function loadAll() {
     if (isSchoolAdminRole.value && deptRes?.status === 'fulfilled' && deptRes.value?.data) {
       deptRank.value = deptRes.value.data
     }
+    await fetchHwWeekly()
   } finally {
     loading.value = false
     await nextTick()
@@ -488,6 +614,63 @@ async function saveHomeworkStandards() {
   }
 }
 
+const submissionSettingsDialogVisible = ref(false)
+const submissionSettingsSaving = ref(false)
+const submissionSettingsForm = ref({
+  weeklySubmissionsRequired: 3,
+  submissionSemesterWeeks: 16,
+})
+
+async function openSubmissionSettingsDialog() {
+  submissionSettingsDialogVisible.value = true
+  try {
+    const userStr = localStorage.getItem('userInfo')
+    const school = userStr ? JSON.parse(userStr).school : null
+    if (!school) {
+      ElMessage.warning('无法获取学校信息')
+      return
+    }
+    const res = await api.schoolSettings.get(school)
+    const d = res?.data
+    submissionSettingsForm.value = {
+      weeklySubmissionsRequired: d?.homeworkWeeklySubmissionsRequired ?? 3,
+      submissionSemesterWeeks: d?.homeworkSubmissionSemesterWeeks ?? 16,
+    }
+  } catch (e) {
+    console.error('加载作业提交指标失败:', e)
+    ElMessage.error('加载作业提交指标失败')
+  }
+}
+
+async function saveSubmissionSettings() {
+  submissionSettingsSaving.value = true
+  try {
+    const userStr = localStorage.getItem('userInfo')
+    const school = userStr ? JSON.parse(userStr).school : null
+    if (!school) {
+      ElMessage.warning('无法获取学校信息')
+      return
+    }
+    const res = await api.schoolSettings.updateHomeworkSubmissionSettings({
+      school,
+      weeklySubmissionsRequired: submissionSettingsForm.value.weeklySubmissionsRequired,
+      submissionSemesterWeeks: submissionSettingsForm.value.submissionSemesterWeeks,
+    })
+    if (res?.code !== 200) {
+      ElMessage.error(res?.message || '保存作业提交指标失败')
+      return
+    }
+    ElMessage.success('作业提交指标已保存')
+    submissionSettingsDialogVisible.value = false
+    await fetchHwWeekly()
+  } catch (e) {
+    console.error('保存作业提交指标失败:', e)
+    ElMessage.error(e?.message || '保存作业提交指标失败')
+  } finally {
+    submissionSettingsSaving.value = false
+  }
+}
+
 onMounted(() => {
   loadAll()
   window.addEventListener('resize', handleResize)
@@ -520,6 +703,35 @@ onUnmounted(() => {
 .header-left { display: flex; align-items: center; gap: 8px; }
 .header-left h1 { margin: 0; font-size: 18px; font-weight: 600; color: #2c3e50; }
 .header-actions { display: flex; gap: 10px; align-items: center; }
+
+.hw-weekly-strip {
+  background: linear-gradient(90deg, #f6ffed, #f0fdf4);
+  border-radius: 8px;
+  padding: 10px 16px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 12px;
+  font-size: 13px;
+  border: 1px solid #b7eb8f;
+}
+.hw-wc-title { font-weight: 600; color: #389e0d; }
+.hw-wc-dates { color: #666; font-size: 12px; }
+.hw-wc-rate { font-size: 18px; font-weight: 700; color: #389e0d; }
+.hw-wc-sub { color: #666; font-size: 12px; }
+.hw-wc-muted { color: #999; font-size: 12px; }
+
+.rank-wc {
+  font-size: 11px;
+  color: #389e0d;
+  margin-bottom: 4px;
+  line-height: 1.3;
+  white-space: normal;
+}
+.hw-cell-rate { font-weight: 600; color: #389e0d; }
+.hw-cell-sub { font-size: 11px; color: #888; margin-top: 2px; }
+.hw-cell-empty { color: #ccc; }
 
 /* 加载 */
 .loading-container {

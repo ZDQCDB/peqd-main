@@ -498,6 +498,7 @@ export const api = {
     updateSunshineRunSettings: (data) => apiClient.put('/pe/school-settings/sunshine-run-settings', data),
     getHomeworkStandards: (school) => apiClient.get('/pe/school-settings/homework-standards', { params: { school } }),
     updateHomeworkStandards: (data) => apiClient.put('/pe/school-settings/homework-standards', data),
+    updateHomeworkSubmissionSettings: (data) => apiClient.put('/pe/school-settings/homework-submission-settings', data),
   },
 
   peSchedules: {
@@ -567,6 +568,8 @@ export const api = {
     getClassRank: (params) => apiClient.get('/statistics/homework/class-rank', { params }),
     getDepartmentRank: (params) => apiClient.get('/statistics/homework/department-rank', { params }),
     getDeptClassRank: (params) => apiClient.get('/statistics/homework/dept-class-rank', { params }),
+    getWeeklySubmissionCompletion: () => apiClient.get('/statistics/homework/weekly-submission-completion'),
+    getWeeklySubmissionCompletionGroups: (params) => apiClient.get('/statistics/homework/weekly-submission-completion-groups', { params }),
     exportExcel: (params) => apiClient.get('/statistics/homework/export', { params, responseType: 'blob', timeout: 60000 })
   },
 
